@@ -12,10 +12,8 @@ app.use(express.static('public'));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-// Conexión a MySQL de Railway
 const db = mysql.createPool(process.env.DATABASE_URL);
 
-// Registro
 app.post('/register', upload.single('profile_pic'), async (req, res) => {
     const { username, password, name, last_name, birth_date, gender, phone, email, address, city, country } = req.body;
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -23,7 +21,7 @@ app.post('/register', upload.single('profile_pic'), async (req, res) => {
 
     db.query(
         `INSERT INTO users (profile_pic, username, password, name, last_name, birth_date, gender, phone, email, address, city, country) 
-         VALUES (?,?,?,?,?,?,?,?)`,
+         VALUES (?,?,?,?,?,?,?,?,?,?,?,?)`,
         [profilePicUrl, username, hashedPassword, name, last_name, birth_date, gender, phone, email, address, city, country],
         (err, result) => {
             if (err) return res.status(500).send('Error: ' + err.message);
@@ -32,15 +30,12 @@ app.post('/register', upload.single('profile_pic'), async (req, res) => {
     );
 });
 
-// Login
 app.post('/login', (req, res) => {
     const { username, password } = req.body;
     db.query('SELECT * FROM users WHERE username =?', [username], async (err, results) => {
         if (err || results.length === 0) return res.status(401).send('Usuario no encontrado');
-        
         const validPass = await bcrypt.compare(password, results[0].password);
         if (!validPass) return res.status(401).send('Password incorrecto');
-        
         res.redirect(`/bienvenida.html?user=${username}`);
     });
 });
