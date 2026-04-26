@@ -160,7 +160,7 @@
         </form>
         
         <!-- BOTÓN NUEVO: REGRESAR A LOGIN -->
-        <button type="button" class="btn-login" onclick="window.location.href='/login.html'">
+        <button type="button" class="btn-login" onclick="window.location.href='/index.html'">
             ¿Ya tienes cuenta? Log In
         </button>
     </div>
@@ -177,7 +177,7 @@
                 reader.onload = function(event) {
                     logoUpload.style.backgroundImage = `url('${event.target.result}')`;
                     logoUpload.classList.add('has-image');
-                    logoContent.style.display = 'none'; // ESTA LÍNEA QUITA EL TEXTO A LA FUERZA
+                    logoContent.style.display = 'none'; // ESTA LÍNEA QUITA EL TEXTO SÍ O SÍ
                 }
                 reader.readAsDataURL(file);
             }
