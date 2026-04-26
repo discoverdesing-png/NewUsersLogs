@@ -21,7 +21,7 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage: storage });
 
-// CONEXIÓN MYSQL DE RAILWAY - USA TUS VARIABLES
+// CONEXIÓN MYSQL DE RAILWAY - USA TUS VARIABLES DE ENTORNO
 const db = mysql.createConnection({
     host: process.env.MYSQLHOST,
     user: process.env.MYSQLUSER,
@@ -53,6 +53,7 @@ app.post('/register', upload.single('profile_pic'), async (req, res) => {
                 if (err.code === 'ER_DUP_ENTRY') {
                     return res.status(400).send('Error: El usuario ya existe');
                 }
+                console.error(err);
                 return res.status(500).send('Error en el servidor');
             }
             res.redirect(`/dashboard.html?user=${username}`);
@@ -62,7 +63,7 @@ app.post('/register', upload.single('profile_pic'), async (req, res) => {
     }
 });
 
-// LOGIN CON JSON - PARA MOSTRAR ERROR 3 SEG EN LA MISMA PÁGINA
+// LOGIN CON JSON - PARA MENSAJE DE 3 SEG Y REDIRECT
 app.post('/login', (req, res) => {
     const { username, password } = req.body;
     
