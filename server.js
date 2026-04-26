@@ -20,7 +20,7 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage: storage });
 
-// CONEXIÓN MYSQL - USA LAS VARIABLES DE RAILWAY
+// CONEXIÓN MYSQL - RAILWAY YA INYECTA ESTAS VARIABLES
 const db = mysql.createConnection({
     host: process.env.MYSQLHOST,
     user: process.env.MYSQLUSER,
@@ -62,12 +62,13 @@ app.post('/register', upload.single('profile_pic'), async (req, res) => {
     }
 });
 
-// LOGIN QUE REGRESA JSON PARA MOSTRAR ERROR 3 SEG
+// LOGIN CON JSON - PARA QUE EL ERROR SALGA 3 SEG EN LA MISMA PÁGINA
 app.post('/login', (req, res) => {
     const { username, password } = req.body;
     
     db.query('SELECT * FROM users WHERE username =?', [username], async (err, results) => {
         if (err) {
+            console.error(err);
             return res.json({ success: false, message: 'Error en el servidor' });
         }
         
