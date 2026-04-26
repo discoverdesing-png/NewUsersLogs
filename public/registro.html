@@ -5,10 +5,9 @@
     <title>Registro</title>
     <style>
         body { font-family: Arial, sans-serif; background: #f5f5f5; margin: 0; padding: 20px; }
-      .container { max-width: 500px; margin: 20px auto; background: white; padding: 40px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+     .container { max-width: 500px; margin: 20px auto; background: white; padding: 40px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
         
-        /* RECTÁNGULO LOGO AQUÍ + */
-      .logo-upload {
+     .logo-upload {
             width: 150px;
             height: 150px;
             border: 2px dashed #999;
@@ -23,25 +22,17 @@
             background-repeat: no-repeat;
             transition: border-color 0.2s;
             overflow: hidden;
-            position: relative;
         }
-      .logo-upload:hover { border-color: #0070f3; }
-      .logo-content { text-align: center; color: #999; pointer-events: none; }
-      .logo-text { display: block; font-size: 14px; margin-bottom: 6px; letter-spacing: 1px; }
-      .plus-icon { display: block; font-size: 28px; font-weight: 300; line-height: 1; }
-        
-        /* ESTA ES LA LÍNEA QUE QUITA EL TEXTO - OJO EL ESPACIO */
-      .logo-upload.has-image.logo-content {
-            display: none;
-        }
-      .logo-upload.has-image {
-            border: 2px solid #0070f3;
-        }
+     .logo-upload:hover { border-color: #0070f3; }
+     .logo-content { text-align: center; color: #999; pointer-events: none; }
+     .logo-text { display: block; font-size: 14px; margin-bottom: 6px; letter-spacing: 1px; }
+     .plus-icon { display: block; font-size: 28px; font-weight: 300; line-height: 1; }
+     .logo-upload.has-image { border: 2px solid #0070f3; }
 
-      .form-row { display: flex; gap: 12px; margin-bottom: 12px; }
-      .form-row input, select { flex: 1; padding: 12px; border: 1px solid #ddd; border-radius: 6px; }
-      .full-width { width: 100%; padding: 12px; margin-bottom: 12px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; }
-      .btn-submit { width: 100%; padding: 14px; background: #0070f3; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; }
+     .form-row { display: flex; gap: 12px; margin-bottom: 12px; }
+     .form-row input, select { flex: 1; padding: 12px; border: 1px solid #ddd; border-radius: 6px; }
+     .full-width { width: 100%; padding: 12px; margin-bottom: 12px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; }
+     .btn-submit { width: 100%; padding: 14px; background: #0070f3; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; }
         label { font-size: 12px; color: #666; display: block; margin-bottom: 4px; }
     </style>
 </head>
@@ -49,10 +40,9 @@
     <div class="container">
         <form action="/register" method="POST" enctype="multipart/form-data">
             
-            <!-- RECTÁNGULO CLICKEABLE -->
             <input type="file" id="profile_pic" name="profile_pic" accept="image/*" hidden required>
             <label for="profile_pic" class="logo-upload" id="logoUpload">
-                <div class="logo-content">
+                <div class="logo-content" id="logoContent">
                     <span class="logo-text">LOGO AQUÍ</span>
                     <span class="plus-icon">+</span>
                 </div>
@@ -95,6 +85,7 @@
     <script>
         const inputFile = document.getElementById('profile_pic');
         const logoUpload = document.getElementById('logoUpload');
+        const logoContent = document.getElementById('logoContent');
 
         inputFile.addEventListener('change', function(e) {
             const file = e.target.files[0];
@@ -102,7 +93,8 @@
                 const reader = new FileReader();
                 reader.onload = function(event) {
                     logoUpload.style.backgroundImage = `url('${event.target.result}')`;
-                    logoUpload.classList.add('has-image'); // ESTO OCULTA EL TEXTO
+                    logoUpload.classList.add('has-image');
+                    logoContent.style.display = 'none'; // ESTA LÍNEA QUITA EL TEXTO SÍ O SÍ
                 }
                 reader.readAsDataURL(file);
             }
