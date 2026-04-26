@@ -15,7 +15,7 @@
             align-items: center;
             justify-content: center;
         }
-      .container { 
+     .container { 
             max-width: 420px; 
             width: 100%;
             background: #0f0f0f; 
@@ -24,7 +24,7 @@
             box-shadow: 0 0 60px rgba(255, 0, 0, 0.2), 0 8px 32px rgba(0,0,0,0.9);
             border: 1px solid #1a1a1a;
         }
-      .logo-img {
+     .logo-img {
             width: 130px;
             height: 130px;
             margin: 0 auto 30px;
@@ -32,7 +32,7 @@
             object-fit: contain;
             filter: drop-shadow(0 0 25px rgba(255, 0, 0, 0.8));
         }
-      .title {
+     .title {
             text-align: center;
             font-size: 30px;
             font-weight: 800;
@@ -41,7 +41,7 @@
             text-shadow: 0 0 20px rgba(255, 0, 0, 0.8);
             letter-spacing: 3px;
         }
-      .input-field { 
+     .input-field { 
             width: 100%; 
             padding: 16px; 
             margin-bottom: 18px; 
@@ -50,15 +50,14 @@
             background: #1a1a1a;
             color: #e0e0e0;
             font-size: 15px;
-            transition: all 0.3s ease;
         }
-      .input-field:focus {
+     .input-field:focus {
             outline: none;
             border-color: #ff0000;
             box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
             background: #222;
         }
-      .error-msg {
+     .error-msg {
             background: rgba(255, 0, 0, 0.15);
             border: 1px solid #ff0000;
             color: #ff4d4d;
@@ -69,63 +68,26 @@
             font-size: 14px;
             font-weight: 600;
             display: none;
-            animation: slideDown 0.3s ease;
-            box-shadow: 0 0 15px rgba(255, 0, 0, 0.3);
         }
-      .error-msg.show { display: block; }
-        @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-      .btn { 
+     .error-msg.show { display: block; }
+     .btn { 
             width: 100%; 
-            padding: 30px; 
+            padding: 20px; 
             border-radius: 8px; 
             font-weight: 700; 
             font-size: 15px;
             cursor: pointer;
-            transition: all 0.3s ease;
             text-transform: uppercase;
             letter-spacing: 2px;
-            position: relative;
-            background: #0a0a0a;
+            background: #1a0000;
             color: #fff;
-            border: 2px solid transparent;
+            border: 2px solid #ff0000;
             margin-bottom: 14px;
-            overflow: hidden;
-            z-index: 1;
         }
-      .btn::before {
-            content: '';
-            position: absolute;
-            inset: -2px;
-            background: conic-gradient(from 0deg, transparent 0deg, #ff0000 60deg, #ff4d4d 120deg, #ff0000 180deg, transparent 360deg);
-            border-radius: 8px;
-            z-index: -1;
-            animation: borderRotate 3s linear infinite;
-            opacity: 0;
-            transition: opacity 0.3s;
+     .btn:hover {
+            background: #ff0000;
+            color: #000;
         }
-      .btn::after {
-            content: '';
-            position: absolute;
-            inset: 2px;
-            background: #0a0a0a;
-            border-radius: 6px;
-            z-index: -1;
-            transition: background 0.3s ease;
-        }
-      .btn:hover::before { opacity: 1; }
-      .btn:hover::after { background: #1a0000; }
-      .btn:hover {
-            transform: translateY(-3px);
-            color: #ff4d4d;
-        }
-        @keyframes borderRotate {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        input::placeholder { color: #555; }
     </style>
 </head>
 <body>
@@ -136,10 +98,10 @@
         <form id="loginForm">
             <input type="text" name="username" placeholder="Usuario" class="input-field" required>
             <input type="password" name="password" placeholder="Contraseña" class="input-field" required>
-            <button type="submit" class="btn">Entrar</button>
+            <button type="submit" class="btn">ENTRAR</button>
         </form>
         <button type="button" class="btn" onclick="window.location.href='/registro.html'">
-            Crear Cuenta Nueva
+            CREAR CUENTA NUEVA
         </button>
     </div>
 
@@ -149,21 +111,31 @@
 
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
+            errorMsg.classList.remove('show');
+            
             const formData = new FormData(form);
             const data = Object.fromEntries(formData);
 
-            const res = await fetch('/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data)
-            });
+            try {
+                const res = await fetch('/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
 
-            const result = await res.json();
-            
-            if (result.success) {
-                window.location.href = `/dashboard.html?user=${result.username}`;
-            } else {
-                errorMsg.textContent = result.message;
+                const result = await res.json();
+                
+                if (result.success) {
+                    window.location.href = `/dashboard.html?user=${result.username}`;
+                } else {
+                    errorMsg.textContent = result.message;
+                    errorMsg.classList.add('show');
+                    setTimeout(() => {
+                        errorMsg.classList.remove('show');
+                    }, 3000);
+                }
+            } catch (error) {
+                errorMsg.textContent = 'Error de conexión con el servidor';
                 errorMsg.classList.add('show');
                 setTimeout(() => {
                     errorMsg.classList.remove('show');
