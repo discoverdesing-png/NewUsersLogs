@@ -12,7 +12,7 @@
             padding: 20px;
             color: #e0e0e0;
         }
-     .container { 
+    .container { 
             max-width: 500px; 
             margin: 20px auto; 
             background: #151515; 
@@ -23,7 +23,7 @@
         }
         
         /* RECTÁNGULO LOGO AQUÍ + */
-     .logo-upload {
+    .logo-upload {
             width: 150px;
             height: 150px;
             border: 2px dashed #ff1a1a;
@@ -39,22 +39,23 @@
             transition: all 0.3s ease;
             overflow: hidden;
             background-color: #1a1a1a;
+            position: relative;
         }
-     .logo-upload:hover { 
+    .logo-upload:hover { 
             border-color: #ff4d4d; 
-            box-shadow: 0 0 20px rgba(255, 26, 0.6);
+            box-shadow: 0 0 20px rgba(255, 26, 26, 0.6);
             transform: scale(1.05);
         }
-     .logo-upload.has-image { 
+    .logo-upload.has-image { 
             border: 2px solid #ff4d4d;
             box-shadow: 0 0 20px rgba(255, 77, 77, 0.4);
         }
-     .logo-content { text-align: center; color: #ff1a1a; pointer-events: none; }
-     .logo-text { display: block; font-size: 14px; margin-bottom: 6px; letter-spacing: 2px; font-weight: 700; }
-     .plus-icon { display: block; font-size: 32px; font-weight: 300; line-height: 1; }
+    .logo-content { text-align: center; color: #ff1a1a; pointer-events: none; }
+    .logo-text { display: block; font-size: 14px; margin-bottom: 6px; letter-spacing: 2px; font-weight: 700; }
+    .plus-icon { display: block; font-size: 32px; font-weight: 300; line-height: 1; }
 
-     .form-row { display: flex; gap: 12px; margin-bottom: 14px; }
-     .form-row input, select { 
+    .form-row { display: flex; gap: 12px; margin-bottom: 14px; }
+    .form-row input, select { 
             flex: 1; 
             padding: 13px; 
             border: 1px solid #333; 
@@ -63,72 +64,85 @@
             color: #e0e0e0;
             transition: all 0.2s;
         }
-     .form-row input:focus, select:focus {
+    .form-row input:focus, select:focus {
             outline: none;
             border-color: #ff1a1a;
             box-shadow: 0 0 12px rgba(255, 26, 26, 0.4);
             background: #252525;
      }
-   .full-width { 
+    .full-width { 
             width: 100%; 
             padding: 13px; 
             margin-bottom: 14px; 
             border: 1px solid #333; 
             border-radius: 8px; 
-            box-sizing: border-box;
             background: #1f1f1f;
             color: #e0e0e0;
             transition: all 0.2s;
         }
-   .full-width:focus {
+    .full-width:focus {
             outline: none;
             border-color: #ff1a1a;
             box-shadow: 0 0 12px rgba(255, 26, 26, 0.4);
             background: #252525;
      }
-        /* BOTONES CON ANIMACIÓN Y GLOW */
-   .btn-submit { 
+        
+        /* BOTONES CON LUZ QUE RECORRE EL MARCO */
+    .btn { 
             width: 100%; 
-            padding: 15px; 
-            background: linear-gradient(135deg, #ff1a1a, #cc0000); 
-            color: white; 
-            border: none; 
+            padding: 16px 30px; 
             border-radius: 8px; 
             font-weight: bold; 
             font-size: 15px;
             cursor: pointer;
             transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            position: relative;
+            overflow: hidden;
+            background: #1a1a1a;
             margin-bottom: 12px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
         }
-   .btn-submit:hover {
-            background: linear-gradient(135deg, #ff4d4d, #ff1a1a);
-            box-shadow: 0 0 25px rgba(255, 26, 26, 0.7);
+        
+        /* EFECTO DE LUZ RECORRIENDO EL MARCO */
+    .btn::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(90deg, transparent, #ff1a1a, transparent);
+            border-radius: 8px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            animation: borderRun 2s linear infinite;
+            z-index: -1;
+        }
+    .btn:hover::before { opacity: 1; }
+        
+        @keyframes borderRun {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+    .btn-submit { 
+            color: white; 
+            border: 2px solid #ff1a1a;
+        }
+    .btn-submit:hover {
+            background: rgba(255, 26, 26, 0.2);
             transform: translateY(-2px);
-     }
-   .btn-submit:active { transform: translateY(0px); }
+        }
     
-   .btn-login { 
-            width: 100%; 
-            padding: 15px; 
-            background: transparent; 
+    .btn-login { 
             color: #ff1a1a; 
-            border: 2px solid #ff1a1a; 
-            border-radius: 8px; 
-            font-weight: bold; 
-            font-size: 15px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            border: 2px solid #ff1a1a;
         }
-   .btn-login:hover {
+    .btn-login:hover {
             background: rgba(255, 26, 26, 0.15);
-            box-shadow: 0 0 25px rgba(255, 26, 26, 0.5);
             transform: translateY(-2px);
-     }
-   .btn-login:active { transform: translateY(0px); }
+        }
         
         label { font-size: 12px; color: #999; display: block; margin-bottom: 5px; font-weight: 500; }
         input::placeholder { color: #666; }
@@ -178,11 +192,10 @@
                 <input type="text" name="city" placeholder="City" required>
                 <input type="text" name="country" placeholder="Country" required>
             </div>
-            <button type="submit" class="btn-submit">Crear Cuenta</button>
+            <button type="submit" class="btn btn-submit">Crear Cuenta</button>
         </form>
         
-        <!-- BOTÓN PARA REGRESAR A LOGIN -->
-        <button type="button" class="btn-login" onclick="window.location.href='/index.html'">
+        <button type="button" class="btn btn-login" onclick="window.location.href='/index.html'">
             ¿Ya tienes cuenta? Log In
         </button>
     </div>
@@ -199,7 +212,7 @@
                 reader.onload = function(event) {
                     logoUpload.style.backgroundImage = `url('${event.target.result}')`;
                     logoUpload.classList.add('has-image');
-                    logoContent.style.display = 'none'; // ESTA LÍNEA MATA EL TEXTO SÍ O SÍ
+                    logoContent.style.display = 'none'; // MATA EL TEXTO A LA FUERZA
                 }
                 reader.readAsDataURL(file);
             }
