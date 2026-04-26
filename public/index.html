@@ -15,109 +15,122 @@
             align-items: center;
             justify-content: center;
         }
-   .container { 
+     .container { 
             max-width: 400px; 
             width: 100%;
             background: #151515; 
             padding: 50px 40px; 
-            border-radius: 16px; 
-            box-shadow: 0 0 30px rgba(255, 0, 0, 0.2), 0 8px 32px rgba(0,0,0,0.5);
+            border-radius: 12px; 
+            box-shadow: 0 0 40px rgba(255, 0, 0, 0.25), 0 8px 32px rgba(0,0,0,0.6);
             border: 1px solid #2a2a2a;
         }
         
         /* TU LOGO */
-   .logo-img {
+     .logo-img {
             width: 120px;
             height: 120px;
             margin: 0 auto 30px;
             display: block;
             object-fit: contain;
-            filter: drop-shadow(0 0 15px rgba(255, 26, 26, 0.5));
-            animation: pulse 2s infinite;
+            filter: drop-shadow(0 0 20px rgba(255, 26, 26, 0.6));
+            animation: pulse 2.5s infinite;
         }
         @keyframes pulse {
             0%, 100% { filter: drop-shadow(0 0 15px rgba(255, 26, 26, 0.5)); }
-            50% { filter: drop-shadow(0 0 25px rgba(255, 26, 26, 0.8)); }
+            50% { filter: drop-shadow(0 0 30px rgba(255, 26, 26, 0.9)); }
         }
         
-   .title {
+     .title {
             text-align: center;
             font-size: 28px;
             font-weight: 700;
             margin-bottom: 30px;
             color: #ff1a1a;
-            text-shadow: 0 0 15px rgba(255, 26, 26, 0.5);
+            text-shadow: 0 0 15px rgba(255, 26, 26, 0.6);
             letter-spacing: 2px;
-    }
+        }
 
-   .full-width { 
+     .full-width { 
             width: 100%; 
-            padding: 14px; 
+            padding: 15px; 
             margin-bottom: 16px; 
             border: 1px solid #333; 
             border-radius: 8px; 
-            box-sizing: border-box;
             background: #1f1f1f;
             color: #e0e0e0;
             font-size: 15px;
             transition: all 0.2s;
         }
-   .full-width:focus {
+     .full-width:focus {
             outline: none;
             border-color: #ff1a1a;
-            box-shadow: 0 0 12px rgba(255, 26, 26, 0.4);
+            box-shadow: 0 0 15px rgba(255, 26, 26, 0.5);
             background: #252525;
-     }
-    
-   .btn-submit { 
+        }
+        
+        /* BOTONES CON LUZ QUE RECORRE EL MARCO */
+     .btn { 
             width: 100%; 
-            padding: 15px; 
-            background: linear-gradient(135deg, #ff1a1a, #cc0000); 
-            color: white; 
-            border: none; 
+            padding: 16px 30px; 
             border-radius: 8px; 
             font-weight: bold; 
             font-size: 15px;
             cursor: pointer;
             transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            position: relative;
+            overflow: hidden;
+            background: #1a1a1a;
             margin-bottom: 12px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
         }
-   .btn-submit:hover {
-            background: linear-gradient(135deg, #ff4d4d, #ff1a1a);
-            box-shadow: 0 0 25px rgba(255, 26, 26, 0.7);
+        
+        /* EFECTO DE LUZ RECORRIENDO EL MARCO */
+     .btn::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(90deg, transparent, #ff1a1a, transparent);
+            border-radius: 8px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            animation: borderRun 2s linear infinite;
+            z-index: -1;
+        }
+     .btn:hover::before { opacity: 1; }
+        
+        @keyframes borderRun {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+     .btn-submit { 
+            color: white; 
+            border: 2px solid #ff1a1a;
+        }
+     .btn-submit:hover {
+            background: rgba(255, 26, 26, 0.2);
             transform: translateY(-2px);
-     }
-   .btn-submit:active { transform: translateY(0px); }
+        }
     
-   .btn-register { 
-            width: 100%; 
-            padding: 15px; 
-            background: transparent; 
+     .btn-register { 
             color: #ff1a1a; 
-            border: 2px solid #ff1a1a; 
-            border-radius: 8px; 
-            font-weight: bold; 
-            font-size: 15px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            border: 2px solid #ff1a1a;
         }
-   .btn-register:hover {
+     .btn-register:hover {
             background: rgba(255, 26, 26, 0.15);
-            box-shadow: 0 0 25px rgba(255, 26, 26, 0.5);
             transform: translateY(-2px);
-     }
-   .btn-register:active { transform: translateY(0px); }
+        }
         
         input::placeholder { color: #666; }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- TU LOGO DESDE /uploads/LogoMetal.png -->
+        <!-- CHECA QUE LogoMetal.png ESTÉ EN public/uploads/ -->
         <img src="/uploads/LogoMetal.png" alt="Logo" class="logo-img">
         
         <h1 class="title">INICIAR SESIÓN</h1>
@@ -125,10 +138,10 @@
         <form action="/login" method="POST">
             <input type="text" name="username" placeholder="Usuario" class="full-width" required>
             <input type="password" name="password" placeholder="Contraseña" class="full-width" required>
-            <button type="submit" class="btn-submit">Entrar</button>
+            <button type="submit" class="btn btn-submit">Entrar</button>
         </form>
         
-        <button type="button" class="btn-register" onclick="window.location.href='/registro.html'">
+        <button type="button" class="btn btn-register" onclick="window.location.href='/registro.html'">
             Crear Cuenta Nueva
         </button>
     </div>
