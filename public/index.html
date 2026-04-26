@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>Log In</title>
     <style>
-       * { margin: 0; padding: 0; box-sizing: border-box; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
             font-family: 'Segoe UI', Arial, sans-serif; 
             background: #000; 
@@ -120,18 +120,17 @@
 </head>
 <body>
     <div class="container">
-        <!-- CHECA QUE LogoMetal.png ESTÉ EN public/uploads/ -->
         <img src="/uploads/LogoMetal.png" alt="Logo" class="logo-img">
         
         <h1 class="title">INICIAR SESIÓN</h1>
         
         <form action="/login" method="POST">
-            <input type="text" name="username" placeholder="Usuario" class="full-width" required>
-            <input type="password" name="password" placeholder="Contraseña" class="full-width" required>
-            <button type="submit" class="btn btn-submit">Entrar</button>
+            <input type="text" name="username" placeholder="Usuario" class="input-field" required>
+            <input type="password" name="password" placeholder="Contraseña" class="input-field" required>
+            <button type="submit" class="btn">Entrar</button>
         </form>
         
-        <button type="button" class="btn btn-register" onclick="window.location.href='/registro.html'">
+        <button type="button" class="btn" onclick="window.location.href='/registro.html'">
             Crear Cuenta Nueva
         </button>
     </div>
