@@ -4,30 +4,31 @@
     <meta charset="UTF-8">
     <title>Registro</title>
     <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
-            font-family: Arial, sans-serif; 
+            font-family: 'Segoe UI', Arial, sans-serif; 
             background: #0a0a0a; 
-            margin: 0; 
+            min-height: 100vh;
             padding: 20px;
             color: #e0e0e0;
         }
-    .container { 
+     .container { 
             max-width: 500px; 
             margin: 20px auto; 
             background: #151515; 
             padding: 40px; 
-            border-radius: 12px; 
-            box-shadow: 0 4px 20px rgba(255, 0, 0, 0.15);
+            border-radius: 16px; 
+            box-shadow: 0 0 30px rgba(255, 0, 0, 0.2), 0 8px 32px rgba(0,0,0,0.5);
             border: 1px solid #2a2a2a;
         }
         
         /* RECTÁNGULO LOGO AQUÍ + */
-    .logo-upload {
+     .logo-upload {
             width: 150px;
             height: 150px;
-            border: 2px dashed #ff2d2d;
-            border-radius: 8px;
-            margin: 0 auto 20px;
+            border: 2px dashed #ff1a1a;
+            border-radius: 12px;
+            margin: 0 auto 25px;
             cursor: pointer;
             display: flex;
             align-items: center;
@@ -35,83 +36,104 @@
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
-            transition: all 0.3s;
+            transition: all 0.3s ease;
             overflow: hidden;
             background-color: #1a1a1a;
         }
-    .logo-upload:hover { 
+     .logo-upload:hover { 
             border-color: #ff4d4d; 
-            box-shadow: 0 0 15px rgba(255, 45, 45, 0.4);
+            box-shadow: 0 0 20px rgba(255, 26, 0.6);
+            transform: scale(1.05);
         }
-    .logo-content { text-align: center; color: #ff2d2d; pointer-events: none; }
-    .logo-text { display: block; font-size: 14px; margin-bottom: 6px; letter-spacing: 1px; font-weight: bold; }
-    .plus-icon { display: block; font-size: 28px; font-weight: 300; line-height: 1; }
-    .logo-upload.has-image { border: 2px solid #ff4d4d; }
+     .logo-upload.has-image { 
+            border: 2px solid #ff4d4d;
+            box-shadow: 0 0 20px rgba(255, 77, 77, 0.4);
+        }
+     .logo-content { text-align: center; color: #ff1a1a; pointer-events: none; }
+     .logo-text { display: block; font-size: 14px; margin-bottom: 6px; letter-spacing: 2px; font-weight: 700; }
+     .plus-icon { display: block; font-size: 32px; font-weight: 300; line-height: 1; }
 
-    .form-row { display: flex; gap: 12px; margin-bottom: 12px; }
-    .form-row input, select { 
+     .form-row { display: flex; gap: 12px; margin-bottom: 14px; }
+     .form-row input, select { 
             flex: 1; 
-            padding: 12px; 
+            padding: 13px; 
             border: 1px solid #333; 
-            border-radius: 6px;
+            border-radius: 8px;
             background: #1f1f1f;
             color: #e0e0e0;
+            transition: all 0.2s;
         }
-    .form-row input:focus, select:focus {
+     .form-row input:focus, select:focus {
             outline: none;
-            border-color: #ff2d2d;
-            box-shadow: 0 0 8px rgba(255, 45, 45, 0.3);
+            border-color: #ff1a1a;
+            box-shadow: 0 0 12px rgba(255, 26, 26, 0.4);
+            background: #252525;
      }
-    .full-width { 
+   .full-width { 
             width: 100%; 
-            padding: 12px; 
-            margin-bottom: 12px; 
+            padding: 13px; 
+            margin-bottom: 14px; 
             border: 1px solid #333; 
-            border-radius: 6px; 
+            border-radius: 8px; 
             box-sizing: border-box;
             background: #1f1f1f;
             color: #e0e0e0;
+            transition: all 0.2s;
         }
-    .full-width:focus {
+   .full-width:focus {
             outline: none;
-            border-color: #ff2d2d;
-            box-shadow: 0 0 8px rgba(255, 45, 45, 0.3);
+            border-color: #ff1a1a;
+            box-shadow: 0 0 12px rgba(255, 26, 26, 0.4);
+            background: #252525;
      }
-    .btn-submit { 
+        /* BOTONES CON ANIMACIÓN Y GLOW */
+   .btn-submit { 
             width: 100%; 
-            padding: 14px; 
-            background: #ff2d2d; 
+            padding: 15px; 
+            background: linear-gradient(135deg, #ff1a1a, #cc0000); 
             color: white; 
             border: none; 
-            border-radius: 6px; 
+            border-radius: 8px; 
             font-weight: bold; 
+            font-size: 15px;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.3s ease;
             margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
-    .btn-submit:hover {
-            background: #ff4d4d;
-            box-shadow: 0 0 15px rgba(255, 45, 45, 0.5);
+   .btn-submit:hover {
+            background: linear-gradient(135deg, #ff4d4d, #ff1a1a);
+            box-shadow: 0 0 25px rgba(255, 26, 26, 0.7);
+            transform: translateY(-2px);
      }
-        /* BOTÓN DE LOGIN */
-    .btn-login { 
+   .btn-submit:active { transform: translateY(0px); }
+    
+   .btn-login { 
             width: 100%; 
-            padding: 14px; 
+            padding: 15px; 
             background: transparent; 
-            color: #ff2d2d; 
-            border: 1px solid #ff2d2d; 
-            border-radius: 6px; 
+            color: #ff1a1a; 
+            border: 2px solid #ff1a1a; 
+            border-radius: 8px; 
             font-weight: bold; 
+            font-size: 15px;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
-    .btn-login:hover {
-            background: rgba(255, 45, 45, 0.1);
-            box-shadow: 0 0 15px rgba(255, 45, 45, 0.3);
+   .btn-login:hover {
+            background: rgba(255, 26, 26, 0.15);
+            box-shadow: 0 0 25px rgba(255, 26, 26, 0.5);
+            transform: translateY(-2px);
      }
-        label { font-size: 12px; color: #999; display: block; margin-bottom: 4px; }
+   .btn-login:active { transform: translateY(0px); }
+        
+        label { font-size: 12px; color: #999; display: block; margin-bottom: 5px; font-weight: 500; }
         input::placeholder { color: #666; }
-        option { background: #1f1f1f; }
+        option { background: #1f1f1f; color: #e0e0e0; }
+        input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); }
     </style>
 </head>
 <body>
@@ -159,7 +181,7 @@
             <button type="submit" class="btn-submit">Crear Cuenta</button>
         </form>
         
-        <!-- BOTÓN NUEVO: REGRESAR A LOGIN -->
+        <!-- BOTÓN PARA REGRESAR A LOGIN -->
         <button type="button" class="btn-login" onclick="window.location.href='/index.html'">
             ¿Ya tienes cuenta? Log In
         </button>
@@ -177,7 +199,7 @@
                 reader.onload = function(event) {
                     logoUpload.style.backgroundImage = `url('${event.target.result}')`;
                     logoUpload.classList.add('has-image');
-                    logoContent.style.display = 'none'; // ESTA LÍNEA QUITA EL TEXTO SÍ O SÍ
+                    logoContent.style.display = 'none'; // ESTA LÍNEA MATA EL TEXTO SÍ O SÍ
                 }
                 reader.readAsDataURL(file);
             }
