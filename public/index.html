@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <title>Log In</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+       * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
             font-family: 'Segoe UI', Arial, sans-serif; 
-            background: #0a0a0a; 
+            background: #000; 
             min-height: 100vh;
             padding: 20px;
             color: #e0e0e0;
@@ -15,100 +15,97 @@
             align-items: center;
             justify-content: center;
         }
-    .container { 
-            max-width: 400px; 
+  .container { 
+            max-width: 420px; 
             width: 100%;
-            background: #151515; 
+            background: #0f0f0f; 
             padding: 50px 40px; 
             border-radius: 12px; 
-            box-shadow: 0 0 40px rgba(255, 0, 0, 0.25), 0 8px 32px rgba(0,0,0,0.6);
-            border: 1px solid #2a2a2a;
+            box-shadow: 0 0 60px rgba(255, 0, 0, 0.15), 0 8px 32px rgba(0,0,0,0.9);
+            border: 1px solid #1a1a1a;
         }
         
-        /* TU LOGO */
-    .logo-img {
-            width: 240px;
-            height: 240px;
+  .logo-img {
+            width: 130px;
+            height: 130px;
             margin: 0 auto 30px;
             display: block;
             object-fit: contain;
-            filter: drop-shadow(0 0 20px rgba(255, 26, 26, 0.6));
-            animation: pulse 2.5s infinite;
-        }
-        @keyframes pulse {
-            0%, 100% { filter: drop-shadow(0 0 15px rgba(255, 26, 26, 0.5)); }
-            50% { filter: drop-shadow(0 0 30px rgba(255, 26, 26, 0.9)); }
+            filter: drop-shadow(0 0 25px rgba(255, 0, 0, 0.7));
         }
         
-    .title {
+  .title {
             text-align: center;
-            font-size: 28px;
-            font-weight: 700;
-            margin-bottom: 30px;
-            color: #ff1a1a;
-            text-shadow: 0 0 15px rgba(255, 26, 26, 0.6);
-            letter-spacing: 2px;
+            font-size: 30px;
+            font-weight: 800;
+            margin-bottom: 35px;
+            color: #ff0000;
+            text-shadow: 0 0 20px rgba(255, 0, 0, 0.8);
+            letter-spacing: 3px;
         }
 
-    .full-width { 
+  .input-field { 
             width: 100%; 
-            padding: 15px; 
-            margin-bottom: 16px; 
-            border: 1px solid #333; 
+            padding: 16px; 
+            margin-bottom: 18px; 
+            border: 1px solid #2a2a2a; 
             border-radius: 8px; 
-            background: #1f1f1f;
+            background: #1a1a1a;
             color: #e0e0e0;
             font-size: 15px;
-            transition: all 0.2s;
+            transition: all 0.3s ease;
         }
-    .full-width:focus {
+  .input-field:focus {
             outline: none;
-            border-color: #ff1a1a;
-            box-shadow: 0 0 15px rgba(255, 26, 26, 0.5);
-            background: #252525;
+            border-color: #ff0000;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.4);
+            background: #222;
         }
         
-         .btn { 
+        /* BOTONES CON LUZ QUE RECORRE EL MARCO */
+  .btn { 
             width: 100%; 
-            padding: 16px 30px; 
+            padding: 30px; 
             border-radius: 8px; 
             font-weight: 700; 
             font-size: 15px;
             cursor: pointer;
             transition: all 0.3s ease;
             text-transform: uppercase;
-            letter-spacing: 1.5px;
+            letter-spacing: 2px;
             position: relative;
-            overflow: hidden;
-            background: #0f0f0f;
+            background: #0a0a0a;
             color: #fff;
-            border: 2px solid transparent;
-            margin-bottom: 12px;
+            border: 2px solid #1a1a1a;
+            margin-bottom: 14px;
+            overflow: hidden;
             z-index: 1;
         }
         
         /* LA LUZ ROJA QUE RECORRE EL MARCO */
-   .btn::before {
+  .btn::before {
             content: '';
             position: absolute;
             inset: -2px;
-            background: conic-gradient(from 0deg, transparent 0deg, #ff0000 90deg, #ff4d4d 180deg, #ff0000 270deg, transparent 360deg);
+            background: conic-gradient(from 0deg, transparent 0deg, #ff0000 60deg, #ff4d4d 120deg, #ff0000 180deg, transparent 360deg);
             border-radius: 8px;
             z-index: -1;
             animation: borderRotate 3s linear infinite;
             opacity: 0;
             transition: opacity 0.3s;
         }
-   .btn::after {
+  .btn::after {
             content: '';
             position: absolute;
             inset: 2px;
-            background: #0f0f0f;
+            background: #0a0a0a;
             border-radius: 6px;
             z-index: -1;
+            transition: background 0.3s ease;
         }
-   .btn:hover::before { opacity: 1; }
-   .btn:hover {
+  .btn:hover::before { opacity: 1; }
+  .btn:hover::after { background: #1a0000; } /* Negro que apenas cambia a rojo */
+  .btn:hover {
             transform: translateY(-3px);
             color: #ff4d4d;
         }
@@ -117,26 +114,8 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-
-    .btn-submit { 
-            color: white; 
-            border: 2px solid #ff1a1a;
-        }
-    .btn-submit:hover {
-            background: rgba(255, 26, 26, 0.2);
-            transform: translateY(-2px);
-        }
-    
-    .btn-register { 
-            color: #ff1a1a; 
-            border: 2px solid #ff1a1a;
-        }
-    .btn-register:hover {
-            background: rgba(255, 26, 26, 0.15);
-            transform: translateY(-2px);
-        }
         
-        input::placeholder { color: #666; }
+        input::placeholder { color: #555; }
     </style>
 </head>
 <body>
