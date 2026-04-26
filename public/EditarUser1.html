@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Editar Usuario</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Segoe UI', Arial, sans-serif; 
+            background: #000; 
+            min-height: 100vh;
+            padding: 20px;
+            color: #e0e0e0;
+        }
+       .navbar {
+            background: #0f0f0f;
+            padding: 20px 40px;
+            border-radius: 12px;
+            border: 1px solid #1a1a1a;
+            box-shadow: 0 0 40px rgba(255, 0, 0, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+       .navbar h1 {
+            color: #ff0000;
+            font-size: 26px;
+            text-shadow: 0 0 20px rgba(255, 0, 0, 0.8);
+            letter-spacing: 3px;
+            font-weight: 800;
+        }
+       .container { 
+            max-width: 800px; 
+            margin: 0 auto; 
+            background: #0f0f0f; 
+            padding: 40px; 
+            border-radius: 12px; 
+            box-shadow: 0 0 60px rgba(255, 0, 0, 0.15), 0 8px 32px rgba(0,0,0,0.9);
+            border: 1px solid #1a1a1a;
+        }
+       .title {
+            text-align: center;
+            font-size: 30px;
+            font-weight: 800;
+            margin-bottom: 35px;
+            color: #ff0000;
+            text-shadow: 0 0 20px rgba(255, 0, 0, 0.8);
+            letter-spacing: 3px;
+        }
+       .alert-msg {
+            background: rgba(255, 0, 0, 0.15);
+            border: 1px solid #ff0000;
+            color: #ff4d4d;
+            padding: 14px;
+            border-radius: 8px;
+            margin-bottom: 18px;
+            text-align: center;
+            font-size: 14px;
+            font-weight: 600;
+            display: none;
+        }
+       .alert-msg.success {
+            background: rgba(0, 255, 0, 0.15);
+            border: 1px solid #00ff00;
+            color: #4dff4d;
+        }
+       .alert-msg.show { display: block; }
+       .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+       .input-group {
+            margin-bottom: 18px;
+        }
+       .input-group.full-width {
+            grid-column: 1 / -1;
+        }
+       .input-field { 
+            width: 100%; 
+            padding: 16px; 
+            border: 1px solid #2a2a2a; 
+            border-radius: 8px; 
+            background: #1a1a1a;
+            color: #e0e0e0;
+            font-size: 15px;
+        }
+       .input-field:focus {
+            outline: none;
+            border-color: #ff0000;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
+            background: #222;
+        }
+       label {
+            display: block;
+            color: #ff0000;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+       .btn-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+            margin-top: 30px;
+       }
+        
+        /* BOTÓN CON LUZ QUE RECORRE EL MARCO */
+       .btn { 
+            padding: 20px; 
+            border-radius: 8px; 
+            font-weight: 700; 
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            position: relative;
+            background: #0a0a0a;
+            color: #fff;
+            border: 2px solid transparent;
+            overflow: hidden;
+            z-index: 1;
+        }
+       .btn::before {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            background: conic-gradient(from 0deg, transparent 0deg, #ff0000 60deg, #ff4d4d 120deg, #ff0000 180deg, transparent 360deg);
+            border-radius: 8px;
+            z-index: -1;
+            animation: borderRotate 3s linear infinite;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+       .btn::after {
+            content: '';
+            position: absolute;
+            inset: 2px;
+            background: #0a0a0a;
+            border-radius: 6px;
+            z-index: -1;
+            transition: background 0.3s ease;
+        }
+       .btn:hover::before { opacity: 1; }
+       .btn:hover::after { background: #1a0000; }
+       .btn:hover {
+            transform: translateY(-3px);
+            color: #ff4d4d;
+        }
+        
+        @keyframes borderRotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <h1>EDITAR USUARIO</h1>
+        <button class="btn" onclick="window.location.href='/admin.html'">VOLVER</button>
+    </div>
+    
+    <div class="container">
+        <h2 class="title">MODIFICAR DATOS</h2>
+        <div class="alert-msg" id="alertMsg"></div>
+        
+        <form id="editForm">
+            <input type="hidden" id="userId" name="id">
+            
+            <div class="form-grid">
+                <div class="input-group">
+                    <label>Usuario</label>
+                    <input type="text" name="username" id="username" class="input-field" required>
+                </div>
+                
+                <div class="input-group">
+                    <label>Nueva Contraseña</label>
+                    <input type="password" name="password" id="password" class="input-field" placeholder="Dejar vacío para no cambiar">
+                </div>
+                
+                <div class="input-group">
+                    <label>Nombre</label>
+                    <input type="text" name="name" id="name" class="input-field" required>
+                </div>
+                
+                <div class="input-group">
+                    <label>Apellido</label>
+                    <input type="text" name="last_name" id="last_name" class="input-field" required>
+                </div>
+                
+                <div class="input-group">
+                    <label>Fecha de Nacimiento</label>
+                    <input type="date" name="birth_date" id="birth_date" class="input-field">
+                </div>
+                
+                <div class="input-group">
+                    <label>Género</label>
+                    <select name="gender" id="gender" class="input-field">
+                        <option value="">Seleccionar</option>
+                        <option value="M">Masculino</option>
+                        <option value="F">Femenino</option>
+                        <option value="O">Otro</option>
+                    </select>
+                </div>
+                
+                <div class="input-group">
+                    <label>Teléfono</label>
+                    <input type="tel" name="phone" id="phone" class="input-field">
+                </div>
+                
+                <div class="input-group">
+                    <label>Email</label>
+                    <input type="email" name="email" id="email" class="input-field" required>
+                </div>
+                
+                <div class="input-group full-width">
+                    <label>Dirección</label>
+                    <input type="text" name="address" id="address" class="input-field">
+                </div>
+                
+                <div class="input-group">
+                    <label>Ciudad</label>
+                    <input type="text" name="city" id="city" class="input-field">
+                </div>
+                
+                <div class="input-group">
+                    <label>País</label>
+                    <input type="text" name="country" id="country" class="input-field">
+                </div>
+                
+                <div class="input-group full-width">
+                    <label>Foto de Perfil</label>
+                    <input type="file" name="profile_pic" id="profile_pic" class="input-field" accept="image/*">
+                    <img id="currentPic" src="" style="width:100px;height:100px;margin-top:10px;border-radius:8px;display:none;object-fit:cover;">
+                </div>
+            </div>
+            
+            <div class="btn-group">
+                <button type="submit" class="btn">MODIFICAR</button>
+                <button type="button" class="btn" onclick="cancelar()">CANCELAR</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const userId = urlParams.get('id');
+        const alertMsg = document.getElementById('alertMsg');
+        
+        // CARGAR DATOS DEL USUARIO
+        async function loadUser() {
+            try {
+                const res = await fetch(`/api/admin/user/${userId}`);
+                const user = await res.json();
+                
+                if (user.error) {
+                    showAlert(user.error, false);
+                    return;
+                }
+                
+                document.getElementById('userId').value = user.id;
+                document.getElementById('username').value = user.username;
+                document.getElementById('name').value = user.name;
+                document.getElementById('last_name').value = user.last_name;
+                document.getElementById('birth_date').value = user.birth_date ? user.birth_date.split('T')[0] : '';
+                document.getElementById('gender').value = user.gender || '';
+                document.getElementById('phone').value = user.phone || '';
+                document.getElementById('email').value = user.email;
+                document.getElementById('address').value = user.address || '';
+                document.getElementById('city').value = user.city || '';
+                document.getElementById('country').value = user.country || '';
+                
+                if (user.profile_pic) {
+                    const img = document.getElementById('currentPic');
+                    img.src = user.profile_pic;
+                    img.style.display = 'block';
+                }
+            } catch (error) {
+                showAlert('Error al cargar usuario', false);
+            }
+        }
+        
+        // MODIFICAR USUARIO
+        document.getElementById('editForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            
+            try {
+                const res = await fetch(`/api/admin/user/${userId}`, {
+                    method: 'PUT',
+                    body: formData
+                });
+                
+                const result = await res.json();
+                
+                if (result.success) {
+                    showAlert('Usuario modificado correctamente', true);
+                    setTimeout(() => {
+                        window.location.href = '/admin.html';
+                    }, 3000);
+                } else {
+                    showAlert(result.message, false);
+                }
+            } catch (error) {
+                showAlert('Error al modificar usuario', false);
+            }
+        });
+        
+        function cancelar() {
+            showAlert('Operación cancelada', false);
+            setTimeout(() => {
+                window.location.href = '/admin.html';
+            }, 3000);
+        }
+        
+        function showAlert(message, isSuccess) {
+            alertMsg.textContent = message;
+            alertMsg.className = isSuccess ? 'alert-msg success show' : 'alert-msg show';
+            setTimeout(() => {
+                alertMsg.classList.remove('show');
+            }, 3000);
+        }
+        
+        loadUser();
+    </script>
+</body>
+</html>
