@@ -15,7 +15,7 @@
             align-items: center;
             justify-content: center;
         }
-       .container { 
+      .container { 
             max-width: 420px; 
             width: 100%;
             background: #0f0f0f; 
@@ -24,7 +24,7 @@
             box-shadow: 0 0 60px rgba(255, 0, 0, 0.2), 0 8px 32px rgba(0,0,0,0.9);
             border: 1px solid #1a1a1a;
         }
-       .logo-img {
+      .logo-img {
             width: 130px;
             height: 130px;
             margin: 0 auto 30px;
@@ -32,7 +32,7 @@
             object-fit: contain;
             filter: drop-shadow(0 0 25px rgba(255, 0, 0, 0.8));
         }
-       .title {
+      .title {
             text-align: center;
             font-size: 30px;
             font-weight: 800;
@@ -41,7 +41,7 @@
             text-shadow: 0 0 20px rgba(255, 0, 0, 0.8);
             letter-spacing: 3px;
         }
-       .input-field { 
+      .input-field { 
             width: 100%; 
             padding: 16px; 
             margin-bottom: 18px; 
@@ -52,13 +52,13 @@
             font-size: 15px;
             transition: all 0.3s ease;
         }
-       .input-field:focus {
+      .input-field:focus {
             outline: none;
             border-color: #ff0000;
             box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
             background: #222;
         }
-       .error-msg {
+      .error-msg {
             background: rgba(255, 0, 0, 0.15);
             border: 1px solid #ff0000;
             color: #ff4d4d;
@@ -72,18 +72,12 @@
             animation: slideDown 0.3s ease;
             box-shadow: 0 0 15px rgba(255, 0, 0, 0.3);
         }
-       .error-msg.show { display: block; }
-       .error-msg.success {
-            background: rgba(0, 255, 0, 0.15);
-            border-color: #00ff00;
-            color: #4dff4d;
-            box-shadow: 0 0 15px rgba(0, 255, 0, 0.3);
-        }
+      .error-msg.show { display: block; }
         @keyframes slideDown {
             from { opacity: 0; transform: translateY(-10px); }
             to { opacity: 1; transform: translateY(0); }
         }
-       .btn { 
+      .btn { 
             width: 100%; 
             padding: 30px; 
             border-radius: 8px; 
@@ -101,7 +95,7 @@
             overflow: hidden;
             z-index: 1;
         }
-       .btn::before {
+      .btn::before {
             content: '';
             position: absolute;
             inset: -2px;
@@ -112,7 +106,7 @@
             opacity: 0;
             transition: opacity 0.3s;
         }
-       .btn::after {
+      .btn::after {
             content: '';
             position: absolute;
             inset: 2px;
@@ -121,9 +115,9 @@
             z-index: -1;
             transition: background 0.3s ease;
         }
-       .btn:hover::before { opacity: 1; }
-       .btn:hover::after { background: #1a0000; }
-       .btn:hover {
+      .btn:hover::before { opacity: 1; }
+      .btn:hover::after { background: #1a0000; }
+      .btn:hover {
             transform: translateY(-3px);
             color: #ff4d4d;
         }
@@ -167,14 +161,9 @@
             const result = await res.json();
             
             if (result.success) {
-                errorMsg.textContent = 'Login exitoso';
-                errorMsg.classList.add('show', 'success');
-                setTimeout(() => {
-                    window.location.href = `/dashboard.html?user=${result.username}`;
-                }, 1000);
+                window.location.href = `/dashboard.html?user=${result.username}`;
             } else {
                 errorMsg.textContent = result.message;
-                errorMsg.classList.remove('success');
                 errorMsg.classList.add('show');
                 setTimeout(() => {
                     errorMsg.classList.remove('show');
