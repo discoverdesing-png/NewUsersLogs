@@ -15,7 +15,7 @@
             align-items: center;
             justify-content: center;
         }
-     .container { 
+    .container { 
             max-width: 400px; 
             width: 100%;
             background: #151515; 
@@ -26,7 +26,7 @@
         }
         
         /* TU LOGO */
-     .logo-img {
+    .logo-img {
             width: 120px;
             height: 120px;
             margin: 0 auto 30px;
@@ -40,7 +40,7 @@
             50% { filter: drop-shadow(0 0 30px rgba(255, 26, 26, 0.9)); }
         }
         
-     .title {
+    .title {
             text-align: center;
             font-size: 28px;
             font-weight: 700;
@@ -50,7 +50,7 @@
             letter-spacing: 2px;
         }
 
-     .full-width { 
+    .full-width { 
             width: 100%; 
             padding: 15px; 
             margin-bottom: 16px; 
@@ -61,7 +61,7 @@
             font-size: 15px;
             transition: all 0.2s;
         }
-     .full-width:focus {
+    .full-width:focus {
             outline: none;
             border-color: #ff1a1a;
             box-shadow: 0 0 15px rgba(255, 26, 26, 0.5);
@@ -69,7 +69,7 @@
         }
         
         /* BOTONES CON LUZ QUE RECORRE EL MARCO */
-     .btn { 
+    .btn { 
             width: 100%; 
             padding: 16px 30px; 
             border-radius: 8px; 
@@ -86,7 +86,7 @@
         }
         
         /* EFECTO DE LUZ RECORRIENDO EL MARCO */
-     .btn::before {
+    .btn::before {
             content: '';
             position: absolute;
             top: -2px;
@@ -100,27 +100,27 @@
             animation: borderRun 2s linear infinite;
             z-index: -1;
         }
-     .btn:hover::before { opacity: 1; }
+    .btn:hover::before { opacity: 1; }
         
         @keyframes borderRun {
             0% { transform: translateX(-100%); }
             100% { transform: translateX(100%); }
         }
 
-     .btn-submit { 
+    .btn-submit { 
             color: white; 
             border: 2px solid #ff1a1a;
         }
-     .btn-submit:hover {
+    .btn-submit:hover {
             background: rgba(255, 26, 26, 0.2);
             transform: translateY(-2px);
         }
     
-     .btn-register { 
+    .btn-register { 
             color: #ff1a1a; 
             border: 2px solid #ff1a1a;
         }
-     .btn-register:hover {
+    .btn-register:hover {
             background: rgba(255, 26, 26, 0.15);
             transform: translateY(-2px);
         }
