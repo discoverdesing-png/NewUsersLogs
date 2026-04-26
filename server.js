@@ -3,6 +3,7 @@ const multer = require('multer');
 const bcrypt = require('bcryptjs');
 const mysql = require('mysql2');
 const path = require('path');
+require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -20,7 +21,6 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage: storage });
 
-// CONEXIÓN MYSQL - RAILWAY YA INYECTA ESTAS VARIABLES
 const db = mysql.createConnection({
     host: process.env.MYSQLHOST,
     user: process.env.MYSQLUSER,
@@ -62,7 +62,7 @@ app.post('/register', upload.single('profile_pic'), async (req, res) => {
     }
 });
 
-// LOGIN CON JSON - PARA QUE EL ERROR SALGA 3 SEG EN LA MISMA PÁGINA
+// LOGIN CON JSON - PARA QUE SALGA EL ERROR 3 SEG Y LUEGO REDIRIJA
 app.post('/login', (req, res) => {
     const { username, password } = req.body;
     
