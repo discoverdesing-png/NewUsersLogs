@@ -2,31 +2,214 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Bienvenido</title>
+    <title>Dashboard</title>
     <style>
-        body { font-family: Arial, sans-serif; background: #f5f5f5; margin: 0; padding: 0; text-align: center; }
-       .container { max-width: 400px; margin: 80px auto; background: white; padding: 40px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-       .profile-pic { width: 150px; height: 150px; border-radius: 50%; object-fit: cover; border: 3px solid #0070f3; margin: 0 auto 20px; background: #eee; }
-       .name-row { font-size: 20px; margin: 20px 0; color: #333; }
-       .welcome-text { font-size: 24px; font-weight: bold; margin: 30px 0; color: #0070f3; }
-       .btn-continue { padding: 12px 40px; background: #0070f3; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Segoe UI', Arial, sans-serif; 
+            background: #000; 
+            min-height: 100vh;
+            padding: 20px;
+            color: #e0e0e0;
+        }
+  .navbar {
+            background: #0f0f0f;
+            padding: 20px 40px;
+            border-radius: 12px;
+            border: 1px solid #1a1a1a;
+            box-shadow: 0 0 40px rgba(255, 0, 0, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+  .navbar h1 {
+            color: #ff0000;
+            font-size: 26px;
+            text-shadow: 0 0 20px rgba(255, 0, 0, 0.8);
+            letter-spacing: 3px;
+            font-weight: 800;
+        }
+  .container { 
+            max-width: 900px; 
+            margin: 0 auto; 
+            background: #0f0f0f; 
+            padding: 40px; 
+            border-radius: 12px; 
+            box-shadow: 0 0 60px rgba(255, 0, 0, 0.15), 0 8px 32px rgba(0,0,0,0.9);
+            border: 1px solid #1a1a1a;
+        }
+        
+  .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            margin-bottom: 40px;
+            padding-bottom: 30px;
+            border-bottom: 1px solid #2a2a2a;
+        }
+  .profile-pic {
+            width: 130px;
+            height: 130px;
+            border-radius: 12px;
+            border: 3px solid #ff0000;
+            box-shadow: 0 0 35px rgba(255, 0, 0, 0.7);
+            object-fit: cover;
+        }
+  .profile-info h2 {
+            color: #ff0000;
+            font-size: 34px;
+            margin-bottom: 8px;
+            text-shadow: 0 0 15px rgba(255, 0, 0, 0.7);
+        }
+  .profile-info p {
+            color: #999;
+            font-size: 16px;
+        }
+        
+  .data-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 20px;
+        }
+  .data-card {
+            background: #1a1a1a;
+            padding: 22px;
+            border-radius: 8px;
+            border: 1px solid #2a2a2a;
+            transition: all 0.3s ease;
+        }
+  .data-card:hover {
+            border-color: #ff0000;
+            box-shadow: 0 0 25px rgba(255, 0, 0, 0.4);
+            transform: translateY(-3px);
+            background: #1f1f1f;
+        }
+  .data-label {
+            color: #ff0000;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+  .data-value {
+            color: #e0e0e0;
+            font-size: 16px;
+            font-weight: 500;
+        }
+        
+        /* BOTÓN CON LUZ QUE RECORRE EL MARCO */
+  .btn { 
+            padding: 16px 30px; 
+            border-radius: 8px; 
+            font-weight: 700; 
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            position: relative;
+            background: #0a0a0a;
+            color: #fff;
+            border: 2px solid transparent;
+            overflow: hidden;
+            z-index: 1;
+        }
+  .btn::before {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            background: conic-gradient(from 0deg, transparent 0deg, #ff0000 60deg, #ff4d4d 120deg, #ff0000 180deg, transparent 360deg);
+            border-radius: 8px;
+            z-index: -1;
+            animation: borderRotate 3s linear infinite;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+  .btn::after {
+            content: '';
+            position: absolute;
+            inset: 2px;
+            background: #0a0a0a;
+            border-radius: 6px;
+            z-index: -1;
+            transition: background 0.3s ease;
+        }
+  .btn:hover::before { opacity: 1; }
+  .btn:hover::after { background: #1a0000; }
+  .btn:hover {
+            transform: translateY(-3px);
+            color: #ff4d4d;
+        }
+        
+        @keyframes borderRotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <img id="userImage" src="" alt="Foto perfil" class="profile-pic">
-        <div class="name-row">
-            <span id="name">Nombre</span> - <span id="lastname">Last Name</span>
-        </div>
-        <div class="welcome-text">
-            Bienvenido - <span id="user">User</span>
-        </div>
-        <button onclick="window.location.href='/dashboard.html'" class="btn-continue">Continuar</button>
+    <div class="navbar">
+        <h1>DASHBOARD</h1>
+        <button class="btn" onclick="window.location.href='/index.html'">Cerrar Sesión</button>
     </div>
+
+    <div class="container">
+        <div class="profile-header">
+            <img id="userPic" src="/uploads/default.png" alt="Profile" class="profile-pic">
+            <div class="profile-info">
+                <h2 id="userName">Cargando...</h2>
+                <p id="userEmail"></p>
+            </div>
+        </div>
+
+        <div class="data-grid" id="userData">
+            <!-- Se llena con JS -->
+        </div>
+    </div>
+
     <script>
-        // Esto se llena con datos del backend después
         const params = new URLSearchParams(window.location.search);
-        document.getElementById('user').textContent = params.get('user') || 'User';
+        const username = params.get('user');
+
+        if (!username) {
+            window.location.href = '/index.html';
+        }
+
+        fetch(`/api/user/${username}`)
+          .then(res => res.json())
+          .then(data => {
+                if (data.error) {
+                    window.location.href = '/index.html';
+                    return;
+                }
+                
+                document.getElementById('userPic').src = data.profile_pic || '/uploads/default.png';
+                document.getElementById('userName').textContent = `${data.name} ${data.last_name}`;
+                document.getElementById('userEmail').textContent = data.email;
+                
+                const grid = document.getElementById('userData');
+                const fields = [
+                    { label: 'Usuario', value: data.username },
+                    { label: 'Teléfono', value: data.phone || 'No especificado' },
+                    { label: 'Fecha Nacimiento', value: data.birth_date },
+                    { label: 'Género', value: data.gender },
+                    { label: 'Dirección', value: data.address },
+                    { label: 'Ciudad', value: data.city },
+                    { label: 'País', value: data.country }
+                ];
+                
+                fields.forEach(field => {
+                    grid.innerHTML += `
+                        <div class="data-card">
+                            <div class="data-label">${field.label}</div>
+                            <div class="data-value">${field.value}</div>
+                        </div>
+                    `;
+                });
+            })
+          .catch(() => window.location.href = '/index.html');
     </script>
 </body>
 </html>
