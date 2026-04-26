@@ -3,6 +3,7 @@ const multer = require('multer');
 const bcrypt = require('bcryptjs');
 const mysql = require('mysql2');
 const path = require('path');
+require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -20,7 +21,7 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage: storage });
 
-// CONEXIÓN MYSQL DE RAILWAY - USA TUS VARIABLES DE ENTORNO
+// CONEXIÓN MYSQL DE RAILWAY - USA TUS VARIABLES
 const db = mysql.createConnection({
     host: process.env.MYSQLHOST,
     user: process.env.MYSQLUSER,
@@ -44,7 +45,7 @@ app.post('/register', upload.single('profile_pic'), async (req, res) => {
         const profile_pic = req.file? `/uploads/${req.file.filename}` : null;
 
         const sql = `INSERT INTO users (username, password, name, last_name, birth_date, gender, phone, email, address, city, country, profile_pic) 
-                VALUES (?,?,?,?,?,?,?,?,?,?,?,?)`;
+                VALUES (?,?,?,?,?,?,?,?)`;
         
         db.query(sql, [username, hashedPassword, name, last_name, birth_date, gender, phone, email, address, city, country, profile_pic], 
         (err, result) => {
@@ -61,7 +62,7 @@ app.post('/register', upload.single('profile_pic'), async (req, res) => {
     }
 });
 
-// LOGIN CON JSON PARA QUE EL ERROR SALGA 3 SEG EN LA MISMA PÁGINA
+// LOGIN CON JSON - PARA MOSTRAR ERROR 3 SEG EN LA MISMA PÁGINA
 app.post('/login', (req, res) => {
     const { username, password } = req.body;
     
