@@ -1,44 +1,102 @@
 const express = require('express');
-const mysql = require('mysql2');
-const bcrypt = require('bcryptjs');
 const multer = require('multer');
+const bcrypt = require('bcryptjs');
+const mysql = require('mysql2');
 const path = require('path');
-require('dotenv').config();
 
 const app = express();
-const upload = multer({ dest: 'public/uploads/' });
+const PORT = process.env.PORT || 3000;
 
-app.use(express.static('public'));
-app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static('public'));
+app.use('/uploads', express.static('uploads'));
 
-const db = mysql.createPool(process.env.DATABASE_URL);
+const storage = multer.diskStorage({
+    destination: './uploads/',
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + path.extname(file.originalname));
+    }
+});
+const upload = multer({ storage: storage });
+
+const db = mysql.createConnection({
+    host: process.env.MYSQLHOST,
+    user: process.env.MYSQLUSER,
+    password: process.env.MYSQLPASSWORD,
+    database: process.env.MYSQLDATABASE,
+    port: process.env.MYSQLPORT
+});
+
+db.connect((err) => {
+    if (err) {
+        console.error('Error conectando MySQL:', err);
+        return;
+    }
+    console.log('Conectado a MySQL Railway');
+});
 
 app.post('/register', upload.single('profile_pic'), async (req, res) => {
-    const { username, password, name, last_name, birth_date, gender, phone, email, address, city, country } = req.body;
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const profilePicUrl = req.file? `/uploads/${req.file.filename}` : null;
+    try {
+        const { username, password, name, last_name, birth_date, gender, phone, email, address, city, country } = req.body;
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const profile_pic = req.file? `/uploads/${req.file.filename}` : null;
 
-    db.query(
-        `INSERT INTO users (profile_pic, username, password, name, last_name, birth_date, gender, phone, email, address, city, country) 
-         VALUES (?,?,?,?,?,?,?,?,?,?,?,?)`,
-        [profilePicUrl, username, hashedPassword, name, last_name, birth_date, gender, phone, email, address, city, country],
+        const sql = `INSERT INTO users (username, password, name, last_name, birth_date, gender, phone, email, address, city, country, profile_pic) 
+                VALUES (?,?,?,?,?,?,?,?,?,?,?,?)`;
+        
+        db.query(sql, [username, hashedPassword, name, last_name, birth_date, gender, phone, email, address, city, country, profile_pic], 
         (err, result) => {
-            if (err) return res.status(500).send('Error: ' + err.message);
-            res.redirect(`/bienvenida.html?user=${username}`);
-        }
-    );
+            if (err) {
+                if (err.code === 'ER_DUP_ENTRY') {
+                    return res.status(400).send('Error: El usuario ya existe');
+                }
+                console.error(err);
+                return res.status(500).send('Error en el servidor');
+            }
+            res.redirect(`/dashboard.html?user=${username}`);
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Error en el servidor');
+    }
 });
 
 app.post('/login', (req, res) => {
     const { username, password } = req.body;
+    
     db.query('SELECT * FROM users WHERE username =?', [username], async (err, results) => {
-        if (err || results.length === 0) return res.status(401).send('Usuario no encontrado');
-        const validPass = await bcrypt.compare(password, results[0].password);
-        if (!validPass) return res.status(401).send('Password incorrecto');
-        res.redirect(`/bienvenida.html?user=${username}`);
+        if (err) {
+            console.error(err);
+            return res.json({ success: false, message: 'Error en el servidor' });
+        }
+        
+        if (results.length === 0) {
+            return res.json({ success: false, message: 'Usuario no encontrado. Intente de nuevo' });
+        }
+        
+        const user = results[0];
+        const validPassword = await bcrypt.compare(password, user.password);
+        
+        if (!validPassword) {
+            return res.json({ success: false, message: 'Contraseña incorrecta. Intente de nuevo' });
+        }
+        
+        res.json({ success: true, username: user.username });
     });
 });
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Server en puerto ${PORT}`));
+app.get('/api/user/:username', (req, res) => {
+    db.query('SELECT username, name, last_name, email, phone, birth_date, gender, address, city, country, profile_pic FROM users WHERE username =?', 
+        [req.params.username], 
+        (err, results) => {
+            if (err || results.length === 0) {
+                return res.status(404).json({ error: 'Usuario no encontrado' });
+            }
+            res.json(results[0]);
+        });
+});
+
+app.listen(PORT, () => {
+    console.log(`Servidor corriendo en puerto ${PORT}`);
+});
