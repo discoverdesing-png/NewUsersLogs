@@ -1,44 +1,51 @@
 const express = require('express');
-const mysql = require('mysql2');
-const bcrypt = require('bcryptjs');
 const multer = require('multer');
 const path = require('path');
-require('dotenv').config();
-
+const mysql = require('mysql2');
+const bcrypt = require('bcrypt');
 const app = express();
-const upload = multer({ dest: 'public/uploads/' });
 
-app.use(express.static('public'));
+// Conexión Railway
+const db = mysql.createPool(process.env.DATABASE_URL).promise();
+
+// Middlewares
+app.use(express.static('public')); // ESTO HACE QUE SE VEAN LAS IMÁGENES
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-const db = mysql.createPool(process.env.DATABASE_URL);
+// MULTER: Para guardar las fotos en /public/uploads/
+const storage = multer.diskStorage({
+  destination: './public/uploads/',
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + path.extname(file.originalname))
+  }
+});
+const upload = multer({ storage });
 
+// REGISTRO CON FOTO
 app.post('/register', upload.single('profile_pic'), async (req, res) => {
-    const { username, password, name, last_name, birth_date, gender, phone, email, address, city, country } = req.body;
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const profilePicUrl = req.file? `/uploads/${req.file.filename}` : null;
-
-    db.query(
-        `INSERT INTO users (profile_pic, username, password, name, last_name, birth_date, gender, phone, email, address, city, country) 
-         VALUES (?,?,?,?,?,?,?,?,?,?,?,?)`,
-        [profilePicUrl, username, hashedPassword, name, last_name, birth_date, gender, phone, email, address, city, country],
-        (err, result) => {
-            if (err) return res.status(500).send('Error: ' + err.message);
-            res.redirect(`/bienvenida.html?user=${username}`);
-        }
-    );
+  const { username, password, name, last_name, birth_date, gender, phone, email, address, city, country } = req.body;
+  const hashedPassword = await bcrypt.hash(password, 10);
+  
+  // Si subió foto usa esa, si no usa default
+  const profilePic = req.file? `/uploads/${req.file.filename}` : '/uploads/default.png';
+  
+  await db.query(
+    `INSERT INTO users (profile_pic, username, password, name, last_name, birth_date, gender, phone, email, address, city, country) 
+     VALUES (?,?,?,?,?,?,?,?,?,?,?,?)`,
+    [profilePic, username, hashedPassword, name, last_name, birth_date, gender, phone, email, address, city, country]
+  );
+  
+  res.redirect(`/bienvenida.html?user=${username}`);
 });
 
-app.post('/login', (req, res) => {
-    const { username, password } = req.body;
-    db.query('SELECT * FROM users WHERE username =?', [username], async (err, results) => {
-        if (err || results.length === 0) return res.status(401).send('Usuario no encontrado');
-        const validPass = await bcrypt.compare(password, results[0].password);
-        if (!validPass) return res.status(401).send('Password incorrecto');
-        res.redirect(`/bienvenida.html?user=${username}`);
-    });
+// API PARA CARGAR DATOS EN BIENVENIDA.HTML
+app.get('/api/user/:username', async (req, res) => {
+  const [rows] = await db.query('SELECT * FROM users WHERE username =?', [req.params.username]);
+  if (rows.length === 0) return res.status(404).json({ error: 'No existe' });
+  delete rows[0].password;
+  res.json(rows[0]);
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Server en puerto ${PORT}`));
+app.listen(PORT, () => console.log(`Servidor online`));
