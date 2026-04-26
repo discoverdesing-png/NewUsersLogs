@@ -15,26 +15,26 @@
             align-items: center;
             justify-content: center;
         }
-  .container { 
+ .container { 
             max-width: 420px; 
             width: 100%;
             background: #0f0f0f; 
             padding: 50px 40px; 
             border-radius: 12px; 
-            box-shadow: 0 0 60px rgba(255, 0, 0, 0.15), 0 8px 32px rgba(0,0,0,0.9);
+            box-shadow: 0 0 60px rgba(255, 0, 0, 0.2), 0 8px 32px rgba(0,0,0,0.9);
             border: 1px solid #1a1a1a;
         }
         
  .logo-img {
-            width: 300px;
-            height: 300px;
-            margin: 0 auto 10px;
+            width: 130px;
+            height: 130px;
+            margin: 0 auto 30px;
             display: block;
             object-fit: contain;
-            filter: drop-shadow(0 0 25px rgba(255, 0, 0, 0.7));
+            filter: drop-shadow(0 0 25px rgba(255, 0, 0, 0.8));
         }
         
-  .title {
+ .title {
             text-align: center;
             font-size: 30px;
             font-weight: 800;
@@ -44,7 +44,7 @@
             letter-spacing: 3px;
         }
 
-  .input-field { 
+ .input-field { 
             width: 100%; 
             padding: 16px; 
             margin-bottom: 18px; 
@@ -55,15 +55,36 @@
             font-size: 15px;
             transition: all 0.3s ease;
         }
-  .input-field:focus {
+ .input-field:focus {
             outline: none;
             border-color: #ff0000;
-            box-shadow: 0 0 20px rgba(255, 0, 0, 0.4);
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
             background: #222;
         }
         
+        /* MENSAJE DE ERROR QUE DURA 5 SEGUNDOS */
+ .error-msg {
+            background: rgba(255, 0, 0, 0.15);
+            border: 1px solid #ff0000;
+            color: #ff4d4d;
+            padding: 14px;
+            border-radius: 8px;
+            margin-bottom: 18px;
+            text-align: center;
+            font-size: 14px;
+            font-weight: 600;
+            display: none;
+            animation: slideDown 0.3s ease;
+            box-shadow: 0 0 15px rgba(255, 0, 0, 0.3);
+        }
+ .error-msg.show { display: block; }
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
         /* BOTONES CON LUZ QUE RECORRE EL MARCO */
-  .btn { 
+ .btn { 
             width: 100%; 
             padding: 30px; 
             border-radius: 8px; 
@@ -76,14 +97,14 @@
             position: relative;
             background: #0a0a0a;
             color: #fff;
-            border: 2px solid #1a1a1a;
+            border: 2px solid transparent;
             margin-bottom: 14px;
             overflow: hidden;
             z-index: 1;
         }
         
         /* LA LUZ ROJA QUE RECORRE EL MARCO */
-  .btn::before {
+ .btn::before {
             content: '';
             position: absolute;
             inset: -2px;
@@ -94,7 +115,7 @@
             opacity: 0;
             transition: opacity 0.3s;
         }
-  .btn::after {
+ .btn::after {
             content: '';
             position: absolute;
             inset: 2px;
@@ -103,9 +124,9 @@
             z-index: -1;
             transition: background 0.3s ease;
         }
-  .btn:hover::before { opacity: 1; }
-  .btn:hover::after { background: #1a0000; } /* Negro que apenas cambia a rojo */
-  .btn:hover {
+ .btn:hover::before { opacity: 1; }
+ .btn:hover::after { background: #1a0000; } /* Negro que apenas cambia a rojo */
+ .btn:hover {
             transform: translateY(-3px);
             color: #ff4d4d;
         }
@@ -120,11 +141,13 @@
 </head>
 <body>
     <div class="container">
-        <img src="/uploads/logometalUser2.png" alt="Logo" class="logo-img">
+        <img src="/uploads/LogoMetal.png" alt="Logo" class="logo-img">
         
         <h1 class="title">INICIAR SESIÓN</h1>
         
-        <form action="/login" method="POST">
+        <div class="error-msg" id="errorMsg"></div>
+        
+        <form id="loginForm">
             <input type="text" name="username" placeholder="Usuario" class="input-field" required>
             <input type="password" name="password" placeholder="Contraseña" class="input-field" required>
             <button type="submit" class="btn">Entrar</button>
@@ -134,5 +157,35 @@
             Crear Cuenta Nueva
         </button>
     </div>
+
+    <script>
+        const form = document.getElementById('loginForm');
+        const errorMsg = document.getElementById('errorMsg');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData);
+
+            const res = await fetch('/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+
+            const result = await res.json();
+            
+            if (result.success) {
+                window.location.href = `/dashboard.html?user=${result.username}`;
+            } else {
+                // MENSAJE 5 SEGUNDOS Y DESAPARECE
+                errorMsg.textContent = result.message;
+                errorMsg.classList.add('show');
+                setTimeout(() => {
+                    errorMsg.classList.remove('show');
+                }, 5000);
+            }
+        });
+    </script>
 </body>
 </html>
