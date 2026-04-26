@@ -1,79 +1,97 @@
 const express = require('express');
 const multer = require('multer');
+const bcrypt = require('bcryptjs');
+const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
-const mysql = require('mysql2');
-const bcrypt = require('bcryptjs'); // OJO: bcryptjs no bcrypt
-require('dotenv').config();
+const fs = require('fs');
 
 const app = express();
-
-// Conexión a MySQL de Railway
-const db = mysql.createPool(process.env.DATABASE_URL).promise();
-
-// Middlewares
-app.use(express.static('public')); // Para que se vean las imágenes y HTML
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
-
-// MULTER: Config para guardar fotos en /public/uploads/
-const storage = multer.diskStorage({
-  destination: './public/uploads/',
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + path.extname(file.originalname))
-  }
-});
-const upload = multer({ storage });
-
-// RUTA DE REGISTRO
-app.post('/register', upload.single('profile_pic'), async (req, res) => {
-  try {
-    const { username, password, name, last_name, birth_date, gender, phone, email, address, city, country } = req.body;
-    const hashedPassword = await bcrypt.hash(password, 10);
-    
-    // Si subió foto usa esa ruta, si no usa default
-    const profilePic = req.file? `/uploads/${req.file.filename}` : '/uploads/default.png';
-    
-    await db.query(
-      `INSERT INTO users (profile_pic, username, password, name, last_name, birth_date, gender, phone, email, address, city, country) 
-       VALUES (?,?,?,?,?,?,?,?,?,?,?,?)`,
-      [profilePic, username, hashedPassword, name, last_name, birth_date, gender, phone, email, address, city, country]
-    );
-    
-    res.redirect(`/bienvenida.html?user=${username}`);
-  } catch (error) {
-    console.error(error);
-    res.status(500).send('Error en el registro');
-  }
-});
-
-// API PARA CARGAR DATOS DEL USUARIO
-app.get('/api/user/:username', async (req, res) => {
-  try {
-    const [rows] = await db.query('SELECT * FROM users WHERE username =?', [req.params.username]);
-    if (rows.length === 0) return res.status(404).json({ error: 'Usuario no existe' });
-    delete rows[0].password; // No mandamos la contraseña
-    res.json(rows[0]);
-  } catch (error) {
-    res.status(500).json({ error: 'Error del servidor' });
-  }
-});
-
-// RUTA LOGIN
-app.post('/login', async (req, res) => {
-  try {
-    const { username, password } = req.body;
-    const [rows] = await db.query('SELECT * FROM users WHERE username =?', [username]);
-    
-    if (rows.length === 0) return res.status(401).send('Usuario no existe');
-    
-    const validPassword = await bcrypt.compare(password, rows[0].password);
-    if (!validPassword) return res.status(401).send('Contraseña incorrecta');
-    
-    res.redirect(`/bienvenida.html?user=${username}`);
-  } catch (error) {
-    res.status(500).send('Error en login');
-  }
-});
-
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Servidor online en puerto ${PORT}`));
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static('public'));
+app.use('/uploads', express.static('uploads'));
+
+// CREAR CARPETA UPLOADS SI NO EXISTE
+if (!fs.existsSync('./uploads')) {
+    fs.mkdirSync('./uploads');
+}
+
+const storage = multer.diskStorage({
+    destination: './uploads/',
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + path.extname(file.originalname));
+    }
+});
+const upload = multer({ storage: storage });
+
+const db = new sqlite3.Database('./users.db', (err) => {
+    if (err) console.error(err);
+    else console.log('Conectado a SQLite');
+});
+
+db.run(`CREATE TABLE IF NOT EXISTS users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    username TEXT UNIQUE,
+    password TEXT,
+    name TEXT,
+    last_name TEXT,
+    birth_date TEXT,
+    gender TEXT,
+    phone TEXT,
+    email TEXT,
+    address TEXT,
+    city TEXT,
+    country TEXT,
+    profile_pic TEXT
+)`);
+
+app.post('/register', upload.single('profile_pic'), async (req, res) => {
+    try {
+        const { username, password, name, last_name, birth_date, gender, phone, email, address, city, country } = req.body;
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const profile_pic = req.file ? `/uploads/${req.file.filename}` : null;
+
+        db.run(`INSERT INTO users (username, password, name, last_name, birth_date, gender, phone, email, address, city, country, profile_pic) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+            [username, hashedPassword, name, last_name, birth_date, gender, phone, email, address, city, country, profile_pic],
+            function(err) {
+                if (err) return res.status(400).send('Error: El usuario ya existe');
+                res.redirect(`/dashboard.html?user=${username}`);
+            });
+    } catch (error) {
+        res.status(500).send('Error en el servidor');
+    }
+});
+
+// LOGIN AHORA REGRESA JSON PARA MOSTRAR ERROR EN LA MISMA PÁGINA
+app.post('/login', (req, res) => {
+    const { username, password } = req.body;
+    
+    db.get('SELECT * FROM users WHERE username = ?', [username], async (err, user) => {
+        if (err || !user) {
+            return res.json({ success: false, message: 'Usuario no encontrado. Intente de nuevo' });
+        }
+        
+        const validPassword = await bcrypt.compare(password, user.password);
+        if (!validPassword) {
+            return res.json({ success: false, message: 'Contraseña incorrecta. Intente de nuevo' });
+        }
+        
+        res.json({ success: true, username: user.username });
+    });
+});
+
+app.get('/api/user/:username', (req, res) => {
+    db.get('SELECT username, name, last_name, email, phone, birth_date, gender, address, city, country, profile_pic FROM users WHERE username = ?', 
+        [req.params.username], 
+        (err, user) => {
+            if (err || !user) return res.status(404).json({ error: 'Usuario no encontrado' });
+            res.json(user);
+        });
+});
+
+app.listen(PORT, () => {
+    console.log(`Servidor corriendo en puerto ${PORT}`);
+});
