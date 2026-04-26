@@ -5,15 +5,15 @@ const mysql = require('mysql2');
 const bcrypt = require('bcrypt');
 const app = express();
 
-// Conexión a Railway MySQL
+// Conexión Railway
 const db = mysql.createPool(process.env.DATABASE_URL).promise();
 
 // Middlewares
-app.use(express.static('public'));
+app.use(express.static('public')); // ESTO HACE QUE SE VEAN LAS IMÁGENES
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-// Config de Multer para guardar fotos
+// MULTER: Para guardar las fotos en /public/uploads/
 const storage = multer.diskStorage({
   destination: './public/uploads/',
   filename: (req, file, cb) => {
@@ -22,10 +22,12 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-// RUTA: REGISTRO CON FOTO
-app.post('/registro', upload.single('profile_pic'), async (req, res) => {
+// REGISTRO CON FOTO
+app.post('/register', upload.single('profile_pic'), async (req, res) => {
   const { username, password, name, last_name, birth_date, gender, phone, email, address, city, country } = req.body;
   const hashedPassword = await bcrypt.hash(password, 10);
+  
+  // Si subió foto usa esa, si no usa default
   const profilePic = req.file? `/uploads/${req.file.filename}` : '/uploads/default.png';
   
   await db.query(
@@ -34,34 +36,16 @@ app.post('/registro', upload.single('profile_pic'), async (req, res) => {
     [profilePic, username, hashedPassword, name, last_name, birth_date, gender, phone, email, address, city, country]
   );
   
-  res.redirect(`/dashboard.html?user=${username}`);
+  res.redirect(`/bienvenida.html?user=${username}`);
 });
 
-// RUTA: API PARA EL DASHBOARD
+// API PARA CARGAR DATOS EN BIENVENIDA.HTML
 app.get('/api/user/:username', async (req, res) => {
   const [rows] = await db.query('SELECT * FROM users WHERE username =?', [req.params.username]);
-  if (rows.length === 0) return res.status(404).json({ error: 'Usuario no encontrado' });
-  delete rows[0].password; // No mandamos el hash
+  if (rows.length === 0) return res.status(404).json({ error: 'No existe' });
+  delete rows[0].password;
   res.json(rows[0]);
 });
 
-// RUTA: ACTUALIZAR DATOS DEL USUARIO
-app.post('/api/update-user', upload.single('profile_pic'), async (req, res) => {
-  const { username, name, last_name, phone, address, city, country } = req.body;
-  let query = 'UPDATE users SET name=?, last_name=?, phone=?, address=?, city=?, country=?';
-  let params = [name, last_name, phone, address, city, country];
-  
-  if (req.file) {
-    query += ', profile_pic=?';
-    params.push(`/uploads/${req.file.filename}`);
-  }
-  
-  query += ' WHERE username=?';
-  params.push(username);
-  
-  await db.query(query, params);
-  res.json({ success: true });
-});
-
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Servidor en puerto ${PORT}`));
+app.listen(PORT, () => console.log(`Servidor online`));
