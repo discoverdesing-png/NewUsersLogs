@@ -26,11 +26,11 @@
             position: relative;
         }
       .logo-upload:hover { border-color: #0070f3; }
-      .logo-content { text-align: center; color: #999; pointer-events: none; z-index: 1; }
+      .logo-content { text-align: center; color: #999; pointer-events: none; }
       .logo-text { display: block; font-size: 14px; margin-bottom: 6px; letter-spacing: 1px; }
       .plus-icon { display: block; font-size: 28px; font-weight: 300; line-height: 1; }
         
-        /* ESTA ES LA MAGIA: OCULTA EL TEXTO CUANDO HAY IMAGEN */
+        /* ESTA ES LA LÍNEA QUE QUITA EL TEXTO - OJO EL ESPACIO */
       .logo-upload.has-image.logo-content {
             display: none;
         }
@@ -102,7 +102,7 @@
                 const reader = new FileReader();
                 reader.onload = function(event) {
                     logoUpload.style.backgroundImage = `url('${event.target.result}')`;
-                    logoUpload.classList.add('has-image'); // AQUÍ SE OCULTA EL TEXTO
+                    logoUpload.classList.add('has-image'); // ESTO OCULTA EL TEXTO
                 }
                 reader.readAsDataURL(file);
             }
