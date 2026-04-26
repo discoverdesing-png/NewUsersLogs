@@ -3,7 +3,6 @@ const multer = require('multer');
 const bcrypt = require('bcryptjs');
 const mysql = require('mysql2');
 const path = require('path');
-require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -62,7 +61,7 @@ app.post('/register', upload.single('profile_pic'), async (req, res) => {
     }
 });
 
-// LOGIN CON JSON - PARA QUE SALGA EL ERROR 3 SEG Y LUEGO REDIRIJA
+// ESTE ES EL ÚNICO CAMBIO: LOGIN CON JSON PARA ERROR DE 3 SEG
 app.post('/login', (req, res) => {
     const { username, password } = req.body;
     
