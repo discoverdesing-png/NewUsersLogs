@@ -3,6 +3,7 @@ const multer = require('multer');
 const bcrypt = require('bcryptjs');
 const mysql = require('mysql2');
 const path = require('path');
+const fs = require('fs');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -12,6 +13,11 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 app.use('/uploads', express.static('uploads'));
 
+// CREAR CARPETA UPLOADS SI NO EXISTE
+if (!fs.existsSync('./uploads')){
+    fs.mkdirSync('./uploads');
+}
+
 const storage = multer.diskStorage({
     destination: './uploads/',
     filename: (req, file, cb) => {
@@ -20,20 +26,26 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage: storage });
 
-const db = mysql.createConnection({
+// CAMBIO CLAVE: createPool EN LUGAR DE createConnection
+const db = mysql.createPool({
     host: process.env.MYSQLHOST,
     user: process.env.MYSQLUSER,
     password: process.env.MYSQLPASSWORD,
     database: process.env.MYSQLDATABASE,
-    port: process.env.MYSQLPORT
+    port: process.env.MYSQLPORT,
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0
 });
 
-db.connect((err) => {
+// PRUEBA DE CONEXIÓN
+db.getConnection((err, connection) => {
     if (err) {
         console.error('Error conectando MySQL:', err);
         return;
     }
     console.log('Conectado a MySQL Railway');
+    connection.release();
 });
 
 app.post('/register', upload.single('profile_pic'), async (req, res) => {
@@ -67,7 +79,7 @@ app.post('/login', (req, res) => {
     
     db.query('SELECT * FROM users WHERE username =?', [username], async (err, results) => {
         if (err) {
-            console.error(err);
+            console.error('Error en login:', err);
             return res.json({ success: false, message: 'Error en el servidor' });
         }
         
