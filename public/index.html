@@ -68,12 +68,11 @@
             background: #252525;
         }
         
-        /* BOTONES CON LUZ QUE RECORRE EL MARCO */
-    .btn { 
+         .btn { 
             width: 100%; 
             padding: 16px 30px; 
             border-radius: 8px; 
-            font-weight: bold; 
+            font-weight: 700; 
             font-size: 15px;
             cursor: pointer;
             transition: all 0.3s ease;
@@ -81,30 +80,42 @@
             letter-spacing: 1.5px;
             position: relative;
             overflow: hidden;
-            background: #1a1a1a;
+            background: #0f0f0f;
+            color: #fff;
+            border: 2px solid transparent;
             margin-bottom: 12px;
+            z-index: 1;
         }
         
-        /* EFECTO DE LUZ RECORRIENDO EL MARCO */
-    .btn::before {
+        /* LA LUZ ROJA QUE RECORRE EL MARCO */
+   .btn::before {
             content: '';
             position: absolute;
-            top: -2px;
-            left: -2px;
-            right: -2px;
-            bottom: -2px;
-            background: linear-gradient(90deg, transparent, #ff1a1a, transparent);
+            inset: -2px;
+            background: conic-gradient(from 0deg, transparent 0deg, #ff0000 90deg, #ff4d4d 180deg, #ff0000 270deg, transparent 360deg);
             border-radius: 8px;
+            z-index: -1;
+            animation: borderRotate 3s linear infinite;
             opacity: 0;
             transition: opacity 0.3s;
-            animation: borderRun 2s linear infinite;
+        }
+   .btn::after {
+            content: '';
+            position: absolute;
+            inset: 2px;
+            background: #0f0f0f;
+            border-radius: 6px;
             z-index: -1;
         }
-    .btn:hover::before { opacity: 1; }
+   .btn:hover::before { opacity: 1; }
+   .btn:hover {
+            transform: translateY(-3px);
+            color: #ff4d4d;
+        }
         
-        @keyframes borderRun {
-            0% { transform: translateX(-100%); }
-            100% { transform: translateX(100%); }
+        @keyframes borderRotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
     .btn-submit { 
