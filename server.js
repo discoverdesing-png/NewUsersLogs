@@ -1,8 +1,9 @@
 const express = require('express');
 const multer = require('multer');
 const bcrypt = require('bcryptjs');
-const sqlite3 = require('sqlite3').verbose();
+const mysql = require('mysql2');
 const path = require('path');
+require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -20,56 +21,65 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage: storage });
 
-const db = new sqlite3.Database('./users.db', (err) => {
-    if (err) console.error(err);
-    else console.log('Conectado a SQLite');
+// CONEXIÓN MYSQL DE RAILWAY - USA TUS VARIABLES
+const db = mysql.createConnection({
+    host: process.env.MYSQLHOST,
+    user: process.env.MYSQLUSER,
+    password: process.env.MYSQLPASSWORD,
+    database: process.env.MYSQLDATABASE,
+    port: process.env.MYSQLPORT
 });
 
-db.run(`CREATE TABLE IF NOT EXISTS users (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    username TEXT UNIQUE,
-    password TEXT,
-    name TEXT,
-    last_name TEXT,
-    birth_date TEXT,
-    gender TEXT,
-    phone TEXT,
-    email TEXT,
-    address TEXT,
-    city TEXT,
-    country TEXT,
-    profile_pic TEXT
-)`);
+db.connect((err) => {
+    if (err) {
+        console.error('Error conectando MySQL:', err);
+        return;
+    }
+    console.log('Conectado a MySQL Railway');
+});
 
 app.post('/register', upload.single('profile_pic'), async (req, res) => {
     try {
         const { username, password, name, last_name, birth_date, gender, phone, email, address, city, country } = req.body;
         const hashedPassword = await bcrypt.hash(password, 10);
-        const profile_pic = req.file ? `/uploads/${req.file.filename}` : null;
+        const profile_pic = req.file? `/uploads/${req.file.filename}` : null;
 
-        db.run(`INSERT INTO users (username, password, name, last_name, birth_date, gender, phone, email, address, city, country, profile_pic) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-            [username, hashedPassword, name, last_name, birth_date, gender, phone, email, address, city, country, profile_pic],
-            function(err) {
-                if (err) return res.status(400).send('Error: El usuario ya existe');
-                res.redirect(`/dashboard.html?user=${username}`);
-            });
+        const sql = `INSERT INTO users (username, password, name, last_name, birth_date, gender, phone, email, address, city, country, profile_pic) 
+                VALUES (?,?,?,?,?,?,?,?,?,?,?,?)`;
+        
+        db.query(sql, [username, hashedPassword, name, last_name, birth_date, gender, phone, email, address, city, country, profile_pic], 
+        (err, result) => {
+            if (err) {
+                if (err.code === 'ER_DUP_ENTRY') {
+                    return res.status(400).send('Error: El usuario ya existe');
+                }
+                return res.status(500).send('Error en el servidor');
+            }
+            res.redirect(`/dashboard.html?user=${username}`);
+        });
     } catch (error) {
         res.status(500).send('Error en el servidor');
     }
 });
 
-app.post('/login', express.json(), (req, res) => {
+// LOGIN CON JSON - PARA MOSTRAR ERROR 3 SEG EN LA MISMA PÁGINA
+app.post('/login', (req, res) => {
     const { username, password } = req.body;
     
-    db.get('SELECT * FROM users WHERE username = ?', [username], async (err, user) => {
-        if (err || !user) {
-            return res.json({ success: false, message: 'Usuario o contraseña incorrectos' });
+    db.query('SELECT * FROM users WHERE username =?', [username], async (err, results) => {
+        if (err) {
+            return res.json({ success: false, message: 'Error en el servidor' });
         }
         
+        if (results.length === 0) {
+            return res.json({ success: false, message: 'Usuario no encontrado. Intente de nuevo' });
+        }
+        
+        const user = results[0];
         const validPassword = await bcrypt.compare(password, user.password);
+        
         if (!validPassword) {
-            return res.json({ success: false, message: 'Usuario o contraseña incorrectos' });
+            return res.json({ success: false, message: 'Contraseña incorrecta. Intente de nuevo' });
         }
         
         res.json({ success: true, username: user.username });
@@ -77,11 +87,13 @@ app.post('/login', express.json(), (req, res) => {
 });
 
 app.get('/api/user/:username', (req, res) => {
-    db.get('SELECT username, name, last_name, email, phone, birth_date, gender, address, city, country, profile_pic FROM users WHERE username = ?', 
+    db.query('SELECT username, name, last_name, email, phone, birth_date, gender, address, city, country, profile_pic FROM users WHERE username =?', 
         [req.params.username], 
-        (err, user) => {
-            if (err || !user) return res.status(404).json({ error: 'Usuario no encontrado' });
-            res.json(user);
+        (err, results) => {
+            if (err || results.length === 0) {
+                return res.status(404).json({ error: 'Usuario no encontrado' });
+            }
+            res.json(results[0]);
         });
 });
 
