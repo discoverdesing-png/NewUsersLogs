@@ -1,7 +1,6 @@
 const express = require('express');
 const multer = require('multer');
 const bcrypt = require('bcryptjs');
-const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 
 const app = express();
