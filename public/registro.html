@@ -4,13 +4,28 @@
     <meta charset="UTF-8">
     <title>Registro</title>
     <style>
-        body { font-family: Arial, sans-serif; background: #f5f5f5; margin: 0; padding: 20px; }
-     .container { max-width: 500px; margin: 20px auto; background: white; padding: 40px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        body { 
+            font-family: Arial, sans-serif; 
+            background: #0a0a0a; 
+            margin: 0; 
+            padding: 20px;
+            color: #e0e0e0;
+        }
+    .container { 
+            max-width: 500px; 
+            margin: 20px auto; 
+            background: #151515; 
+            padding: 40px; 
+            border-radius: 12px; 
+            box-shadow: 0 4px 20px rgba(255, 0, 0, 0.15);
+            border: 1px solid #2a2a2a;
+        }
         
-     .logo-upload {
+        /* RECTÁNGULO LOGO AQUÍ + */
+    .logo-upload {
             width: 150px;
             height: 150px;
-            border: 2px dashed #999;
+            border: 2px dashed #ff2d2d;
             border-radius: 8px;
             margin: 0 auto 20px;
             cursor: pointer;
@@ -20,20 +35,83 @@
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
-            transition: border-color 0.2s;
+            transition: all 0.3s;
             overflow: hidden;
+            background-color: #1a1a1a;
         }
-     .logo-upload:hover { border-color: #0070f3; }
-     .logo-content { text-align: center; color: #999; pointer-events: none; }
-     .logo-text { display: block; font-size: 14px; margin-bottom: 6px; letter-spacing: 1px; }
-     .plus-icon { display: block; font-size: 28px; font-weight: 300; line-height: 1; }
-     .logo-upload.has-image { border: 2px solid #0070f3; }
+    .logo-upload:hover { 
+            border-color: #ff4d4d; 
+            box-shadow: 0 0 15px rgba(255, 45, 45, 0.4);
+        }
+    .logo-content { text-align: center; color: #ff2d2d; pointer-events: none; }
+    .logo-text { display: block; font-size: 14px; margin-bottom: 6px; letter-spacing: 1px; font-weight: bold; }
+    .plus-icon { display: block; font-size: 28px; font-weight: 300; line-height: 1; }
+    .logo-upload.has-image { border: 2px solid #ff4d4d; }
 
-     .form-row { display: flex; gap: 12px; margin-bottom: 12px; }
-     .form-row input, select { flex: 1; padding: 12px; border: 1px solid #ddd; border-radius: 6px; }
-     .full-width { width: 100%; padding: 12px; margin-bottom: 12px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; }
-     .btn-submit { width: 100%; padding: 14px; background: #0070f3; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; }
-        label { font-size: 12px; color: #666; display: block; margin-bottom: 4px; }
+    .form-row { display: flex; gap: 12px; margin-bottom: 12px; }
+    .form-row input, select { 
+            flex: 1; 
+            padding: 12px; 
+            border: 1px solid #333; 
+            border-radius: 6px;
+            background: #1f1f1f;
+            color: #e0e0e0;
+        }
+    .form-row input:focus, select:focus {
+            outline: none;
+            border-color: #ff2d2d;
+            box-shadow: 0 0 8px rgba(255, 45, 45, 0.3);
+     }
+    .full-width { 
+            width: 100%; 
+            padding: 12px; 
+            margin-bottom: 12px; 
+            border: 1px solid #333; 
+            border-radius: 6px; 
+            box-sizing: border-box;
+            background: #1f1f1f;
+            color: #e0e0e0;
+        }
+    .full-width:focus {
+            outline: none;
+            border-color: #ff2d2d;
+            box-shadow: 0 0 8px rgba(255, 45, 45, 0.3);
+     }
+    .btn-submit { 
+            width: 100%; 
+            padding: 14px; 
+            background: #ff2d2d; 
+            color: white; 
+            border: none; 
+            border-radius: 6px; 
+            font-weight: bold; 
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 12px;
+        }
+    .btn-submit:hover {
+            background: #ff4d4d;
+            box-shadow: 0 0 15px rgba(255, 45, 45, 0.5);
+     }
+        /* BOTÓN DE LOGIN */
+    .btn-login { 
+            width: 100%; 
+            padding: 14px; 
+            background: transparent; 
+            color: #ff2d2d; 
+            border: 1px solid #ff2d2d; 
+            border-radius: 6px; 
+            font-weight: bold; 
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+    .btn-login:hover {
+            background: rgba(255, 45, 45, 0.1);
+            box-shadow: 0 0 15px rgba(255, 45, 45, 0.3);
+     }
+        label { font-size: 12px; color: #999; display: block; margin-bottom: 4px; }
+        input::placeholder { color: #666; }
+        option { background: #1f1f1f; }
     </style>
 </head>
 <body>
@@ -80,6 +158,11 @@
             </div>
             <button type="submit" class="btn-submit">Crear Cuenta</button>
         </form>
+        
+        <!-- BOTÓN NUEVO: REGRESAR A LOGIN -->
+        <button type="button" class="btn-login" onclick="window.location.href='/login.html'">
+            ¿Ya tienes cuenta? Log In
+        </button>
     </div>
 
     <script>
@@ -94,7 +177,7 @@
                 reader.onload = function(event) {
                     logoUpload.style.backgroundImage = `url('${event.target.result}')`;
                     logoUpload.classList.add('has-image');
-                    logoContent.style.display = 'none'; // ESTA LÍNEA QUITA EL TEXTO SÍ O SÍ
+                    logoContent.style.display = 'none'; // ESTA LÍNEA QUITA EL TEXTO A LA FUERZA
                 }
                 reader.readAsDataURL(file);
             }
