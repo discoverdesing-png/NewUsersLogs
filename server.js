@@ -1,114 +1,82 @@
-const express = require('express');
-const multer = require('multer');
-const bcrypt = require('bcryptjs');
-const mysql = require('mysql2');
-const path = require('path');
-const fs = require('fs');
-
-const app = express();
-const PORT = process.env.PORT || 3000;
-
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(express.static('public'));
-app.use('/uploads', express.static('uploads'));
-
-// CREAR CARPETA UPLOADS SI NO EXISTE
-if (!fs.existsSync('./uploads')){
-    fs.mkdirSync('./uploads');
-}
-
-const storage = multer.diskStorage({
-    destination: './uploads/',
-    filename: (req, file, cb) => {
-        cb(null, Date.now() + path.extname(file.originalname));
+// OBTENER TODOS LOS USUARIOS - SOLO ADMIN
+app.get('/api/admin/users', (req, res) => {
+    const { search } = req.query;
+    let sql = `SELECT id, username, name, last_name, email, phone FROM users WHERE is_admin = 0`;
+    let params = [];
+    
+    if (search) {
+        sql += ` AND (username LIKE? OR name LIKE? OR last_name LIKE? OR email LIKE?)`;
+        const s = `%${search}%`;
+        params = [s, s, s, s];
     }
-});
-const upload = multer({ storage: storage });
-
-// CAMBIO CLAVE: createPool EN LUGAR DE createConnection
-const db = mysql.createPool({
-    host: process.env.MYSQLHOST,
-    user: process.env.MYSQLUSER,
-    password: process.env.MYSQLPASSWORD,
-    database: process.env.MYSQLDATABASE,
-    port: process.env.MYSQLPORT,
-    waitForConnections: true,
-    connectionLimit: 10,
-    queueLimit: 0
+    
+    db.query(sql, params, (err, results) => {
+        if (err) return res.status(500).json({ error: 'Error en el servidor' });
+        res.json(results);
+    });
 });
 
-// PRUEBA DE CONEXIÓN
-db.getConnection((err, connection) => {
-    if (err) {
-        console.error('Error conectando MySQL:', err);
-        return;
-    }
-    console.log('Conectado a MySQL Railway');
-    connection.release();
+// OBTENER UN USUARIO POR ID PARA EDITAR
+app.get('/api/admin/user/:id', (req, res) => {
+    db.query('SELECT * FROM users WHERE id =?', [req.params.id], (err, results) => {
+        if (err || results.length === 0) {
+            return res.status(404).json({ error: 'Usuario no encontrado' });
+        }
+        delete results[0].password; // No mandamos el hash
+        res.json(results[0]);
+    });
 });
 
-app.post('/register', upload.single('profile_pic'), async (req, res) => {
+// MODIFICAR USUARIO
+app.put('/api/admin/user/:id', upload.single('profile_pic'), async (req, res) => {
     try {
-        const { username, password, name, last_name, birth_date, gender, phone, email, address, city, country } = req.body;
-        const hashedPassword = await bcrypt.hash(password, 10);
-        const profile_pic = req.file? `/uploads/${req.file.filename}` : null;
-
-        const sql = `INSERT INTO users (username, password, name, last_name, birth_date, gender, phone, email, address, city, country, profile_pic) 
-                VALUES (?,?,?,?,?,?,?,?,?,?,?,?)`;
+        const { username, name, last_name, birth_date, gender, phone, email, address, city, country, password } = req.body;
+        const userId = req.params.id;
         
-        db.query(sql, [username, hashedPassword, name, last_name, birth_date, gender, phone, email, address, city, country, profile_pic], 
-        (err, result) => {
+        let sql = `UPDATE users SET username=?, name=?, last_name=?, birth_date=?, gender=?, phone=?, email=?, address=?, city=?, country=?`;
+        let params = [username, name, last_name, birth_date, gender, phone, email, address, city, country];
+        
+        if (password) {
+            const hashedPassword = await bcrypt.hash(password, 10);
+            sql += `, password=?`;
+            params.push(hashedPassword);
+        }
+        
+        if (req.file) {
+            sql += `, profile_pic=?`;
+            params.push(req.file.path);
+        }
+        
+        sql += ` WHERE id=?`;
+        params.push(userId);
+        
+        db.query(sql, params, (err, result) => {
             if (err) {
                 if (err.code === 'ER_DUP_ENTRY') {
-                    return res.status(400).send('Error: El usuario ya existe');
+                    return res.json({ success: false, message: 'El usuario o email ya existe' });
                 }
-                console.error(err);
-                return res.status(500).send('Error en el servidor');
+                return res.json({ success: false, message: 'Error al modificar' });
             }
-            res.redirect(`/dashboard.html?user=${username}`);
+            res.json({ success: true, message: 'Usuario modificado correctamente' });
         });
     } catch (error) {
-        console.error(error);
-        res.status(500).send('Error en el servidor');
+        res.json({ success: false, message: 'Error en el servidor' });
     }
 });
 
+// MODIFICA EL LOGIN PARA QUE REGRESE SI ES ADMIN
 app.post('/login', (req, res) => {
     const { username, password } = req.body;
     
     db.query('SELECT * FROM users WHERE username =?', [username], async (err, results) => {
-        if (err) {
-            console.error('Error en login:', err);
-            return res.json({ success: false, message: 'Error en el servidor' });
-        }
-        
-        if (results.length === 0) {
-            return res.json({ success: false, message: 'Usuario no encontrado. Intente de nuevo' });
-        }
+        if (err) return res.json({ success: false, message: 'Error en el servidor' });
+        if (results.length === 0) return res.json({ success: false, message: 'Usuario no encontrado. Intente de nuevo' });
         
         const user = results[0];
         const validPassword = await bcrypt.compare(password, user.password);
         
-        if (!validPassword) {
-            return res.json({ success: false, message: 'Contraseña incorrecta. Intente de nuevo' });
-        }
+        if (!validPassword) return res.json({ success: false, message: 'Contraseña incorrecta. Intente de nuevo' });
         
-        res.json({ success: true, username: user.username });
+        res.json({ success: true, username: user.username, is_admin: user.is_admin });
     });
-});
-
-app.get('/api/user/:username', (req, res) => {
-    db.query('SELECT username, name, last_name, email, phone, birth_date, gender, address, city, country, profile_pic FROM users WHERE username =?', 
-        [req.params.username], 
-        (err, results) => {
-            if (err || results.length === 0) {
-                return res.status(404).json({ error: 'Usuario no encontrado' });
-            }
-            res.json(results[0]);
-        });
-});
-
-app.listen(PORT, () => {
-    console.log(`Servidor corriendo en puerto ${PORT}`);
 });
