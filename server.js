@@ -7,15 +7,13 @@ require('dotenv').config();
 
 const app = express();
 
-// Conexión a MySQL de Railway
 const db = mysql.createPool(process.env.DATABASE_URL).promise();
 
-// Middlewares
-app.use(express.static('public')); // Para que se vean las imágenes y HTML
+app.use(express.static('public'));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-// MULTER: Config para guardar fotos en /public/uploads/
+// MULTER PARA GUARDAR FOTOS
 const storage = multer.diskStorage({
   destination: './public/uploads/',
   filename: (req, file, cb) => {
@@ -24,13 +22,11 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-// RUTA DE REGISTRO
+// REGISTRO
 app.post('/register', upload.single('profile_pic'), async (req, res) => {
   try {
     const { username, password, name, last_name, birth_date, gender, phone, email, address, city, country } = req.body;
     const hashedPassword = await bcrypt.hash(password, 10);
-    
-    // Si subió foto usa esa ruta, si no usa default
     const profilePic = req.file? `/uploads/${req.file.filename}` : '/uploads/default.png';
     
     await db.query(
@@ -46,19 +42,19 @@ app.post('/register', upload.single('profile_pic'), async (req, res) => {
   }
 });
 
-// API PARA CARGAR DATOS DEL USUARIO
+// API PARA OBTENER DATOS
 app.get('/api/user/:username', async (req, res) => {
   try {
     const [rows] = await db.query('SELECT * FROM users WHERE username =?', [req.params.username]);
     if (rows.length === 0) return res.status(404).json({ error: 'Usuario no existe' });
-    delete rows[0].password; // No mandamos la contraseña
+    delete rows[0].password;
     res.json(rows[0]);
   } catch (error) {
     res.status(500).json({ error: 'Error del servidor' });
   }
 });
 
-// RUTA LOGIN
+// LOGIN
 app.post('/login', async (req, res) => {
   try {
     const { username, password } = req.body;
