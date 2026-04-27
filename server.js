@@ -333,7 +333,128 @@ app.post('/api/pedidos', (req, res) => {
             res.json({ success: true, id: result.insertId });
         });
 });
+// === RUTAS INVENTARIO - SOLO REYNA_34142 ===
+app.get('/api/inventario', (req, res) => {
+    const { user } = req.query;
+    if (user!== 'Reyna_34142') return res.status(403).json({ error: 'Acceso denegado' });
+    
+    const sql = `SELECT p.*, prov.nombre as proveedor_nombre,
+                 CASE 
+                    WHEN p.stock_actual = 0 THEN 'agotado'
+                    WHEN p.stock_actual <= 2 THEN 'por_agotar'
+                    WHEN p.stock_actual <= p.stock_minimo THEN 'bajo'
+                    ELSE 'normal'
+                 END as estado_stock
+                 FROM productos p 
+                 JOIN proveedores prov ON p.proveedor_id = prov.id 
+                 WHERE prov.owner_username =?
+                 ORDER BY p.stock_actual ASC`;
+    
+    db.query(sql, [user], (err, results) => {
+        if (err) return res.status(500).json({ error: 'Error en el servidor' });
+        res.json(results);
+    });
+});
 
+app.post('/api/inventario/movimiento', (req, res) => {
+    const { user } = req.query;
+    if (user!== 'Reyna_34142') return res.status(403).json({ error: 'Acceso denegado' });
+    
+    const { producto_id, tipo, cantidad, motivo } = req.body;
+    
+    db.query('INSERT INTO inventario_movimientos (producto_id, tipo, cantidad, motivo, owner_username) VALUES (?,?,?,?,?)', 
+        [producto_id, tipo, cantidad, motivo, user], 
+        (err) => {
+            if (err) return res.json({ success: false, message: 'Error al registrar movimiento' });
+            
+            const operacion = tipo === 'entrada'? '+' : '-';
+            db.query(`UPDATE productos SET stock_actual = stock_actual ${operacion}? WHERE id =?`, 
+                [cantidad, producto_id], 
+                (err2) => {
+                    if (err2) return res.json({ success: false, message: 'Error al actualizar stock' });
+                    res.json({ success: true });
+                });
+        });
+});
+
+app.put('/api/inventario/config/:id', (req, res) => {
+    const { user } = req.query;
+    if (user!== 'Reyna_34142') return res.status(403).json({ error: 'Acceso denegado' });
+    
+    const { stock_minimo, stock_maximo } = req.body;
+    db.query('UPDATE productos SET stock_minimo =?, stock_maximo =? WHERE id =?', 
+        [stock_minimo, stock_maximo, req.params.id], 
+        (err) => {
+            if (err) return res.json({ success: false, message: 'Error al actualizar' });
+            res.json({ success: true });
+        });
+});
+
+// === RUTA PEDIDOS REYNA ===
+app.get('/PedidosReyna', (req, res) => {
+    const { user } = req.query;
+    if (user!== 'Reyna_34142') {
+        return res.status(403).send('Acceso denegado');
+    }
+    res.sendFile(path.join(__dirname, 'public', 'PedidosReyna.html'));
+});
+
+// === RUTAS CLIENTES ===
+app.get('/api/clientes', (req, res) => {
+    const { user } = req.query;
+    if (user!== 'Reyna_34142') return res.status(403).json({ error: 'Acceso denegado' });
+    
+    db.query('SELECT * FROM clientes_pasteleria WHERE owner_username =? ORDER BY nombre', [user], (err, results) => {
+        if (err) return res.status(500).json({ error: 'Error en el servidor' });
+        res.json(results);
+    });
+});
+
+app.post('/api/clientes', (req, res) => {
+    const { user } = req.query;
+    if (user!== 'Reyna_34142') return res.status(403).json({ error: 'Acceso denegado' });
+    
+    const { nombre, telefono, email, domicilio } = req.body;
+    db.query('INSERT INTO clientes_pasteleria (nombre, telefono, email, domicilio, owner_username) VALUES (?,?,?,?,?)', 
+        [nombre, telefono, email, domicilio, user], 
+        (err, result) => {
+            if (err) return res.json({ success: false, message: 'Error al crear cliente' });
+            res.json({ success: true, id: result.insertId });
+        });
+});
+
+// === RUTAS PEDIDOS ===
+app.get('/api/pedidos', (req, res) => {
+    const { user } = req.query;
+    if (user!== 'Reyna_34142') return res.status(403).json({ error: 'Acceso denegado' });
+    
+    const sql = `SELECT p.*, c.nombre as cliente_nombre 
+                 FROM pedidos_pasteleria p 
+                 JOIN clientes_pasteleria c ON p.cliente_id = c.id 
+                 WHERE p.owner_username =? 
+                 ORDER BY p.fecha_programada ASC`;
+    
+    db.query(sql, [user], (err, results) => {
+        if (err) return res.status(500).json({ error: 'Error en el servidor' });
+        res.json(results);
+    });
+});
+
+app.post('/api/pedidos', (req, res) => {
+    const { user } = req.query;
+    if (user!== 'Reyna_34142') return res.status(403).json({ error: 'Acceso denegado' });
+    
+    const { cliente_id, tamanio_pastel, fecha_programada, domicilio_entrega, telefono, email, pagado, anticipo, total, descripcion } = req.body;
+    
+    db.query(`INSERT INTO pedidos_pasteleria 
+        (cliente_id, tamanio_pastel, fecha_programada, domicilio_entrega, telefono, email, pagado, anticipo, total, descripcion, owner_username) 
+        VALUES (?,?,?,?,?,?,?,?,?,?,?)`, 
+        [cliente_id, tamanio_pastel, fecha_programada, domicilio_entrega, telefono, email, pagado, anticipo, total, descripcion, user], 
+        (err, result) => {
+            if (err) return res.json({ success: false, message: 'Error al crear pedido' });
+            res.json({ success: true, id: result.insertId });
+        });
+});
 app.listen(PORT, () => {
     console.log(`Servidor corriendo en puerto ${PORT}`);
 });
