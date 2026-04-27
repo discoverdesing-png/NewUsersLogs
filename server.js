@@ -36,7 +36,7 @@ const db = mysql.createPool({
     queueLimit: 0
 });
 
-// === MIDDLEWARE: Actualizar last_seen en cada request ===
+// === MIDDLEWARE: Actualizar last_seen ===
 app.use((req, res, next) => {
     const username = req.query.user || req.body.username || req.headers['x-username'];
     if (username) {
@@ -146,7 +146,6 @@ app.put('/api/admin/user/:id', upload.single('profile_pic'), async (req, res) =>
         const { username, name, last_name, birth_date, gender, phone, email, address, city, country, password, is_admin } = req.body;
         const userId = req.params.id;
 
-        // Verificar duplicados EXCLUYENDO el usuario actual
         const checkSql = `SELECT id FROM users WHERE (username =? OR email =?) AND id!=?`;
         db.query(checkSql, [username, email, userId], async (checkErr, checkResults) => {
             if (checkErr) {
@@ -196,6 +195,67 @@ app.get('/PasteleriaReyna', (req, res) => {
         return res.status(403).send('Acceso denegado');
     }
     res.sendFile(path.join(__dirname, 'public', 'PasteleriaReyna.html'));
+});
+
+// === RUTAS PROVEEDORES - SOLO REYNA_34142 ===
+app.get('/api/proveedores', (req, res) => {
+    const { user } = req.query;
+    if (user!== 'Reyna_34142') return res.status(403).json({ error: 'Acceso denegado' });
+    
+    db.query('SELECT * FROM proveedores WHERE owner_username =? ORDER BY nombre', [user], (err, results) => {
+        if (err) return res.status(500).json({ error: 'Error en el servidor' });
+        res.json(results);
+    });
+});
+
+app.post('/api/proveedores', (req, res) => {
+    const { user } = req.query;
+    if (user!== 'Reyna_34142') return res.status(403).json({ error: 'Acceso denegado' });
+    
+    const { nombre, telefono, email, direccion } = req.body;
+    db.query('INSERT INTO proveedores (nombre, telefono, email, direccion, owner_username) VALUES (?,?,?,?,?)', 
+        [nombre, telefono, email, direccion, user], 
+        (err, result) => {
+            if (err) return res.json({ success: false, message: 'Error al crear proveedor' });
+            res.json({ success: true, id: result.insertId });
+        });
+});
+
+app.get('/api/productos', (req, res) => {
+    const { user, search } = req.query;
+    if (user!== 'Reyna_34142') return res.status(403).json({ error: 'Acceso denegado' });
+    
+    let sql = `SELECT p.*, prov.nombre as proveedor_nombre 
+               FROM productos p 
+               JOIN proveedores prov ON p.proveedor_id = prov.id 
+               WHERE prov.owner_username =?`;
+    let params = [user];
+    
+    if (search) {
+        sql += ` AND (p.nombre LIKE? OR prov.nombre LIKE?)`;
+        const s = `%${search}%`;
+        params.push(s, s);
+    }
+    
+    sql += ` ORDER BY p.nombre`;
+    
+    db.query(sql, params, (err, results) => {
+        if (err) return res.status(500).json({ error: 'Error en el servidor' });
+        res.json(results);
+    });
+});
+
+app.post('/api/productos', (req, res) => {
+    const { user } = req.query;
+    if (user!== 'Reyna_34142') return res.status(403).json({ error: 'Acceso denegado' });
+    
+    const { proveedor_id, nombre, precio, unidad } = req.body;
+    db.query('INSERT INTO productos (proveedor_id, nombre, precio, unidad) VALUES (?,?,?,?)', 
+        [proveedor_id, nombre, precio, unidad], 
+        (err, result) => {
+            if (err) return res.json({ success: false, message: 'Error al crear producto' });
+            res.json({ success: true, id: result.insertId });
+        });
 });
 
 app.listen(PORT, () => {
