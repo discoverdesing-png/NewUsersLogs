@@ -465,6 +465,122 @@ app.delete('/api/pedidos/:id', (req, res) => {
         res.json({ success: true });
     });
 });
+// === RUTA PEDIDOS REYNA ===
+app.get('/PedidosReyna', (req, res) => {
+    const { user } = req.query;
+    if (user!== 'Reyna_34142') {
+        return res.status(403).send('Acceso denegado');
+    }
+    res.sendFile(path.join(__dirname, 'public', 'PedidosReyna.html'));
+});
+
+// === CRUD CLIENTES ===
+app.get('/api/clientes', (req, res) => {
+    const { user } = req.query;
+    if (user!== 'Reyna_34142') return res.status(403).json({ error: 'Acceso denegado' });
+    
+    db.query('SELECT * FROM clientes_pasteleria WHERE owner_username =? ORDER BY nombre', [user], (err, results) => {
+        if (err) return res.status(500).json({ error: 'Error en el servidor' });
+        res.json(results);
+    });
+});
+
+app.post('/api/clientes', (req, res) => {
+    const { user } = req.query;
+    if (user!== 'Reyna_34142') return res.status(403).json({ error: 'Acceso denegado' });
+    
+    const { nombre, telefono, email, domicilio } = req.body;
+    db.query('INSERT INTO clientes_pasteleria (nombre, telefono, email, domicilio, owner_username) VALUES (?,?,?,?,?)', 
+        [nombre, telefono, email, domicilio, user], 
+        (err, result) => {
+            if (err) return res.json({ success: false, message: 'Error al crear cliente' });
+            res.json({ success: true, id: result.insertId });
+        });
+});
+
+app.put('/api/clientes/:id', (req, res) => {
+    const { user } = req.query;
+    if (user!== 'Reyna_34142') return res.status(403).json({ error: 'Acceso denegado' });
+    
+    const { nombre, telefono, email, domicilio } = req.body;
+    db.query('UPDATE clientes_pasteleria SET nombre=?, telefono=?, email=?, domicilio=? WHERE id=? AND owner_username=?', 
+        [nombre, telefono, email, domicilio, req.params.id, user], 
+        (err) => {
+            if (err) return res.json({ success: false, message: 'Error al modificar' });
+            res.json({ success: true });
+        });
+});
+
+app.delete('/api/clientes/:id', (req, res) => {
+    const { user } = req.query;
+    if (user!== 'Reyna_34142') return res.status(403).json({ error: 'Acceso denegado' });
+    
+    db.query('DELETE FROM clientes_pasteleria WHERE id=? AND owner_username=?', [req.params.id, user], (err) => {
+        if (err) return res.json({ success: false, message: 'Error al eliminar' });
+        res.json({ success: true });
+    });
+});
+
+// === CRUD PEDIDOS ===
+app.get('/api/pedidos', (req, res) => {
+    const { user, entregado } = req.query;
+    if (user!== 'Reyna_34142') return res.status(403).json({ error: 'Acceso denegado' });
+    
+    const sql = `SELECT p.*, c.nombre as cliente_nombre 
+                 FROM pedidos_pasteleria p 
+                 JOIN clientes_pasteleria c ON p.cliente_id = c.id 
+                 WHERE p.owner_username =? AND p.entregado =?
+                 ORDER BY p.fecha_programada ASC`;
+    
+    db.query(sql, [user, entregado || 0], (err, results) => {
+        if (err) return res.status(500).json({ error: 'Error en el servidor' });
+        res.json(results);
+    });
+});
+
+app.post('/api/pedidos', (req, res) => {
+    const { user } = req.query;
+    if (user!== 'Reyna_34142') return res.status(403).json({ error: 'Acceso denegado' });
+    
+    const { cliente_id, tamanio_pastel, fecha_programada, domicilio_entrega, telefono, email, pagado, anticipo, total, descripcion } = req.body;
+    
+    db.query(`INSERT INTO pedidos_pasteleria 
+        (cliente_id, tamanio_pastel, fecha_programada, domicilio_entrega, telefono, email, pagado, anticipo, total, descripcion, owner_username) 
+        VALUES (?,?,?,?,?,?,?,?,?,?,?)`, 
+        [cliente_id, tamanio_pastel, fecha_programada, domicilio_entrega, telefono, email, pagado, anticipo, total, descripcion, user], 
+        (err, result) => {
+            if (err) return res.json({ success: false, message: 'Error al crear pedido' });
+            res.json({ success: true, id: result.insertId });
+        });
+});
+
+app.put('/api/pedidos/:id', (req, res) => {
+    const { user } = req.query;
+    if (user!== 'Reyna_34142') return res.status(403).json({ error: 'Acceso denegado' });
+    
+    const { cliente_id, tamanio_pastel, fecha_programada, domicilio_entrega, telefono, email, pagado, anticipo, total, descripcion, entregado } = req.body;
+    
+    db.query(`UPDATE pedidos_pasteleria SET 
+        cliente_id=?, tamanio_pastel=?, fecha_programada=?, domicilio_entrega=?, telefono=?, 
+        email=?, pagado=?, anticipo=?, total=?, descripcion=?, entregado=?
+        WHERE id=? AND owner_username=?`, 
+        [cliente_id, tamanio_pastel, fecha_programada, domicilio_entrega, telefono, email, pagado, anticipo, total, descripcion, entregado, req.params.id, user], 
+        (err) => {
+            if (err) return res.json({ success: false, message: 'Error al modificar' });
+            res.json({ success: true });
+        });
+});
+
+app.delete('/api/pedidos/:id', (req, res) => {
+    const { user } = req.query;
+    if (user!== 'Reyna_34142') return res.status(403).json({ error: 'Acceso denegado' });
+    
+    db.query('DELETE FROM pedidos_pasteleria WHERE id=? AND owner_username=?', [req.params.id, user], (err) => {
+        if (err) return res.json({ success: false, message: 'Error al eliminar' });
+        res.json({ success: true });
+    });
+});
+
 app.listen(PORT, () => {
     console.log(`Servidor corriendo en puerto ${PORT}`);
 });
