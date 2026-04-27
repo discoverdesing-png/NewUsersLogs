@@ -593,7 +593,7 @@ app.get('/api/admin/users', (req, res) => {
     let params = [];
     
     if (search) {
-        sql += ` WHERE username LIKE ? OR name LIKE ? OR last_name LIKE ? OR email LIKE ?`;
+        sql += ` WHERE username LIKE? OR name LIKE? OR last_name LIKE? OR email LIKE?`;
         const s = `%${search}%`;
         params.push(s, s, s, s);
     }
@@ -608,28 +608,34 @@ app.get('/api/admin/users', (req, res) => {
         res.json(results);
     });
 });
-// === SISTEMA JAGUAR - RUTAS ===
 
-// Servir página principal Jaguar
+// === SISTEMA JAGUAR - RUTAS CON VALIDACIÓN ===
+// Solo el usuario Cris puede acceder
 app.get('/jaguar.html', (req, res) => {
+    if (req.query.user!== 'Cris') return res.status(403).send('Acceso denegado');
     res.sendFile(path.join(__dirname, 'public', 'jaguar.html'));
 });
 
 app.get('/jaguar-movimientos.html', (req, res) => {
+    if (req.query.user!== 'Cris') return res.status(403).send('Acceso denegado');
     res.sendFile(path.join(__dirname, 'public', 'jaguar-movimientos.html'));
 });
 
 app.get('/jaguar-cotizacion.html', (req, res) => {
+    if (req.query.user!== 'Cris') return res.status(403).send('Acceso denegado');
     res.sendFile(path.join(__dirname, 'public', 'jaguar-cotizacion.html'));
 });
 
 app.get('/jaguar-clientes.html', (req, res) => {
+    if (req.query.user!== 'Cris') return res.status(403).send('Acceso denegado');
     res.sendFile(path.join(__dirname, 'public', 'jaguar-clientes.html'));
 });
 
 // API CLIENTES JAGUAR
 app.get('/api/jaguar/clientes', (req, res) => {
     const { user, search } = req.query;
+    if (user!== 'Cris') return res.status(403).json({ error: 'Acceso denegado' });
+    
     let sql = 'SELECT * FROM jaguar_clientes WHERE owner_username =?';
     let params = [user];
     
@@ -648,6 +654,8 @@ app.get('/api/jaguar/clientes', (req, res) => {
 
 app.post('/api/jaguar/clientes', (req, res) => {
     const { user } = req.query;
+    if (user!== 'Cris') return res.status(403).json({ error: 'Acceso denegado' });
+    
     const { nombre, rfc, telefono, email, domicilio, ciudad, estado, cp, regimen_fiscal } = req.body;
     
     db.query(`INSERT INTO jaguar_clientes 
@@ -662,8 +670,20 @@ app.post('/api/jaguar/clientes', (req, res) => {
 
 // API PROVEEDORES JAGUAR
 app.get('/api/jaguar/proveedores', (req, res) => {
-    const { user } = req.query;
-    db.query('SELECT * FROM jaguar_proveedores WHERE owner_username =? ORDER BY nombre', [user], (err, results) => {
+    const { user, search } = req.query;
+    if (user!== 'Cris') return res.status(403).json({ error: 'Acceso denegado' });
+    
+    let sql = 'SELECT * FROM jaguar_proveedores WHERE owner_username =?';
+    let params = [user];
+    
+    if (search) {
+        sql += ' AND (nombre LIKE? OR email LIKE?)';
+        const s = `%${search}%`;
+        params.push(s, s);
+    }
+    sql += ' ORDER BY nombre';
+    
+    db.query(sql, params, (err, results) => {
         if (err) return res.status(500).json({ error: 'Error en el servidor' });
         res.json(results);
     });
@@ -671,6 +691,8 @@ app.get('/api/jaguar/proveedores', (req, res) => {
 
 app.post('/api/jaguar/proveedores', (req, res) => {
     const { user } = req.query;
+    if (user!== 'Cris') return res.status(403).json({ error: 'Acceso denegado' });
+    
     const { nombre, telefono, email, direccion } = req.body;
     db.query('INSERT INTO jaguar_proveedores (nombre, telefono, email, direccion, owner_username) VALUES (?,?,?,?,?)', 
         [nombre, telefono, email, direccion, user], 
@@ -680,9 +702,34 @@ app.post('/api/jaguar/proveedores', (req, res) => {
         });
 });
 
+app.put('/api/jaguar/proveedores/:id', (req, res) => {
+    const { user } = req.query;
+    if (user!== 'Cris') return res.status(403).json({ error: 'Acceso denegado' });
+    
+    const { nombre, telefono, email, direccion } = req.body;
+    db.query('UPDATE jaguar_proveedores SET nombre=?, telefono=?, email=?, direccion=? WHERE id=? AND owner_username=?', 
+        [nombre, telefono, email, direccion, req.params.id, user], 
+        (err) => {
+            if (err) return res.json({ success: false, message: 'Error al modificar' });
+            res.json({ success: true });
+        });
+});
+
+app.delete('/api/jaguar/proveedores/:id', (req, res) => {
+    const { user } = req.query;
+    if (user!== 'Cris') return res.status(403).json({ error: 'Acceso denegado' });
+    
+    db.query('DELETE FROM jaguar_proveedores WHERE id=? AND owner_username=?', [req.params.id, user], (err) => {
+        if (err) return res.json({ success: false, message: 'Error al eliminar. Verifica que no tenga productos.' });
+        res.json({ success: true });
+    });
+});
+
 // API PRODUCTOS JAGUAR
 app.get('/api/jaguar/productos', (req, res) => {
     const { user, search } = req.query;
+    if (user!== 'Cris') return res.status(403).json({ error: 'Acceso denegado' });
+    
     let sql = `SELECT p.*, prov.nombre as proveedor_nombre 
                FROM jaguar_productos p 
                JOIN jaguar_proveedores prov ON p.proveedor_id = prov.id 
@@ -690,9 +737,9 @@ app.get('/api/jaguar/productos', (req, res) => {
     let params = [user];
     
     if (search) {
-        sql += ` AND (p.nombre LIKE? OR p.descripcion LIKE?)`;
+        sql += ` AND (p.nombre LIKE? OR p.descripcion LIKE? OR prov.nombre LIKE?)`;
         const s = `%${search}%`;
-        params.push(s, s);
+        params.push(s, s, s);
     }
     sql += ` ORDER BY p.nombre`;
     
@@ -704,6 +751,8 @@ app.get('/api/jaguar/productos', (req, res) => {
 
 app.post('/api/jaguar/productos', (req, res) => {
     const { user } = req.query;
+    if (user!== 'Cris') return res.status(403).json({ error: 'Acceso denegado' });
+    
     const { proveedor_id, nombre, descripcion, precio_compra, precio_venta, unidad, stock_actual, stock_minimo } = req.body;
     
     db.query(`INSERT INTO jaguar_productos 
@@ -716,15 +765,62 @@ app.post('/api/jaguar/productos', (req, res) => {
         });
 });
 
+app.put('/api/jaguar/productos/:id', (req, res) => {
+    const { user } = req.query;
+    if (user!== 'Cris') return res.status(403).json({ error: 'Acceso denegado' });
+    
+    const { proveedor_id, nombre, descripcion, precio_compra, precio_venta, unidad, stock_minimo } = req.body;
+    db.query(`UPDATE jaguar_productos SET proveedor_id=?, nombre=?, descripcion=?, precio_compra=?, 
+              precio_venta=?, unidad=?, stock_minimo=? WHERE id=? AND owner_username=?`, 
+        [proveedor_id, nombre, descripcion, precio_compra, precio_venta, unidad, stock_minimo, req.params.id, user], 
+        (err) => {
+            if (err) return res.json({ success: false, message: 'Error al modificar' });
+            res.json({ success: true });
+        });
+});
+
+app.delete('/api/jaguar/productos/:id', (req, res) => {
+    const { user } = req.query;
+    if (user!== 'Cris') return res.status(403).json({ error: 'Acceso denegado' });
+    
+    db.query('DELETE FROM jaguar_productos WHERE id=? AND owner_username=?', [req.params.id, user], (err) => {
+        if (err) return res.json({ success: false, message: 'Error al eliminar' });
+        res.json({ success: true });
+    });
+});
+
+// INVENTARIO MOVIMIENTO
+app.post('/api/jaguar/inventario/movimiento', (req, res) => {
+    const { user } = req.query;
+    if (user!== 'Cris') return res.status(403).json({ error: 'Acceso denegado' });
+    
+    const { producto_id, tipo, cantidad, motivo } = req.body;
+    
+    db.query('INSERT INTO jaguar_inventario_movimientos (producto_id, tipo, cantidad, motivo, owner_username) VALUES (?,?,?,?,?)', 
+        [producto_id, tipo, cantidad, motivo, user], 
+        (err) => {
+            if (err) return res.json({ success: false, message: 'Error al registrar movimiento' });
+            
+            const operacion = tipo === 'entrada'? '+' : '-';
+            db.query(`UPDATE jaguar_productos SET stock_actual = stock_actual ${operacion}? WHERE id =? AND owner_username =?`, 
+                [cantidad, producto_id, user], 
+                (err2) => {
+                    if (err2) return res.json({ success: false, message: 'Error al actualizar stock' });
+                    res.json({ success: true });
+                });
+        });
+});
+
 // API COTIZACIONES
 app.post('/api/jaguar/cotizacion', (req, res) => {
     const { user } = req.query;
-    const { cliente_id, productos } = req.body; // productos = [{id, cantidad}]
+    if (user!== 'Cris') return res.status(403).json({ error: 'Acceso denegado' });
+    
+    const { cliente_id, productos } = req.body;
     
     let subtotal = 0;
     const productosDetalle = [];
     
-    // Calcular totales
     const promises = productos.map(p => {
         return new Promise((resolve, reject) => {
             db.query('SELECT precio_venta FROM jaguar_productos WHERE id =? AND owner_username =?', 
