@@ -36,7 +36,7 @@ const db = mysql.createPool({
     queueLimit: 0
 });
 
-// Actualizar last_seen en cada request que mande username
+// === MIDDLEWARE: Actualizar last_seen en cada request ===
 app.use((req, res, next) => {
     const username = req.query.user || req.body.username || req.headers['x-username'];
     if (username) {
@@ -187,6 +187,15 @@ app.put('/api/admin/user/:id', upload.single('profile_pic'), async (req, res) =>
         console.error(error);
         res.json({ success: false, message: 'Error en el servidor' });
     }
+});
+
+// === RUTA PASTELERIA REYNA ===
+app.get('/PasteleriaReyna', (req, res) => {
+    const { user } = req.query;
+    if (user!== 'Reyna_34142') {
+        return res.status(403).send('Acceso denegado');
+    }
+    res.sendFile(path.join(__dirname, 'public', 'PasteleriaReyna.html'));
 });
 
 app.listen(PORT, () => {
