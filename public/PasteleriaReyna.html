@@ -11,7 +11,7 @@
             min-height: 100vh;
             color: #5a4a5a;
         }
-  .navbar {
+.navbar {
             background: linear-gradient(90deg, #ffb6d9 0%, #ffc8dd 50%, #ffdab9 100%);
             padding: 20px 40px;
             box-shadow: 0 4px 20px rgba(255, 182, 217, 0.4);
@@ -20,19 +20,19 @@
             align-items: center;
             border-bottom: 3px solid #ffadd6;
         }
-  .navbar-left {
+.navbar-left {
             display: flex;
             align-items: center;
             gap: 20px;
         }
-  .navbar h1 {
+.navbar h1 {
             color: #fff;
             font-size: 28px;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
             font-weight: 700;
             letter-spacing: 2px;
         }
-  .user-info {
+.user-info {
             display: flex;
             align-items: center;
             gap: 12px;
@@ -40,7 +40,7 @@
             padding: 8px 16px;
             border-radius: 25px;
         }
-  .user-pic {
+.user-pic {
             width: 40px;
             height: 40px;
             border-radius: 50%;
@@ -48,76 +48,111 @@
             object-fit: cover;
             box-shadow: 0 2px 10px rgba(0,0,0,0.2);
         }
-  .user-name {
+.user-name {
             color: #8b4a7a;
             font-size: 15px;
             font-weight: 700;
         }
-  .navbar-right {
+.navbar-right {
             display: flex;
             gap: 12px;
        }
-  .container { 
-            max-width: 1100px; 
+.container { 
+            max-width: 1200px; 
             margin: 40px auto; 
             padding: 0 20px;
         }
-  .hero {
-            background: linear-gradient(135deg, #fff 0%, #ffeef8 100%);
-            padding: 60px 40px;
-            border-radius: 20px;
-            box-shadow: 0 10px 40px rgba(255, 182, 217, 0.3);
-            text-align: center;
-            border: 3px solid #ffadd6;
-            margin-bottom: 30px;
-        }
-  .hero h2 {
-            color: #ff69b4;
-            font-size: 42px;
-            margin-bottom: 15px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
-        }
-  .hero p {
-            color: #a0526d;
-            font-size: 18px;
-            margin-bottom: 30px;
-        }
-  .card-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 25px;
-            margin-top: 30px;
-        }
-  .card {
+.section {
             background: #fff;
             padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 5px 20px rgba(255, 182, 217, 0.3);
-            border: 2px solid #ffe4f0;
-            text-align: center;
-            transition: all 0.3s ease;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(255, 182, 217, 0.3);
+            border: 3px solid #ffadd6;
+            margin-bottom: 30px;
+            display: none;
         }
-  .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(255, 182, 217, 0.5);
-            border-color: #ffadd6;
-        }
-  .card-icon {
-            font-size: 50px;
-            margin-bottom: 15px;
-        }
-  .card h3 {
+.section.active { display: block; }
+.section h2 {
             color: #ff69b4;
-            font-size: 22px;
-            margin-bottom: 10px;
+            font-size: 28px;
+            margin-bottom: 20px;
+            text-align: center;
         }
-  .card p {
-            color: #8b6a8b;
+.form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+.input-group { margin-bottom: 15px; }
+.input-group label {
+            display: block;
+            color: #ff69b4;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 6px;
+            font-weight: 700;
+        }
+.input-field { 
+            width: 100%; 
+            padding: 12px; 
+            border: 2px solid #ffe4f0; 
+            border-radius: 12px; 
+            background: #fff9fc;
+            color: #5a4a5a;
             font-size: 14px;
-            line-height: 1.6;
+        }
+.input-field:focus {
+            outline: none;
+            border-color: #ff69b4;
+            box-shadow: 0 0 15px rgba(255, 105, 180, 0.3);
+        }
+.search-box {
+            width: 100%;
+            padding: 14px;
+            margin-bottom: 20px;
+            border: 2px solid #ffe4f0;
+            border-radius: 12px;
+            background: #fff9fc;
+            color: #5a4a5a;
+            font-size: 15px;
+        }
+.search-box:focus {
+            outline: none;
+            border-color: #ff69b4;
+            box-shadow: 0 0 15px rgba(255, 105, 180, 0.3);
+        }
+.product-list {
+            display: grid;
+            gap: 15px;
+        }
+.product-card {
+            background: #fff9fc;
+            padding: 18px;
+            border-radius: 12px;
+            border: 2px solid #ffe4f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+.product-info strong {
+            color: #ff69b4;
+            font-size: 16px;
+        }
+.product-info span {
+            color: #8b6a8b;
+            font-size: 13px;
+            display: block;
+            margin-top: 4px;
+        }
+.product-price {
+            color: #ff69b4;
+            font-size: 18px;
+            font-weight: 700;
         }
         
-  .btn { 
+.btn { 
             padding: 12px 28px; 
             border-radius: 25px; 
             font-weight: 700; 
@@ -131,15 +166,79 @@
             color: #fff;
             box-shadow: 0 4px 15px rgba(255, 105, 180, 0.4);
         }
-  .btn:hover {
+.btn:hover {
             transform: translateY(-3px);
             box-shadow: 0 6px 20px rgba(255, 105, 180, 0.6);
             background: linear-gradient(135deg, #ff69b4 0%, #ffadd6 100%);
         }
-  .btn-main {
-            padding: 18px 40px;
-            font-size: 16px;
-            margin-top: 20px;
+.btn-small { padding: 8px 18px; font-size: 12px; }
+.alert-msg {
+            background: rgba(255, 105, 180, 0.15);
+            border: 2px solid #ff69b4;
+            color: #ff1493;
+            padding: 12px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            text-align: center;
+            font-weight: 600;
+            display: none;
+        }
+.alert-msg.show { display: block; }
+.tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+            justify-content: center;
+        }
+.tab-btn {
+            padding: 10px 25px;
+            border-radius: 20px;
+            border: 2px solid #ffe4f0;
+            background: #fff;
+            color: #ff69b4;
+            cursor: pointer;
+            font-weight: 700;
+            transition: all 0.3s;
+        }
+.tab-btn.active {
+            background: linear-gradient(135deg, #ffadd6 0%, #ffb6d9 100%);
+            color: #fff;
+            border-color: #ff69b4;
+        }
+.card-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-top: 30px;
+        }
+.card-menu {
+            background: #fff;
+            padding: 40px 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(255, 182, 217, 0.3);
+            border: 2px solid #ffe4f0;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+.card-menu:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(255, 182, 217, 0.5);
+            border-color: #ffadd6;
+        }
+.card-menu-icon {
+            font-size: 50px;
+            margin-bottom: 15px;
+        }
+.card-menu h3 {
+            color: #ff69b4;
+            font-size: 20px;
+            margin-bottom: 8px;
+        }
+.card-menu p {
+            color: #8b6a8b;
+            font-size: 13px;
+            line-height: 1.6;
         }
     </style>
 </head>
@@ -159,35 +258,107 @@
     </div>
     
     <div class="container">
-        <div class="hero">
+        <div class="section active" id="menuSection">
             <h2>Bienvenida a tu Pastelería Digital</h2>
-            <p>Gestiona tu negocio de postres desde aquí</p>
-            <button class="btn btn-main" onclick="goToPedidos()">VER PEDIDOS</button>
+            <p style="text-align:center;color:#a0526d;margin-bottom:30px;">Gestiona tu negocio de postres desde aquí</p>
+            
+            <div class="card-grid">
+                <div class="card-menu" onclick="showSection('proveedoresSection')">
+                    <div class="card-menu-icon">📦</div>
+                    <h3>PROVEEDORES</h3>
+                    <p>Registra proveedores y sus productos</p>
+                </div>
+                <div class="card-menu" onclick="showSection('productosSection')">
+                    <div class="card-menu-icon">🛒</div>
+                    <h3>LISTA DE COMPRAS</h3>
+                    <p>Busca y selecciona productos</p>
+                </div>
+                <div class="card-menu" onclick="showSection('pedidosSection')">
+                    <div class="card-menu-icon">📋</div>
+                    <h3>PEDIDOS</h3>
+                    <p>Revisa y gestiona los pedidos</p>
+                </div>
+            </div>
         </div>
-        
-        <div class="card-grid">
-            <div class="card">
-                <div class="card-icon">🎂</div>
-                <h3>Catálogo</h3>
-                <p>Administra tus pasteles, cupcakes y postres disponibles</p>
+
+        <div class="section" id="proveedoresSection">
+            <h2>Gestión de Proveedores</h2>
+            <div class="tabs">
+                <button class="tab-btn active" onclick="switchTab('registroProveedor')">Registrar Proveedor</button>
+                <button class="tab-btn" onclick="switchTab('registroProducto')">Registrar Producto</button>
             </div>
-            <div class="card">
-                <div class="card-icon">📋</div>
-                <h3>Pedidos</h3>
-                <p>Revisa y gestiona los pedidos de tus clientes</p>
+            
+            <div class="alert-msg" id="alertMsg"></div>
+
+            <div id="registroProveedor" class="tab-content">
+                <form id="proveedorForm">
+                    <div class="form-grid">
+                        <div class="input-group">
+                            <label>Nombre del Proveedor</label>
+                            <input type="text" name="nombre" class="input-field" required>
+                        </div>
+                        <div class="input-group">
+                            <label>Teléfono</label>
+                            <input type="tel" name="telefono" class="input-field">
+                        </div>
+                        <div class="input-group">
+                            <label>Email</label>
+                            <input type="email" name="email" class="input-field">
+                        </div>
+                        <div class="input-group">
+                            <label>Dirección</label>
+                            <input type="text" name="direccion" class="input-field">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn">GUARDAR PROVEEDOR</button>
+                </form>
             </div>
-            <div class="card">
-                <div class="card-icon">👥</div>
-                <h3>Clientes</h3>
-                <p>Base de datos de clientes frecuentes</p>
+
+            <div id="registroProducto" class="tab-content" style="display:none;">
+                <form id="productoForm">
+                    <div class="form-grid">
+                        <div class="input-group">
+                            <label>Proveedor</label>
+                            <select name="proveedor_id" id="proveedorSelect" class="input-field" required></select>
+                        </div>
+                        <div class="input-group">
+                            <label>Nombre del Producto</label>
+                            <input type="text" name="nombre" class="input-field" required>
+                        </div>
+                        <div class="input-group">
+                            <label>Precio</label>
+                            <input type="number" step="0.01" name="precio" class="input-field" required>
+                        </div>
+                        <div class="input-group">
+                            <label>Unidad (kg, pieza, litro)</label>
+                            <input type="text" name="unidad" class="input-field" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn">GUARDAR PRODUCTO</button>
+                </form>
             </div>
+            
+            <button class="btn" onclick="showSection('menuSection')" style="margin-top:20px;">← VOLVER</button>
+        </div>
+
+        <div class="section" id="productosSection">
+            <h2>Lista de Compras</h2>
+            <input type="text" id="searchInput" class="search-box" placeholder="Buscar por producto o proveedor...">
+            <div class="product-list" id="productList"></div>
+            <button class="btn" onclick="showSection('menuSection')" style="margin-top:20px;">← VOLVER</button>
+        </div>
+
+        <div class="section" id="pedidosSection">
+            <h2>Pedidos</h2>
+            <p style="text-align:center;color:#8b6a8b;">Próximamente...</p>
+            <button class="btn" onclick="showSection('menuSection')" style="margin-top:20px;">← VOLVER</button>
         </div>
     </div>
 
     <script>
         const currentUser = new URLSearchParams(window.location.search).get('user');
         
-        if (currentUser !== 'Reyna_34142') {
+        if (currentUser!== 'Reyna_34142') {
             window.location.href = '/index.html';
         }
         
@@ -198,12 +369,88 @@
             document.getElementById('userPic').src = user.profile_pic || '/uploads/LogoMetal.png';
         }
         
-        function goToProfile() {
-            window.location.href = `/dashboard.html?user=${currentUser}`;
+        function showSection(id) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            if (id === 'productosSection') loadProductos();
+            if (id === 'proveedoresSection') loadProveedores();
         }
         
-        function goToPedidos() {
-            window.location.href = `/PasteleriaPedidos.html?user=${currentUser}`;
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+            document.getElementById('registroProveedor').style.display = tab === 'registroProveedor'? 'block' : 'none';
+            document.getElementById('registroProducto').style.display = tab === 'registroProducto'? 'block' : 'none';
+            if (tab === 'registroProducto') loadProveedores();
+        }
+        
+        async function loadProveedores() {
+            const res = await fetch(`/api/proveedores?user=${currentUser}`);
+            const provs = await res.json();
+            document.getElementById('proveedorSelect').innerHTML = provs.map(p => 
+                `<option value="${p.id}">${p.nombre}</option>`
+            ).join('');
+        }
+        
+        document.getElementById('proveedorForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData);
+            
+            const res = await fetch(`/api/proveedores?user=${currentUser}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            const result = await res.json();
+            showAlert(result.success? 'Proveedor guardado' : 'Error al guardar');
+            if (result.success) e.target.reset();
+        });
+        
+        document.getElementById('productoForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData);
+            
+            const res = await fetch(`/api/productos?user=${currentUser}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            const result = await res.json();
+            showAlert(result.success? 'Producto guardado' : 'Error al guardar');
+            if (result.success) e.target.reset();
+        });
+        
+        async function loadProductos(search = '') {
+            const res = await fetch(`/api/productos?user=${currentUser}&search=${encodeURIComponent(search)}`);
+            const productos = await res.json();
+            
+            document.getElementById('productList').innerHTML = productos.map(p => `
+                <div class="product-card">
+                    <div class="product-info">
+                        <strong>${p.nombre}</strong>
+                        <span>Proveedor: ${p.proveedor_nombre}</span>
+                        <span>Unidad: ${p.unidad}</span>
+                    </div>
+                    <div class="product-price">$${parseFloat(p.precio).toFixed(2)}</div>
+                </div>
+            `).join('');
+        }
+        
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            loadProductos(e.target.value);
+        });
+        
+        function showAlert(msg) {
+            const alert = document.getElementById('alertMsg');
+            alert.textContent = msg;
+            alert.classList.add('show');
+            setTimeout(() => alert.classList.remove('show'), 3000);
+        }
+        
+        function goToProfile() {
+            window.location.href = `/dashboard.html?user=${currentUser}`;
         }
         
         function logout() {
