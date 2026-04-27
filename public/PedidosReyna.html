@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -22,9 +21,9 @@
             border-bottom: 3px solid #ffadd6;
         }
 .navbar-left { display: flex; align-items: center; gap: 20px; }
-.navbar h1 { color: #fff; font-size: 28px; text-shadow: 2px 2px 4px rgba(0,0,0,0.2); font-weight: 700; letter-spacing: 2px; }
-.user-info { display: flex; align-items: center; gap: 12px; background: rgba(255,255,255,0.5); padding: 8px 16px; border-radius: 25px; }
-.user-pic { width: 40px; height: 40px; border-radius: 50%; border: 3px solid #fff; object-fit: cover; box-shadow: 0 2px 10px rgba(0,0,0,0.2); }
+.navbar h1 { color: #fff; font-size: 28px; text-shadow: 2px 2px 4px rgba(0,0,0.2); font-weight: 700; letter-spacing: 2px; }
+.user-info { display: flex; align-items: center; gap: 12px; background: rgba(255,255,0.5); padding: 8px 16px; border-radius: 25px; }
+.user-pic { width: 40px; height: 40px; border-radius: 50%; border: 3px solid #fff; object-fit: cover; box-shadow: 0 2px 10px rgba(0,0,0.2); }
 .user-name { color: #8b4a7a; font-size: 15px; font-weight: 700; }
 .navbar-right { display: flex; gap: 12px; }
 .container { max-width: 1400px; margin: 40px auto; padding: 0 20px; }
@@ -56,7 +55,7 @@
             width: 100%; padding: 12px; border: 2px solid #ffe4f0; border-radius: 12px; 
             background: #fff9fc; color: #5a4a5a; font-size: 14px;
         }
-.input-field:focus { outline: none; border-color: #ff69b4; box-shadow: 0 15px rgba(255, 105, 180, 0.3); }
+.input-field:focus { outline: none; border-color: #ff69b4; box-shadow: 0 0 15px rgba(255, 105, 180, 0.3); }
 textarea.input-field { resize: vertical; min-height: 100px; }
 .btn { 
             padding: 12px 28px; border-radius: 25px; font-weight: 700; font-size: 14px;
@@ -149,7 +148,7 @@ textarea.input-field { resize: vertical; min-height: 100px; }
                         </div>
                         <div class="input-group" style="grid-column: 1 / -1;">
                             <label>Domicilio de Entrega</label>
-                            <input type="text" id="domicilio" class="input-field">
+                            <input type="text" id="domicilio" class="input-field" placeholder="Dejar vacío si recoge en tienda">
                         </div>
                         <div class="input-group">
                             <label>Tamaño de Pastel</label>
@@ -230,73 +229,6 @@ textarea.input-field { resize: vertical; min-height: 100px; }
                 <div style="display:flex;gap:10px;justify-content:center;margin-top:20px;">
                     <button type="submit" class="btn">GUARDAR</button>
                     <button type="button" class="btn btn-danger" onclick="closeModal('clienteModal')">CANCELAR</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <div class="modal" id="pedidoModal">
-        <div class="modal-content">
-            <h3 style="color:#ff69b4;text-align:center;margin-bottom:20px;">Editar Pedido</h3>
-            <form id="pedidoEditForm">
-                <input type="hidden" id="editPedidoId">
-                <input type="hidden" id="editClienteId">
-                <div class="form-grid">
-                    <div class="input-group">
-                        <label>Nombre Cliente</label>
-                        <input type="text" id="editNombreCliente" class="input-field" required>
-                    </div>
-                    <div class="input-group">
-                        <label>Teléfono</label>
-                        <input type="tel" id="editTelefono" class="input-field" required>
-                    </div>
-                    <div class="input-group">
-                        <label>Email</label>
-                        <input type="email" id="editEmail" class="input-field">
-                    </div>
-                    <div class="input-group">
-                        <label>Tamaño de Pastel</label>
-                        <select id="editTamanioPastel" class="input-field" required>
-                            <option value="Chico">Chico</option>
-                            <option value="Mediano">Mediano</option>
-                            <option value="Grande">Grande</option>
-                            <option value="1/4 de plancha">1/4 de plancha</option>
-                            <option value="1/2 plancha">1/2 plancha</option>
-                            <option value="1 Plancha">1 Plancha</option>
-                            <option value="Repostería">Repostería</option>
-                        </select>
-                    </div>
-                    <div class="input-group">
-                        <label>Fecha Programada</label>
-                        <input type="date" id="editFechaProgramada" class="input-field" required>
-                    </div>
-                    <div class="input-group">
-                        <label>Pagado</label>
-                        <select id="editPagado" class="input-field">
-                            <option value="0">No Pagado</option>
-                            <option value="1">Pagado Completo</option>
-                        </select>
-                    </div>
-                    <div class="input-group">
-                        <label>Anticipo</label>
-                        <input type="number" step="0.01" id="editAnticipo" class="input-field" value="0">
-                    </div>
-                    <div class="input-group">
-                        <label>Total</label>
-                        <input type="number" step="0.01" id="editTotal" class="input-field" required>
-                    </div>
-                    <div class="input-group" style="grid-column: 1 / -1;">
-                        <label>Domicilio de Entrega</label>
-                        <input type="text" id="editDomicilio" class="input-field">
-                    </div>
-                    <div class="input-group" style="grid-column: 1 / -1;">
-                        <label>Descripción del Pedido</label>
-                        <textarea id="editDescripcion" class="input-field"></textarea>
-                    </div>
-                </div>
-                <div style="display:flex;gap:10px;justify-content:center;margin-top:20px;">
-                    <button type="submit" class="btn">GUARDAR CAMBIOS</button>
-                    <button type="button" class="btn btn-danger" onclick="closeModal('pedidoModal')">CANCELAR</button>
                 </div>
             </form>
         </div>
@@ -426,4 +358,134 @@ textarea.input-field { resize: vertical; min-height: 100px; }
                         <p><strong>Descripción:</strong> ${p.descripcion || 'Sin detalles'}</p>
                     </div>
                     <div class="pedido-actions">
-                        ${!p.entregado? `<button class="btn btn-small btn-success
+                        ${!entregado? `<button class="btn btn-small btn-success" onclick="marcarEntregado(${p.id})">ENTREGAR</button>` : ''}
+                        <button class="btn btn-small btn-danger" onclick="eliminarPedido(${p.id})">ELIMINAR</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        async function marcarEntregado(id) {
+            if (!confirm('¿Marcar este pedido como entregado?')) return;
+            
+            const res = await fetch(`/api/pedidos?user=${currentUser}&entregado=0`);
+            const pedidos = await res.json();
+            const pedido = pedidos.find(p => p.id == id);
+            
+            if (pedido) {
+                pedido.entregado = 1;
+                const resUpdate = await fetch(`/api/pedidos/${id}?user=${currentUser}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(pedido)
+                });
+                const result = await resUpdate.json();
+                showAlert(result.success? 'Pedido entregado' : 'Error al actualizar');
+                if (result.success) loadPedidos(0);
+            }
+        }
+        
+        async function eliminarPedido(id) {
+            if (!confirm('¿Eliminar este pedido?')) return;
+            
+            const res = await fetch(`/api/pedidos/${id}?user=${currentUser}`, { method: 'DELETE' });
+            const result = await res.json();
+            showAlert(result.success? 'Pedido eliminado' : 'Error al eliminar');
+            if (result.success) loadPedidos(0);
+        }
+        
+        async function loadClientes() {
+            const res = await fetch(`/api/clientes?user=${currentUser}`);
+            const clientes = await res.json();
+            
+            document.getElementById('listaClientes').innerHTML = clientes.map(c => `
+                <div class="pedido-card">
+                    <div class="pedido-info">
+                        <h3>${c.nombre}</h3>
+                        <p><strong>Tel:</strong> ${c.telefono || 'N/A'} | <strong>Email:</strong> ${c.email || 'N/A'}</p>
+                        <p><strong>Domicilio:</strong> ${c.domicilio || 'N/A'}</p>
+                    </div>
+                    <div class="pedido-actions">
+                        <button class="btn btn-small" onclick='editarCliente(${JSON.stringify(c).replace(/'/g, "&apos;")})'>MODIFICAR</button>
+                        <button class="btn btn-small btn-danger" onclick="eliminarCliente(${c.id})">ELIMINAR</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function openClienteModal() {
+            document.getElementById('clienteId').value = '';
+            document.getElementById('clienteForm').reset();
+            document.getElementById('clienteModal').classList.add('active');
+        }
+        
+        function editarCliente(c) {
+            document.getElementById('clienteId').value = c.id;
+            document.getElementById('clienteNombre').value = c.nombre;
+            document.getElementById('clienteTelefono').value = c.telefono || '';
+            document.getElementById('clienteEmail').value = c.email || '';
+            document.getElementById('clienteDomicilio').value = c.domicilio || '';
+            document.getElementById('clienteModal').classList.add('active');
+        }
+        
+        document.getElementById('clienteForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('clienteId').value;
+            const data = {
+                nombre: document.getElementById('clienteNombre').value,
+                telefono: document.getElementById('clienteTelefono').value,
+                email: document.getElementById('clienteEmail').value,
+                domicilio: document.getElementById('clienteDomicilio').value
+            };
+            
+            const url = id? `/api/clientes/${id}?user=${currentUser}` : `/api/clientes?user=${currentUser}`;
+            const method = id? 'PUT' : 'POST';
+            
+            const res = await fetch(url, {
+                method: method,
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            const result = await res.json();
+            showAlert(result.success? 'Cliente guardado' : 'Error al guardar');
+            if (result.success) {
+                closeModal('clienteModal');
+                loadClientes();
+                loadClientesSelect();
+            }
+        });
+        
+        async function eliminarCliente(id) {
+            if (!confirm('¿Eliminar este cliente? Se eliminarán también sus pedidos.')) return;
+            
+            const res = await fetch(`/api/clientes/${id}?user=${currentUser}`, { method: 'DELETE' });
+            const result = await res.json();
+            showAlert(result.success? 'Cliente eliminado' : 'Error al eliminar');
+            if (result.success) loadClientes();
+        }
+        
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
+        }
+        
+        function showAlert(msg) {
+            const alert = document.getElementById('alertMsg');
+            alert.textContent = msg;
+            alert.classList.add('show');
+            setTimeout(() => alert.classList.remove('show'), 3000);
+        }
+        
+        function goToMain() {
+            window.location.href = `/PasteleriaReyna?user=${currentUser}`;
+        }
+        
+        function logout() {
+            localStorage.clear();
+            window.location.href = '/index.html';
+        }
+        
+        loadUserInfo();
+        loadClientesSelect();
+    </script>
+</body>
+</html>
