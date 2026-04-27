@@ -45,7 +45,6 @@ app.use((req, res, next) => {
     next();
 });
 
-// === LOGIN/REGISTER ===
 app.post('/register', upload.single('profile_pic'), async (req, res) => {
     try {
         const { username, password, name, last_name, birth_date, gender, phone, email, address, city, country } = req.body;
@@ -107,88 +106,6 @@ app.get('/api/user/:username', (req, res) => {
         });
 });
 
-// === RUTAS ADMIN ===
-app.get('/api/admin/users', (req, res) => {
-    const { search } = req.query;
-    let sql = `SELECT id, username, name, last_name, email, phone, is_admin, profile_pic, 
-               IF(TIMESTAMPDIFF(MINUTE, last_seen, NOW()) < 5, 1, 0) as is_online 
-               FROM users`;
-    let params = [];
-
-    if (search) {
-        sql += ` WHERE username LIKE? OR name LIKE? OR last_name LIKE? OR email LIKE?`;
-        const s = `%${search}%`;
-        params = [s, s, s, s];
-    }
-    
-    sql += ` ORDER BY is_online DESC, username ASC`;
-
-    db.query(sql, params, (err, results) => {
-        if (err) {
-            console.error(err);
-            return res.status(500).json({ error: 'Error en el servidor' });
-        }
-        res.json(results);
-    });
-});
-
-app.get('/api/admin/user/:id', (req, res) => {
-    db.query('SELECT * FROM users WHERE id =?', [req.params.id], (err, results) => {
-        if (err || results.length === 0) {
-            return res.status(404).json({ error: 'Usuario no encontrado' });
-        }
-        delete results[0].password;
-        res.json(results[0]);
-    });
-});
-
-app.put('/api/admin/user/:id', upload.single('profile_pic'), async (req, res) => {
-    try {
-        const { username, name, last_name, birth_date, gender, phone, email, address, city, country, password, is_admin } = req.body;
-        const userId = req.params.id;
-
-        const checkSql = `SELECT id FROM users WHERE (username =? OR email =?) AND id!=?`;
-        db.query(checkSql, [username, email, userId], async (checkErr, checkResults) => {
-            if (checkErr) {
-                console.error(checkErr);
-                return res.json({ success: false, message: 'Error al verificar datos' });
-            }
-            
-            if (checkResults.length > 0) {
-                return res.json({ success: false, message: 'El usuario o email ya existe en otra cuenta' });
-            }
-
-            let sql = `UPDATE users SET username=?, name=?, last_name=?, birth_date=?, gender=?, phone=?, email=?, address=?, city=?, country=?, is_admin=?`;
-            let params = [username, name, last_name, birth_date, gender, phone, email, address, city, country, is_admin || 0];
-
-            if (password && password.trim()!== '') {
-                const hashedPassword = await bcrypt.hash(password, 10);
-                sql += `, password=?`;
-                params.push(hashedPassword);
-            }
-
-            if (req.file) {
-                sql += `, profile_pic=?`;
-                params.push(`/uploads/${req.file.filename}`);
-            }
-
-            sql += ` WHERE id=?`;
-            params.push(userId);
-
-            db.query(sql, params, (err, result) => {
-                if (err) {
-                    console.error(err);
-                    return res.json({ success: false, message: 'Error al modificar' });
-                }
-                res.json({ success: true, message: 'Usuario modificado correctamente' });
-            });
-        });
-    } catch (error) {
-        console.error(error);
-        res.json({ success: false, message: 'Error en el servidor' });
-    }
-});
-
 // === RUTA PASTELERIA REYNA ===
 app.get('/PasteleriaReyna', (req, res) => {
     const { user } = req.query;
@@ -198,7 +115,7 @@ app.get('/PasteleriaReyna', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'PasteleriaReyna.html'));
 });
 
-// === RUTAS PROVEEDORES - SOLO REYNA_34142 ===
+// === RUTAS PROVEEDORES ===
 app.get('/api/proveedores', (req, res) => {
     const { user } = req.query;
     if (user!== 'Reyna_34142') return res.status(403).json({ error: 'Acceso denegado' });
@@ -222,7 +139,30 @@ app.post('/api/proveedores', (req, res) => {
         });
 });
 
-// === RUTAS PRODUCTOS - SOLO REYNA_34142 ===
+app.put('/api/proveedores/:id', (req, res) => {
+    const { user } = req.query;
+    if (user!== 'Reyna_34142') return res.status(403).json({ error: 'Acceso denegado' });
+    
+    const { nombre, telefono, email, direccion } = req.body;
+    db.query('UPDATE proveedores SET nombre=?, telefono=?, email=?, direccion=? WHERE id=? AND owner_username=?', 
+        [nombre, telefono, email, direccion, req.params.id, user], 
+        (err) => {
+            if (err) return res.json({ success: false, message: 'Error al modificar' });
+            res.json({ success: true });
+        });
+});
+
+app.delete('/api/proveedores/:id', (req, res) => {
+    const { user } = req.query;
+    if (user!== 'Reyna_34142') return res.status(403).json({ error: 'Acceso denegado' });
+    
+    db.query('DELETE FROM proveedores WHERE id=? AND owner_username=?', [req.params.id, user], (err) => {
+        if (err) return res.json({ success: false, message: 'Error al eliminar' });
+        res.json({ success: true });
+    });
+});
+
+// === RUTAS PRODUCTOS ===
 app.get('/api/productos', (req, res) => {
     const { user, search } = req.query;
     if (user!== 'Reyna_34142') return res.status(403).json({ error: 'Acceso denegado' });
@@ -260,7 +200,30 @@ app.post('/api/productos', (req, res) => {
         });
 });
 
-// === RUTAS INVENTARIO - SOLO REYNA_34142 ===
+app.put('/api/productos/:id', (req, res) => {
+    const { user } = req.query;
+    if (user!== 'Reyna_34142') return res.status(403).json({ error: 'Acceso denegado' });
+    
+    const { proveedor_id, nombre, precio, unidad, stock_minimo, stock_maximo } = req.body;
+    db.query('UPDATE productos SET proveedor_id=?, nombre=?, precio=?, unidad=?, stock_minimo=?, stock_maximo=? WHERE id=?', 
+        [proveedor_id, nombre, precio, unidad, stock_minimo, stock_maximo, req.params.id], 
+        (err) => {
+            if (err) return res.json({ success: false, message: 'Error al modificar' });
+            res.json({ success: true });
+        });
+});
+
+app.delete('/api/productos/:id', (req, res) => {
+    const { user } = req.query;
+    if (user!== 'Reyna_34142') return res.status(403).json({ error: 'Acceso denegado' });
+    
+    db.query('DELETE FROM productos WHERE id=?', [req.params.id], (err) => {
+        if (err) return res.json({ success: false, message: 'Error al eliminar' });
+        res.json({ success: true });
+    });
+});
+
+// === RUTAS INVENTARIO ===
 app.get('/api/inventario', (req, res) => {
     const { user } = req.query;
     if (user!== 'Reyna_34142') return res.status(403).json({ error: 'Acceso denegado' });
@@ -304,53 +267,6 @@ app.post('/api/inventario/movimiento', (req, res) => {
         });
 });
 
-app.put('/api/inventario/config/:id', (req, res) => {
-    const { user } = req.query;
-    if (user!== 'Reyna_34142') return res.status(403).json({ error: 'Acceso denegado' });
-    
-    const { stock_minimo, stock_maximo } = req.body;
-    db.query('UPDATE productos SET stock_minimo =?, stock_maximo =? WHERE id =?', 
-        [stock_minimo, stock_maximo, req.params.id], 
-        (err) => {
-            if (err) return res.json({ success: false, message: 'Error al actualizar' });
-            res.json({ success: true });
-        });
-});
-
-// === RUTAS LISTAS DE COMPRA - SOLO REYNA_34142 ===
-app.post('/api/listas_compra', (req, res) => {
-    const { user } = req.query;
-    if (user!== 'Reyna_34142') return res.status(403).json({ error: 'Acceso denegado' });
-    
-    const { nombre_lista, productos } = req.body;
-    const total = productos.reduce((sum, p) => sum + (p.precio * p.cantidad), 0);
-    
-    db.query('INSERT INTO listas_compra (nombre_lista, owner_username, total) VALUES (?,?,?)', 
-        [nombre_lista, user, total], 
-        (err, result) => {
-            if (err) return res.json({ success: false, message: 'Error al guardar lista' });
-            
-            const listaId = result.insertId;
-            const values = productos.map(p => [listaId, p.id, p.cantidad, p.precio]);
-            
-            db.query('INSERT INTO lista_compras_detalle (lista_id, producto_id, cantidad, precio_unitario) VALUES?', 
-                [values], 
-                (err2) => {
-                    if (err2) return res.json({ success: false, message: 'Error al guardar detalle' });
-                    res.json({ success: true, lista_id: listaId });
-                });
-        });
-});
-
-// === RUTA PEDIDOS REYNA ===
-app.get('/PedidosReyna', (req, res) => {
-    const { user } = req.query;
-    if (user!== 'Reyna_34142') {
-        return res.status(403).send('Acceso denegado');
-    }
-    res.sendFile(path.join(__dirname, 'public', 'PedidosReyna.html'));
-});
-
 // === RUTAS CLIENTES ===
 app.get('/api/clientes', (req, res) => {
     const { user } = req.query;
@@ -377,16 +293,16 @@ app.post('/api/clientes', (req, res) => {
 
 // === RUTAS PEDIDOS ===
 app.get('/api/pedidos', (req, res) => {
-    const { user } = req.query;
+    const { user, entregado } = req.query;
     if (user!== 'Reyna_34142') return res.status(403).json({ error: 'Acceso denegado' });
     
     const sql = `SELECT p.*, c.nombre as cliente_nombre 
                  FROM pedidos_pasteleria p 
                  JOIN clientes_pasteleria c ON p.cliente_id = c.id 
-                 WHERE p.owner_username =? 
+                 WHERE p.owner_username =? AND p.entregado =?
                  ORDER BY p.fecha_programada ASC`;
     
-    db.query(sql, [user], (err, results) => {
+    db.query(sql, [user, entregado || 0], (err, results) => {
         if (err) return res.status(500).json({ error: 'Error en el servidor' });
         res.json(results);
     });
@@ -406,6 +322,33 @@ app.post('/api/pedidos', (req, res) => {
             if (err) return res.json({ success: false, message: 'Error al crear pedido' });
             res.json({ success: true, id: result.insertId });
         });
+});
+
+app.put('/api/pedidos/:id', (req, res) => {
+    const { user } = req.query;
+    if (user!== 'Reyna_34142') return res.status(403).json({ error: 'Acceso denegado' });
+    
+    const { cliente_id, tamanio_pastel, fecha_programada, domicilio_entrega, telefono, email, pagado, anticipo, total, descripcion, entregado } = req.body;
+    
+    db.query(`UPDATE pedidos_pasteleria SET 
+        cliente_id=?, tamanio_pastel=?, fecha_programada=?, domicilio_entrega=?, telefono=?, 
+        email=?, pagado=?, anticipo=?, total=?, descripcion=?, entregado=?
+        WHERE id=? AND owner_username=?`, 
+        [cliente_id, tamanio_pastel, fecha_programada, domicilio_entrega, telefono, email, pagado, anticipo, total, descripcion, entregado, req.params.id, user], 
+        (err) => {
+            if (err) return res.json({ success: false, message: 'Error al modificar' });
+            res.json({ success: true });
+        });
+});
+
+app.delete('/api/pedidos/:id', (req, res) => {
+    const { user } = req.query;
+    if (user!== 'Reyna_34142') return res.status(403).json({ error: 'Acceso denegado' });
+    
+    db.query('DELETE FROM pedidos_pasteleria WHERE id=? AND owner_username=?', [req.params.id, user], (err) => {
+        if (err) return res.json({ success: false, message: 'Error al eliminar' });
+        res.json({ success: true });
+    });
 });
 
 app.listen(PORT, () => {
