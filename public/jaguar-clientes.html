@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Clientes - Sistema Jaguar</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Segoe UI', Arial, sans-serif; 
+            background: #0a1628; 
+            min-height: 100vh;
+            padding: 20px;
+            color: #e0e0e0;
+        }
+        .navbar {
+            background: #0f1f38;
+            padding: 20px 40px;
+            border-radius: 12px;
+            border: 1px solid #1a2f4a;
+            box-shadow: 0 0 40px rgba(0, 123, 255, 0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        .navbar h1 {
+            color: #007bff;
+            font-size: 24px;
+            text-shadow: 0 0 20px rgba(0, 123, 255, 0.8);
+            letter-spacing: 2px;
+            font-weight: 800;
+        }
+        .container { 
+            max-width: 1200px; 
+            margin: 0 auto; 
+            display: grid;
+            grid-template-columns: 400px 1fr;
+            gap: 20px;
+        }
+        .card { 
+            background: #0f1f38; 
+            padding: 30px; 
+            border-radius: 12px; 
+            box-shadow: 0 0 60px rgba(0, 123, 255, 0.2);
+            border: 1px solid #1a2f4a;
+        }
+        .card h2 {
+            color: #007bff;
+            font-size: 18px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            color: #a0c4e8;
+            font-size: 12px;
+            margin-bottom: 5px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #2a4a6a;
+            border-radius: 6px;
+            background: #1a2f4a;
+            color: #e0e0e0;
+            font-size: 14px;
+        }
+        input:focus, select:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 15px rgba(0, 123, 255, 0.4);
+        }
+        .btn { 
+            padding: 12px 25px; 
+            border-radius: 6px; 
+            font-weight: 700; 
+            font-size: 13px;
+            cursor: pointer;
+            text-transform: uppercase;
+            background: #0a1628;
+            color: #fff;
+            border: 2px solid #007bff;
+            transition: all 0.3s;
+            width: 100%;
+        }
+        .btn:hover {
+            background: #007bff;
+            box-shadow: 0 0 20px rgba(0, 123, 255, 0.8);
+        }
+        .search-box {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #2a4a6a;
+            border-radius: 6px;
+            background: #1a2f4a;
+            color: #e0e0e0;
+        }
+        .list {
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        .list-item {
+            background: #1a2f4a;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            border: 1px solid #2a4a6a;
+            cursor: pointer;
+        }
+        .list-item:hover {
+            border-color: #007bff;
+            box-shadow: 0 0 15px rgba(0, 123, 255, 0.4);
+        }
+        .list-item strong {
+            color: #007bff;
+            display: block;
+            margin-bottom: 5px;
+        }
+        .list-item span {
+            font-size: 12px;
+            color: #a0c4e8;
+            display: block;
+        }
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .btn-danger {
+            border-color: #dc3545;
+            color: #dc3545;
+        }
+        .btn-danger:hover {
+            background: #dc3545;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <h1>CLIENTES</h1>
+        <button class="btn" onclick="goBack()">VOLVER</button>
+    </div>
+    
+    <div class="container">
+        <div class="card">
+            <h2 id="form-title">Nuevo Cliente</h2>
+            <input type="hidden" id="cliente-id">
+            <div class="form-group">
+                <label>Nombre / Razón Social *</label>
+                <input type="text" id="nombre" required>
+            </div>
+            <div class="form-group">
+                <label>RFC</label>
+                <input type="text" id="rfc" maxlength="13">
+            </div>
+            <div class="form-group">
+                <label>Teléfono</label>
+                <input type="text" id="telefono">
+            </div>
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" id="email">
+            </div>
+            <div class="form-group">
+                <label>Domicilio</label>
+                <input type="text" id="domicilio">
+            </div>
+            <div class="form-group">
+                <label>Ciudad</label>
+                <input type="text" id="ciudad">
+            </div>
+            <div class="form-group">
+                <label>Estado</label>
+                <input type="text" id="estado">
+            </div>
+            <div class="form-group">
+                <label>C.P.</label>
+                <input type="text" id="cp" maxlength="5">
+            </div>
+            <div class="form-group">
+                <label>Régimen Fiscal</label>
+                <select id="regimen">
+                    <option value="">Seleccionar...</option>
+                    <option value="601">General de Ley Personas Morales</option>
+                    <option value="603">Personas Morales con Fines no Lucrativos</option>
+                    <option value="605">Sueldos y Salarios</option>
+                    <option value="606">Arrendamiento</option>
+                    <option value="612">Personas Físicas con Actividades Empresariales</option>
+                    <option value="621">Incorporación Fiscal</option>
+                    <option value="626">Régimen Simplificado de Confianza</option>
+                </select>
+            </div>
+            <div class="btn-group">
+                <button class="btn" onclick="saveCliente()">GUARDAR</button>
+                <button class="btn" onclick="clearForm()" style="border-color:#6c757d;color:#6c757d;">LIMPIAR</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Clientes Registrados</h2>
+            <input type="text" class="search-box" id="search" placeholder="Buscar por nombre, RFC o email...">
+            <div class="list" id="list"></div>
+        </div>
+    </div>
+
+    <script>
+        const currentUser = new URLSearchParams(window.location.search).get('user');
+        if (!currentUser || currentUser!== 'Cris') {
+            window.location.href = '/dashboard.html';
+        }
+        
+        async function loadClientes() {
+            const search = document.getElementById('search').value;
+            const res = await fetch(`/api/jaguar/clientes?user=${currentUser}&search=${encodeURIComponent(search)}`);
+            const data = await res.json();
+            
+            const html = data.map(c => `
+                <div class="list-item" onclick="editCliente(${c.id})">
+                    <strong>${c.nombre}</strong>
+                    <span>RFC: ${c.rfc || 'N/A'}</span>
+                    <span>${c.telefono || ''} - ${c.email || ''}</span>
+                    <span>${c.ciudad || ''}, ${c.estado || ''}</span>
+                </div>
+            `).join('');
+            
+            document.getElementById('list').innerHTML = html || '<p style="text-align:center;color:#666;">Sin clientes</p>';
+        }
+        
+        async function editCliente(id) {
+            const res = await fetch(`/api/jaguar/clientes?user=${currentUser}`);
+            const clientes = await res.json();
+            const c = clientes.find(x => x.id === id);
+            
+            document.getElementById('form-title').textContent = 'Editar Cliente';
+            document.getElementById('cliente-id').value = c.id;
+            document.getElementById('nombre').value = c.nombre;
+            document.getElementById('rfc').value = c.rfc || '';
+            document.getElementById('telefono').value = c.telefono || '';
+            document.getElementById('email').value = c.email || '';
+            document.getElementById('domicilio').value = c.domicilio || '';
+            document.getElementById('ciudad').value = c.ciudad || '';
+            document.getElementById('estado').value = c.estado || '';
+            document.getElementById('cp').value = c.cp || '';
+            document.getElementById('regimen').value = c.regimen_fiscal || '';
+        }
+        
+        async function saveCliente() {
+            const id = document.getElementById('cliente-id').value;
+            const data = {
+                nombre: document.getElementById('nombre').value,
+                rfc: document.getElementById('rfc').value,
+                telefono: document.getElementById('telefono').value,
+                email: document.getElementById('email').value,
+                domicilio: document.getElementById('domicilio').value,
+                ciudad: document.getElementById('ciudad').value,
+                estado: document.getElementById('estado').value,
+                cp: document.getElementById('cp').value,
+                regimen_fiscal: document.getElementById('regimen').value
+            };
+            
+            if (!data.nombre) {
+                alert('El nombre es requerido');
+                return;
+            }
+            
+            const url = id 
+                ? `/api/jaguar/clientes/${id}?user=${currentUser}`
+                : `/api/jaguar/clientes?user=${currentUser}`;
+            
+            const res = await fetch(url, {
+                method: id ? 'PUT' : 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            const result = await res.json();
+            if (result.success) {
+                alert('Cliente guardado');
+                clearForm();
+                loadClientes();
+            }
+        }
+        
+        function clearForm() {
+            document.getElementById('form-title').textContent = 'Nuevo Cliente';
+            document.getElementById('cliente-id').value = '';
+            document.querySelectorAll('input, select').forEach(el => {
+                if (el.type!== 'hidden') el.value = '';
+            });
+        }
+        
+        function goBack() {
+            window.location.href = `/jaguar.html?user=${currentUser}`;
+        }
+        
+        document.getElementById('search').addEventListener('input', loadClientes);
+        loadClientes();
+    </script>
+</body>
+</html>
