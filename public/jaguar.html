@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Sistema Jaguar</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Segoe UI', Arial, sans-serif; 
+            background: #000; 
+            min-height: 100vh;
+            padding: 20px;
+            color: #e0e0e0;
+        }
+       .navbar {
+            background: #0f0f0f;
+            padding: 20px 40px;
+            border-radius: 12px;
+            border: 1px solid #1a1a1a;
+            box-shadow: 0 0 40px rgba(255, 0, 0, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+       .navbar h1 {
+            color: #ff0000;
+            font-size: 26px;
+            text-shadow: 0 0 20px rgba(255, 0, 0, 0.8);
+            letter-spacing: 3px;
+            font-weight: 800;
+        }
+       .container { 
+            max-width: 1200px; 
+            margin: 0 auto; 
+            background: #0f0f0f; 
+            padding: 40px; 
+            border-radius: 12px; 
+            box-shadow: 0 0 60px rgba(255, 0, 0, 0.15), 0 8px 32px rgba(0,0,0,0.9);
+            border: 1px solid #1a1a1a;
+        }
+       .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            margin-top: 20px;
+        }
+       .menu-card {
+            background: #1a1a1a;
+            padding: 60px 30px;
+            border-radius: 12px;
+            border: 2px solid #2a2a2a;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+       .menu-card:hover {
+            border-color: #ff0000;
+            box-shadow: 0 0 40px rgba(255, 0, 0, 0.6);
+            transform: translateY(-5px);
+            background: #1f1f1f;
+        }
+       .menu-card h2 {
+            color: #ff0000;
+            font-size: 28px;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+       .menu-card p {
+            color: #999;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+       .btn { 
+            padding: 15px 30px; 
+            border-radius: 8px; 
+            font-weight: 700; 
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            background: #0a0a0a;
+            color: #fff;
+            border: 2px solid #ff0000;
+        }
+       .btn:hover {
+            background: #ff0000;
+            color: #000;
+            box-shadow: 0 0 25px rgba(255, 0, 0, 0.8);
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <h1>SISTEMA JAGUAR</h1>
+        <div>
+            <button class="btn" onclick="goToDashboard()">DASHBOARD</button>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="menu-grid">
+            <div class="menu-card" onclick="goTo('movimientos')">
+                <h2>MOVIMIENTOS</h2>
+                <p>Alta de proveedores y productos.<br>Gestión de inventario.<br>Entradas y salidas.</p>
+            </div>
+            <div class="menu-card" onclick="goTo('cotizacion')">
+                <h2>COTIZACIÓN</h2>
+                <p>Seleccionar cliente.<br>Buscar productos.<br>Generar cotizaciones.</p>
+            </div>
+            <div class="menu-card" onclick="goTo('clientes')">
+                <h2>CLIENTES</h2>
+                <p>Alta de clientes.<br>Datos fiscales.<br>CRUD completo.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const currentUser = urlParams.get('user') || localStorage.getItem('username');
+        
+        if (!currentUser) {
+            window.location.href = '/index.html';
+        }
+        
+        function goTo(modulo) {
+            window.location.href = `/jaguar-${modulo}.html?user=${currentUser}`;
+        }
+        
+        function goToDashboard() {
+            window.location.href = `/dashboard.html?user=${currentUser}`;
+        }
+    </script>
+</body>
+</html>
