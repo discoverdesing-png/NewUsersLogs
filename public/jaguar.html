@@ -4,129 +4,142 @@
     <meta charset="UTF-8">
     <title>Sistema Jaguar</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { 
-            font-family: 'Segoe UI', Arial, sans-serif; 
-            background: #0a1628; 
-            min-height: 100vh;
-            padding: 20px;
-            color: #e0e0e0;
-        }
-        .navbar {
-            background: #0f1f38;
-            padding: 20px 40px;
-            border-radius: 12px;
-            border: 1px solid #1a2f4a;
-            box-shadow: 0 0 40px rgba(0, 123, 255, 0.3);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-        }
-        .navbar h1 {
-            color: #007bff;
-            font-size: 26px;
-            text-shadow: 0 0 20px rgba(0, 123, 255, 0.8);
-            letter-spacing: 3px;
-            font-weight: 800;
-        }
-        .navbar-left {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-        .user-pic {
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            border: 2px solid #007bff;
-            object-fit: cover;
-            box-shadow: 0 0 15px rgba(0, 123, 255, 0.6);
-        }
-        .user-name {
-            color: #fff;
-            font-size: 16px;
-            font-weight: 700;
-        }
-        .badge {
-            background: #007bff;
-            color: #fff;
-            padding: 4px 10px;
-            border-radius: 5px;
-            font-size: 10px;
-            font-weight: 800;
-            letter-spacing: 1px;
-        }
-        .container { 
-            max-width: 1200px; 
-            margin: 0 auto; 
-            background: #0f1f38; 
-            padding: 40px; 
-            border-radius: 12px; 
-            box-shadow: 0 0 60px rgba(0, 123, 255, 0.2), 0 8px 32px rgba(0,0,0,0.9);
-            border: 1px solid #1a2f4a;
-        }
-        .menu-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 30px;
-            margin-top: 20px;
-        }
-        .menu-card {
-            background: #1a2f4a;
-            padding: 60px 30px;
-            border-radius: 12px;
-            border: 2px solid #2a4a6a;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-align: center;
-        }
-        .menu-card:hover {
-            border-color: #007bff;
-            box-shadow: 0 0 40px rgba(0, 123, 255, 0.6);
-            transform: translateY(-5px);
-            background: #1f3a5a;
-        }
-        .menu-card h2 {
-            color: #007bff;
-            font-size: 28px;
-            margin-bottom: 15px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-        .menu-card p {
-            color: #a0c4e8;
-            font-size: 14px;
-            line-height: 1.6;
-        }
-        .btn { 
-            padding: 15px 30px; 
-            border-radius: 8px; 
-            font-weight: 700; 
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            background: #0a1628;
-            color: #fff;
-            border: 2px solid #007bff;
-        }
-        .btn:hover {
-            background: #007bff;
-            color: #fff;
-            box-shadow: 0 0 25px rgba(0, 123, 255, 0.8);
-            transform: translateY(-3px);
-        }
-        @media (max-width: 900px) {
-            .menu-grid { grid-template-columns: 1fr; }
-        }
-    </style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { 
+        font-family: 'Segoe UI', Arial, sans-serif; 
+        background: #0a1628; 
+        min-height: 100vh;
+        padding: 20px;
+        color: #e0e0e0;
+    }
+   .navbar {
+        background: #0f1f38;
+        padding: 20px 40px;
+        border-radius: 12px;
+        border: 1px solid #1a2f4a;
+        box-shadow: 0 0 40px rgba(0, 123, 255, 0.3);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+    }
+   .navbar h1 {
+        color: #007bff;
+        font-size: 24px;
+        text-shadow: 0 0 20px rgba(0, 123, 255, 0.8);
+        letter-spacing: 2px;
+        font-weight: 800;
+    }
+   .navbar-left {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+   .user-info {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+   .user-pic {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        border: 2px solid #007bff;
+        object-fit: cover;
+        box-shadow: 0 0 15px rgba(0, 123, 255, 0.6);
+    }
+   .user-name {
+        color: #fff;
+        font-size: 15px;
+        font-weight: 700;
+    }
+   .badge {
+        background: #007bff;
+        color: #fff;
+        padding: 4px 10px;
+        border-radius: 5px;
+        font-size: 10px;
+        font-weight: 800;
+    }
+   .btn { 
+        padding: 12px 25px; 
+        border-radius: 6px; 
+        font-weight: 700; 
+        font-size: 13px;
+        cursor: pointer;
+        transition: all 0.3s;
+        text-transform: uppercase;
+        background: #0a1628;
+        color: #fff;
+        border: 2px solid #007bff;
+    }
+   .btn:hover {
+        background: #007bff;
+        box-shadow: 0 0 20px rgba(0, 123, 255, 0.8);
+        transform: translateY(-2px);
+    }
+   .btn-danger {
+        border-color: #dc3545;
+        color: #dc3545;
+    }
+   .btn-danger:hover {
+        background: #dc3545;
+        color: #fff;
+    }
+   .card { 
+        background: #0f1f38; 
+        padding: 25px; 
+        border-radius: 12px; 
+        box-shadow: 0 0 60px rgba(0, 123, 255, 0.2);
+        border: 1px solid #1a2f4a;
+    }
+    input, select, textarea {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #2a4a6a;
+        border-radius: 6px;
+        background: #1a2f4a;
+        color: #e0e0e0;
+        font-size: 14px;
+    }
+    input:focus, select:focus, textarea:focus {
+        outline: none;
+        border-color: #007bff;
+        box-shadow: 0 0 15px rgba(0, 123, 255, 0.4);
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        background: #1a2f4a;
+        border-radius: 6px;
+        overflow: hidden;
+    }
+    th {
+        background: #0f1f38;
+        padding: 12px;
+        text-align: left;
+        font-size: 11px;
+        color: #007bff;
+        text-transform: uppercase;
+        border-bottom: 1px solid #2a4a6a;
+    }
+    td {
+        padding: 10px 12px;
+        border-bottom: 1px solid #2a4a6a;
+        font-size: 13px;
+        color: #e0e0e0;
+    }
+    tr:hover {
+        background: #1f3a5a;
+    }
+   .cart-item-name {
+        color: #fff;
+        font-weight: 600;
+    }
+   .total-line {
+        color: #e0e0e0;
+    }
+</style>
 </head>
 <body>
     <div class="navbar">
