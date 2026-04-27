@@ -38,12 +38,7 @@
         }
 .section.active { display: block; }
 .section h2 { color: #ff69b4; font-size: 28px; margin-bottom: 20px; text-align: center; }
-.card-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 20px;
-            margin-top: 30px;
-        }
+.card-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-top: 30px; }
 .card-menu {
             background: #fff9fc;
             padding: 40px 20px;
@@ -447,3 +442,189 @@
         
         function removeFromCart(id) {
             cart = cart.filter(c => c.id!== id);
+            renderCart();
+        }
+        
+        function updateQty(id, delta) {
+            const item = cart.find(c => c.id === id);
+            if (item) {
+                item.cantidad += delta;
+                if (item.cantidad <= 0) removeFromCart(id);
+                else renderCart();
+            }
+        }
+        
+        function renderCart() {
+            const cartList = document.getElementById('cartList');
+            cartList.innerHTML = cart.map(item => `
+                <div class="cart-item">
+                    <div class="cart-info">
+                        <strong>${item.nombre}</strong>
+                        <span>$${parseFloat(item.precio).toFixed(2)} x ${item.cantidad}</span>
+                    </div>
+                    <div class="cart-actions">
+                        <button class="btn btn-small" onclick="updateQty(${item.id}, -1)">-</button>
+                        <span style="min-width:20px;text-align:center;">${item.cantidad}</span>
+                        <button class="btn btn-small" onclick="updateQty(${item.id}, 1)">+</button>
+                        <button class="btn btn-small btn-danger" onclick="removeFromCart(${item.id})">X</button>
+                    </div>
+                </div>
+            `).join('');
+            
+            const total = cart.reduce((sum, item) => sum + (item.precio * item.cantidad), 0);
+            document.getElementById('cartTotal').textContent = `$${total.toFixed(2)}`;
+        }
+        
+        async function finalizarCompra() {
+            if (cart.length === 0) {
+                showAlert('El carrito está vacío');
+                return;
+            }
+            const nombreLista = document.getElementById('nombreLista').value || 'Lista sin nombre';
+            
+            const res = await fetch(`/api/listas_compra?user=${currentUser}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ nombre_lista: nombreLista, productos: cart })
+            });
+            const result = await res.json();
+            showAlert(result.success? 'Lista guardada correctamente' : 'Error al guardar');
+            if (result.success) {
+                cart = [];
+                renderCart();
+                document.getElementById('nombreLista').value = '';
+            }
+        }
+        
+        async function loadInventario() {
+            const res = await fetch(`/api/inventario?user=${currentUser}`);
+            const productos = await res.json();
+            
+            const enStock = productos.filter(p => p.stock_actual > 2);
+            const faltantes = productos.filter(p => p.stock_actual <= 2);
+            
+            document.getElementById('stockList').innerHTML = enStock.map(p => renderInventarioCard(p)).join('');
+            document.getElementById('faltantesList').innerHTML = faltantes.map(p => renderInventarioCard(p)).join('');
+            document.getElementById('controlList').innerHTML = productos.map(p => renderControlCard(p)).join('');
+        }
+        
+        function renderInventarioCard(p) {
+            const badgeClass = p.estado_stock === 'agotado'? 'badge-agotado' : 
+                             p.estado_stock === 'por_agotar'? 'badge-por-agotar' :
+                             p.estado_stock === 'bajo'? 'badge-bajo' : 'badge-normal';
+            const cardClass = p.estado_stock === 'agotado'? 'stock-agotado' : 
+                            p.stock_actual <= 2? 'stock-bajo' : '';
+            
+            return `
+                <div class="product-card ${cardClass}">
+                    <div class="product-info">
+                        <strong>${p.nombre}</strong>
+                        <span>Proveedor: ${p.proveedor_nombre}</span>
+                        <span>Stock: ${p.stock_actual} ${p.unidad}</span>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:10px;">
+                        <span class="stock-badge ${badgeClass}">${p.estado_stock.replace('_', ' ').toUpperCase()}</span>
+                        <button class="btn btn-small" onclick='openMovimiento(${p.id}, "${p.nombre}")'>MOVIMIENTO</button>
+                    </div>
+                </div>
+            `;
+        }
+        
+        function renderControlCard(p) {
+            return `
+                <div class="product-card">
+                    <div class="product-info">
+                        <strong>${p.nombre}</strong>
+                        <span>Stock actual: ${p.stock_actual} ${p.unidad}</span>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:10px;">
+                        <input type="number" id="min-${p.id}" value="${p.stock_minimo}" style="width:80px;padding:8px;border-radius:8px;border:2px solid #ffe4f0;">
+                        <input type="number" id="max-${p.id}" value="${p.stock_maximo}" style="width:80px;padding:8px;border-radius:8px;border:2px solid #ffe4f0;">
+                        <button class="btn btn-small" onclick="updateLimites(${p.id})">GUARDAR</button>
+                    </div>
+                </div>
+            `;
+        }
+        
+        function openMovimiento(id, nombre) {
+            document.getElementById('movProductoId').value = id;
+            document.getElementById('movProductoNombre').value = nombre;
+            document.getElementById('movimientoModal').classList.add('active');
+        }
+        
+        function closeModal() {
+            document.getElementById('movimientoModal').classList.remove('active');
+            document.getElementById('movimientoForm').reset();
+        }
+        
+        document.getElementById('movimientoForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const data = {
+                producto_id: document.getElementById('movProductoId').value,
+                tipo: document.getElementById('movTipo').value,
+                cantidad: document.getElementById('movCantidad').value,
+                motivo: document.getElementById('movMotivo').value
+            };
+            
+            const res = await fetch(`/api/inventario/movimiento?user=${currentUser}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            const result = await res.json();
+            showAlertInv(result.success? 'Movimiento registrado' : 'Error al registrar');
+            if (result.success) {
+                closeModal();
+                loadInventario();
+            }
+        });
+        
+        async function updateLimites(id) {
+            const min = document.getElementById(`min-${id}`).value;
+            const max = document.getElementById(`max-${id}`).value;
+            
+            const res = await fetch(`/api/inventario/config/${id}?user=${currentUser}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ stock_minimo: min, stock_maximo: max })
+            });
+            const result = await res.json();
+            showAlertInv(result.success? 'Límites actualizados' : 'Error al actualizar');
+            if (result.success) loadInventario();
+        }
+        
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            loadProductos(e.target.value);
+        });
+        
+        function showAlert(msg) {
+            const alert = document.getElementById('alertMsg');
+            alert.textContent = msg;
+            alert.classList.add('show');
+            setTimeout(() => alert.classList.remove('show'), 3000);
+        }
+        
+        function showAlertInv(msg) {
+            const alert = document.getElementById('alertInvMsg');
+            alert.textContent = msg;
+            alert.classList.add('show');
+            setTimeout(() => alert.classList.remove('show'), 3000);
+        }
+        
+        function goToProfile() {
+            window.location.href = `/dashboard.html?user=${currentUser}`;
+        }
+        
+        function goToPedidos() {
+            window.location.href = `/PedidosReyna?user=${currentUser}`;
+        }
+        
+        function logout() {
+            localStorage.clear();
+            window.location.href = '/index.html';
+        }
+        
+        loadUserInfo();
+    </script>
+</body>
+</html>
