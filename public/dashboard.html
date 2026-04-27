@@ -194,38 +194,51 @@
         </div>
     </div>
 
-    <script>
-        const currentUser = new URLSearchParams(window.location.search).get('user') || localStorage.getItem('username');
+
+
+Pregunta a Meta AI...
+<script>
+    const currentUser = new URLSearchParams(window.location.search).get('user') || localStorage.getItem('username');
+    
+    if (!currentUser) {
+        window.location.href = '/index.html';
+    }
+    
+    localStorage.setItem('username', currentUser);
+    
+    async function loadUserInfo() {
+        const res = await fetch(`/api/user/${currentUser}?user=${currentUser}`);
+        const user = await res.json();
+        document.getElementById('userName').textContent = user.username;
+        document.getElementById('userPic').src = user.profile_pic || '/uploads/LogoMetal.png';
         
-        if (!currentUser) {
-            window.location.href = '/index.html';
+        // Botón de Pastelería solo si es Reyna_34142
+        if (currentUser === 'Reyna_34142') {
+            const navbarRight = document.querySelector('.navbar-right');
+            const btnPasteleria = document.createElement('button');
+            btnPasteleria.className = 'btn';
+            btnPasteleria.textContent = 'PASTELERÍA REYNA';
+            btnPasteleria.onclick = () => window.location.href = `/PasteleriaReyna?user=${currentUser}`;
+            navbarRight.insertBefore(btnPasteleria, navbarRight.firstChild);
         }
         
-        localStorage.setItem('username', currentUser);
-        
-        async function loadUserInfo() {
-            const res = await fetch(`/api/user/${currentUser}?user=${currentUser}`);
-            const user = await res.json();
-            document.getElementById('userName').textContent = user.username;
-            document.getElementById('userPic').src = user.profile_pic || '/uploads/LogoMetal.png';
-            
-            // Botón de Pastelería solo si es Reyna_34142
-            if (currentUser === 'Reyna_34142') {
-                const navbarRight = document.querySelector('.navbar-right');
-                const btnPasteleria = document.createElement('button');
-                btnPasteleria.className = 'btn';
-                btnPasteleria.textContent = 'PASTELERÍA REYNA';
-                btnPasteleria.onclick = () => window.location.href = `/PasteleriaReyna?user=${currentUser}`;
-                navbarRight.insertBefore(btnPasteleria, navbarRight.firstChild);
-            }
+        // Botón Sistema Jaguar solo si es Cris
+        if (currentUser === 'Cris') {
+            const navbarRight = document.querySelector('.navbar-right');
+            const btnJaguar = document.createElement('button');
+            btnJaguar.className = 'btn';
+            btnJaguar.textContent = 'SISTEMA JAGUAR';
+            btnJaguar.onclick = () => window.location.href = `/jaguar.html?user=${currentUser}`;
+            navbarRight.insertBefore(btnJaguar, navbarRight.firstChild);
         }
-        
-        function logout() {
-            localStorage.clear();
-            window.location.href = '/index.html';
-        }
-        
-        loadUserInfo();
-    </script>
+    }
+    
+    function logout() {
+        localStorage.clear();
+        window.location.href = '/index.html';
+    }
+    
+    loadUserInfo();
+</script>
 </body>
 </html>
