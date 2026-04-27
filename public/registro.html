@@ -2,96 +2,91 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Registro</title>
+    <title>Crear Cuenta</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
             font-family: 'Segoe UI', Arial, sans-serif; 
-            background: #000000; 
+            background: #000; 
             min-height: 100vh;
             padding: 20px;
             color: #e0e0e0;
         }
- .container { 
-            max-width: 520px; 
-            margin: 20px auto; 
+   .container { 
+            max-width: 800px; 
+            margin: 0 auto; 
             background: #0f0f0f; 
             padding: 40px; 
             border-radius: 12px; 
-            box-shadow: 0 0 50px rgba(255, 0, 0, 0.2), 0 8px 32px rgba(0,0,0,0.8);
+            box-shadow: 0 0 60px rgba(255, 0, 0, 0.15), 0 8px 32px rgba(0,0,0,0.9);
             border: 1px solid #1a1a1a;
         }
-        
- .logo-upload {
-            width: 150px;
-            height: 150px;
-            border: 2px dashed #ff0000;
-            border-radius: 12px;
-            margin: 0 auto 25px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            transition: all 0.3s ease;
-            overflow: hidden;
-            background-color: #1a1a1a;
-            position: relative;
+   .title {
+            text-align: center;
+            font-size: 30px;
+            font-weight: 800;
+            margin-bottom: 35px;
+            color: #ff0000;
+            text-shadow: 0 0 20px rgba(255, 0, 0, 0.8);
+            letter-spacing: 3px;
         }
- .logo-upload:hover { 
-            border-color: #ff4d4d; 
-            box-shadow: 0 0 30px rgba(255, 0, 0, 0.7);
-            transform: scale(1.05);
-        }
- .logo-upload.has-image { 
-            border: 2px solid #ff4d4d;
-            box-shadow: 0 0 25px rgba(255, 77, 77, 0.5);
-        }
- .logo-content { text-align: center; color: #ff0000; pointer-events: none; }
- .logo-text { display: block; font-size: 14px; margin-bottom: 6px; letter-spacing: 2px; font-weight: 700; }
- .plus-icon { display: block; font-size: 36px; font-weight: 300; line-height: 1; }
-
- .form-row { display: flex; gap: 12px; margin-bottom: 14px; }
- .form-row input, select { 
-            flex: 1; 
-            padding: 14px; 
-            border: 1px solid #2a2a2a; 
+   .alert-msg {
+            background: rgba(255, 0, 0, 0.15);
+            border: 1px solid #ff0000;
+            color: #ff4d4d;
+            padding: 14px;
             border-radius: 8px;
-            background: #1a1a1a;
-            color: #e0e0e0;
+            margin-bottom: 18px;
+            text-align: center;
             font-size: 14px;
-            transition: all 0.2s;
+            font-weight: 600;
+            display: none;
         }
- .form-row input:focus, select:focus {
-            outline: none;
-            border-color: #ff0000;
-            box-shadow: 0 0 15px rgba(255, 0, 0, 0.4);
-            background: #222;
-     }
- .full-width { 
+   .alert-msg.show { display: block; }
+   .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+   .input-group {
+            margin-bottom: 18px;
+        }
+   .input-group.full-width {
+            grid-column: 1 / -1;
+        }
+   .input-field { 
             width: 100%; 
-            padding: 14px; 
-            margin-bottom: 14px; 
+            padding: 16px; 
             border: 1px solid #2a2a2a; 
             border-radius: 8px; 
             background: #1a1a1a;
             color: #e0e0e0;
-            font-size: 14px;
-            transition: all 0.2s;
+            font-size: 15px;
         }
- .full-width:focus {
+   .input-field:focus {
             outline: none;
             border-color: #ff0000;
-            box-shadow: 0 0 15px rgba(255, 0, 0, 0.4);
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
             background: #222;
-     }
+        }
+   label {
+            display: block;
+            color: #ff0000;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+   .btn-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+            margin-top: 30px;
+       }
         
-        /* BOTONES CON LUZ QUE RECORRE EL MARCO */
- .btn { 
-            width: 100%; 
-            padding: 30px; 
+   .btn { 
+            padding: 20px; 
             border-radius: 8px; 
             font-weight: 700; 
             font-size: 15px;
@@ -103,13 +98,10 @@
             background: #0a0a0a;
             color: #fff;
             border: 2px solid transparent;
-            margin-bottom: 12px;
             overflow: hidden;
             z-index: 1;
         }
-        
-        /* LA LUZ ROJA QUE RECORRE EL MARCO */
- .btn::before {
+   .btn::before {
             content: '';
             position: absolute;
             inset: -2px;
@@ -120,7 +112,7 @@
             opacity: 0;
             transition: opacity 0.3s;
         }
- .btn::after {
+   .btn::after {
             content: '';
             position: absolute;
             inset: 2px;
@@ -129,9 +121,9 @@
             z-index: -1;
             transition: background 0.3s ease;
         }
- .btn:hover::before { opacity: 1; }
- .btn:hover::after { background: #1a0000; } /* Negro que apenas cambia a rojo */
- .btn:hover {
+   .btn:hover::before { opacity: 1; }
+   .btn:hover::after { background: #1a0000; }
+   .btn:hover {
             transform: translateY(-3px);
             color: #ff4d4d;
         }
@@ -140,80 +132,133 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-        
-        label { font-size: 12px; color: #999; display: block; margin-bottom: 5px; font-weight: 500; }
-        input::placeholder { color: #555; }
-        option { background: #1a1a1a; color: #e0e0e0; }
-        input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); }
     </style>
 </head>
 <body>
     <div class="container">
-        <form action="/register" method="POST" enctype="multipart/form-data">
-            
-            <input type="file" id="profile_pic" name="profile_pic" accept="image/*" hidden required>
-            <label for="profile_pic" class="logo-upload" id="logoUpload">
-                <div class="logo-content" id="logoContent">
-                    <span class="logo-text">LOGO AQUÍ</span>
-                    <span class="plus-icon">+</span>
+        <h2 class="title">CREAR PERSONAJE</h2>
+        <div class="alert-msg" id="alertMsg"></div>
+        
+        <form id="registerForm">
+            <div class="form-grid">
+                <div class="input-group">
+                    <label>Usuario</label>
+                    <input type="text" name="username" class="input-field" required>
                 </div>
-            </label>
-
-            <div class="form-row">
-                <input type="text" name="username" placeholder="User" required>
-                <input type="password" name="password" placeholder="Password" required>
-            </div>
-            <div class="form-row">
-                <input type="text" name="name" placeholder="Name" required>
-                <input type="text" name="last_name" placeholder="Last Name" required>
-            </div>
-            <div class="form-row">
-                <div style="flex:1">
-                    <label>Birth date DD/MM/AAAA</label>
-                    <input type="date" name="birth_date" required>
+                
+                <div class="input-group">
+                    <label>Contraseña</label>
+                    <input type="password" name="password" class="input-field" required>
                 </div>
-                <div style="flex:1">
-                    <label>Gender</label>
-                    <select name="gender" required>
+                
+                <div class="input-group">
+                    <label>Nombre</label>
+                    <input type="text" name="name" class="input-field" required>
+                </div>
+                
+                <div class="input-group">
+                    <label>Apellido</label>
+                    <input type="text" name="last_name" class="input-field" required>
+                </div>
+                
+                <div class="input-group">
+                    <label>Fecha de Nacimiento</label>
+                    <input type="date" name="birth_date" class="input-field">
+                </div>
+                
+                <div class="input-group">
+                    <label>Género</label>
+                    <select name="gender" class="input-field">
                         <option value="">Seleccionar</option>
-                        <option value="Masculino">Masculino</option>
-                        <option value="Femenino">Femenino</option>
-                        <option value="Otro">Otro</option>
+                        <option value="M">Masculino</option>
+                        <option value="F">Femenino</option>
+                        <option value="O">Otro</option>
                     </select>
                 </div>
+                
+                <div class="input-group">
+                    <label>Teléfono</label>
+                    <input type="tel" name="phone" class="input-field">
+                </div>
+                
+                <div class="input-group">
+                    <label>Email</label>
+                    <input type="email" name="email" class="input-field" required>
+                </div>
+                
+                <div class="input-group full-width">
+                    <label>Dirección</label>
+                    <input type="text" name="address" class="input-field">
+                </div>
+                
+                <div class="input-group">
+                    <label>Ciudad</label>
+                    <input type="text" name="city" class="input-field">
+                </div>
+                
+                <div class="input-group">
+                    <label>País</label>
+                    <input type="text" name="country" class="input-field">
+                </div>
+                
+                <div class="input-group full-width">
+                    <label>Foto de Perfil</label>
+                    <input type="file" name="profile_pic" class="input-field" accept="image/*">
+                </div>
             </div>
-            <input type="tel" name="phone" placeholder="Phone Opcional" class="full-width">
-            <input type="email" name="email" placeholder="Email" class="full-width" required>
-            <input type="text" name="address" placeholder="Address" class="full-width" required>
-            <div class="form-row">
-                <input type="text" name="city" placeholder="City" required>
-                <input type="text" name="country" placeholder="Country" required>
+            
+            <div class="btn-group">
+                <button type="submit" class="btn" id="submitBtn">CREAR PERSONAJE</button>
+                <button type="button" class="btn" onclick="window.location.href='/index.html'">CANCELAR</button>
             </div>
-            <button type="submit" class="btn">Crear Cuenta</button>
         </form>
-        
-        <button type="button" class="btn" onclick="window.location.href='/index.html'">
-            ¿Ya tienes cuenta? Log In
-        </button>
     </div>
 
     <script>
-        const inputFile = document.getElementById('profile_pic');
-        const logoUpload = document.getElementById('logoUpload');
-        const logoContent = document.getElementById('logoContent');
+        const form = document.getElementById('registerForm');
+        const alertMsg = document.getElementById('alertMsg');
+        const submitBtn = document.getElementById('submitBtn');
 
-        inputFile.addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    logoUpload.style.backgroundImage = `url('${event.target.result}')`;
-                    logoUpload.classList.add('has-image');
-                    logoContent.style.display = 'none'; // MATA EL TEXTO SÍ O SÍ
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            alertMsg.classList.remove('show');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'CREANDO...';
+            
+            const formData = new FormData(form);
+
+            try {
+                const res = await fetch('/register', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await res.json();
+                
+                if (result.success) {
+                    showAlert(`Personaje ${result.username} creado correctamente. Redirigiendo al login...`);
+                    setTimeout(() => {
+                        window.location.href = '/index.html';
+                    }, 3000);
+                } else {
+                    showAlert(result.message);
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'CREAR PERSONAJE';
                 }
-                reader.readAsDataURL(file);
+            } catch (error) {
+                showAlert('Error de conexión con el servidor');
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'CREAR PERSONAJE';
             }
         });
+        
+        function showAlert(message) {
+            alertMsg.textContent = message;
+            alertMsg.classList.add('show');
+            setTimeout(() => {
+                alertMsg.classList.remove('show');
+            }, 3000);
+        }
     </script>
 </body>
 </html>
