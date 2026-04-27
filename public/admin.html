@@ -4,16 +4,15 @@
     <meta charset="UTF-8">
     <title>Panel Admin</title>
     <style>
-        /* Usa el mismo style que me pasaste del dashboard */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
             font-family: 'Segoe UI', Arial, sans-serif; 
             background: #000; 
             min-height: 100vh;
             padding: 20px;
-            color: #e0e0e0;
+            color: #e0e0;
         }
-       .navbar {
+      .navbar {
             background: #0f0f0f;
             padding: 20px 40px;
             border-radius: 12px;
@@ -24,14 +23,14 @@
             align-items: center;
             margin-bottom: 30px;
         }
-       .navbar h1 {
+      .navbar h1 {
             color: #ff0000;
             font-size: 26px;
             text-shadow: 0 0 20px rgba(255, 0, 0, 0.8);
             letter-spacing: 3px;
             font-weight: 800;
         }
-       .container { 
+      .container { 
             max-width: 1000px; 
             margin: 0 auto; 
             background: #0f0f0f; 
@@ -40,21 +39,27 @@
             box-shadow: 0 0 60px rgba(255, 0, 0, 0.15), 0 8px 32px rgba(0,0,0,0.9);
             border: 1px solid #1a1a1a;
         }
-       .search-box {
+      .search-box {
             width: 100%;
             padding: 16px;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             border: 1px solid #2a2a2a;
             border-radius: 8px;
             background: #1a1a1a;
             color: #e0e0e0;
             font-size: 15px;
         }
-       .user-list {
+      .search-box:focus {
+            outline: none;
+            border-color: #ff0000;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
+            background: #222;
+        }
+      .user-list {
             display: grid;
             gap: 15px;
         }
-       .user-card {
+      .user-card {
             background: #1a1a1a;
             padding: 20px;
             border-radius: 8px;
@@ -65,18 +70,38 @@
             justify-content: space-between;
             align-items: center;
         }
-       .user-card:hover {
+      .user-card:hover {
             border-color: #ff0000;
             box-shadow: 0 0 25px rgba(255, 0, 0, 0.4);
             transform: translateY(-3px);
             background: #1f1f1f;
         }
-       .btn { 
+      .user-info strong {
+            color: #ff0000;
+            font-size: 18px;
+       }
+      .user-info span {
+            color: #999;
+            font-size: 14px;
+       }
+      .admin-badge {
+            background: #ff0000;
+            color: #000;
+            padding: 5px 12px;
+            border-radius: 5px;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 1px;
+       }
+        
+        /* BOTÓN CON LUZ QUE RECORRE EL MARCO */
+      .btn { 
             padding: 15px 30px; 
             border-radius: 8px; 
             font-weight: 700; 
             font-size: 14px;
             cursor: pointer;
+            transition: all 0.3s ease;
             text-transform: uppercase;
             letter-spacing: 1.5px;
             position: relative;
@@ -86,7 +111,7 @@
             overflow: hidden;
             z-index: 1;
         }
-       .btn::before {
+      .btn::before {
             content: '';
             position: absolute;
             inset: -2px;
@@ -97,17 +122,21 @@
             opacity: 0;
             transition: opacity 0.3s;
         }
-       .btn::after {
+      .btn::after {
             content: '';
             position: absolute;
             inset: 2px;
             background: #0a0a0a;
             border-radius: 6px;
             z-index: -1;
+            transition: background 0.3s ease;
         }
-       .btn:hover::before { opacity: 1; }
-       .btn:hover::after { background: #1a0000; }
-       .btn:hover { color: #ff4d4d; }
+      .btn:hover::before { opacity: 1; }
+      .btn:hover::after { background: #1a0000; }
+      .btn:hover {
+            transform: translateY(-3px);
+            color: #ff4d4d;
+        }
         
         @keyframes borderRotate {
             0% { transform: rotate(0deg); }
@@ -131,16 +160,19 @@
         const userList = document.getElementById('userList');
         
         async function loadUsers(search = '') {
-            const res = await fetch(`/api/admin/users?search=${search}`);
+            const res = await fetch(`/api/admin/users?search=${encodeURIComponent(search)}`);
             const users = await res.json();
             
             userList.innerHTML = users.map(u => `
                 <div class="user-card" onclick="editUser(${u.id})">
-                    <div>
-                        <strong style="color:#ff0000">${u.username}</strong><br>
-                        ${u.name} ${u.last_name} - ${u.email}
+                    <div class="user-info">
+                        <strong>${u.username}</strong><br>
+                        <span>${u.name} ${u.last_name} - ${u.email}</span>
                     </div>
-                    <span>EDITAR →</span>
+                    <div>
+                        ${u.is_admin? '<span class="admin-badge">ADMIN</span>' : ''}
+                        <span style="margin-left:15px;color:#ff0000;">EDITAR →</span>
+                    </div>
                 </div>
             `).join('');
         }
@@ -149,6 +181,7 @@
             window.location.href = `/EditarUser1.html?id=${id}`;
         }
         
+        // BÚSQUEDA EN TIEMPO REAL
         searchInput.addEventListener('input', (e) => {
             loadUsers(e.target.value);
         });
