@@ -1,0 +1,429 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Pedidos - Pastelería Reyna</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Segoe UI', 'Comic Sans MS', cursive;
+            background: linear-gradient(135deg, #ffeef8 0%, #fff0f5 50%, #ffe4e1 100%);
+            min-height: 100vh;
+            color: #5a4a5a;
+        }
+.navbar {
+            background: linear-gradient(90deg, #ffb6d9 0%, #ffc8dd 50%, #ffdab9 100%);
+            padding: 20px 40px;
+            box-shadow: 0 4px 20px rgba(255, 182, 217, 0.4);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid #ffadd6;
+        }
+.navbar-left { display: flex; align-items: center; gap: 20px; }
+.navbar h1 { color: #fff; font-size: 28px; text-shadow: 2px 2px 4px rgba(0,0,0,0.2); font-weight: 700; letter-spacing: 2px; }
+.user-info { display: flex; align-items: center; gap: 12px; background: rgba(255,255,255,0.5); padding: 8px 16px; border-radius: 25px; }
+.user-pic { width: 40px; height: 40px; border-radius: 50%; border: 3px solid #fff; object-fit: cover; box-shadow: 0 2px 10px rgba(0,0,0,0.2); }
+.user-name { color: #8b4a7a; font-size: 15px; font-weight: 700; }
+.navbar-right { display: flex; gap: 12px; }
+.container { max-width: 1400px; margin: 40px auto; padding: 0 20px; }
+.section {
+            background: #fff;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(255, 182, 217, 0.3);
+            border: 3px solid #ffadd6;
+            margin-bottom: 30px;
+        }
+.section h2 { color: #ff69b4; font-size: 28px; margin-bottom: 20px; text-align: center; }
+.tabs { display: flex; gap: 10px; margin-bottom: 25px; justify-content: center; flex-wrap: wrap; }
+.tab-btn {
+            padding: 10px 25px; border-radius: 20px; border: 2px solid #ffe4f0;
+            background: #fff; color: #ff69b4; cursor: pointer; font-weight: 700; transition: all 0.3s;
+        }
+.tab-btn.active {
+            background: linear-gradient(135deg, #ffadd6 0%, #ffb6d9 100%);
+            color: #fff; border-color: #ff69b4;
+        }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
+.input-group { margin-bottom: 15px; }
+.input-group label {
+            display: block; color: #ff69b4; font-size: 12px; text-transform: uppercase;
+            letter-spacing: 1px; margin-bottom: 6px; font-weight: 700;
+        }
+.input-field { 
+            width: 100%; padding: 12px; border: 2px solid #ffe4f0; border-radius: 12px; 
+            background: #fff9fc; color: #5a4a5a; font-size: 14px;
+        }
+.input-field:focus { outline: none; border-color: #ff69b4; box-shadow: 0 15px rgba(255, 105, 180, 0.3); }
+textarea.input-field { resize: vertical; min-height: 100px; }
+.btn { 
+            padding: 12px 28px; border-radius: 25px; font-weight: 700; font-size: 14px;
+            cursor: pointer; transition: all 0.3s ease; text-transform: uppercase; letter-spacing: 1px;
+            border: 2px solid #fff; background: linear-gradient(135deg, #ffadd6 0%, #ffb6d9 100%);
+            color: #fff; box-shadow: 0 4px 15px rgba(255, 105, 180, 0.4);
+        }
+.btn:hover {
+            transform: translateY(-3px); box-shadow: 0 6px 20px rgba(255, 105, 180, 0.6);
+            background: linear-gradient(135deg, #ff69b4 0%, #ffadd6 100%);
+        }
+.btn-small { padding: 6px 14px; font-size: 11px; }
+.btn-danger { background: linear-gradient(135deg, #ff6b9d 0%, #ff1493 100%); }
+.btn-success { background: linear-gradient(135deg, #98fb98 0%, #32cd32 100%); }
+.alert-msg {
+            background: rgba(255, 105, 180, 0.15); border: 2px solid #ff69b4; color: #ff1493;
+            padding: 12px; border-radius: 12px; margin-bottom: 15px; text-align: center;
+            font-weight: 600; display: none;
+        }
+.alert-msg.show { display: block; }
+.pedido-card {
+            background: #fff9fc; padding: 20px; border-radius: 15px; border: 2px solid #ffe4f0;
+            margin-bottom: 15px; display: grid; grid-template-columns: 1fr auto; gap: 15px; align-items: start;
+        }
+.pedido-info h3 { color: #ff69b4; font-size: 20px; margin-bottom: 8px; }
+.pedido-info p { color: #8b6a8b; font-size: 13px; margin: 4px 0; }
+.pedido-info strong { color: #ff69b4; }
+.pedido-actions { display: flex; flex-direction: column; gap: 8px; }
+.badge { padding: 4px 12px; border-radius: 12px; font-size: 11px; font-weight: 700; display: inline-block; }
+.badge-pagado { background: #d4f4dd; color: #2d7a3e; }
+.badge-pendiente { background: #ffe4b5; color: #d2691e; }
+.modal {
+            display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); align-items: center; justify-content: center;
+        }
+.modal.active { display: flex; }
+.modal-content {
+            background: #fff; padding: 30px; border-radius: 20px; border: 3px solid #ffadd6;
+            max-width: 700px; width: 90%; max-height: 90vh; overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="navbar-left">
+            <h1>🍰 PASTELERÍA REYNA</h1>
+            <div class="user-info" id="userInfo">
+                <img id="userPic" class="user-pic" src="" alt="">
+                <div class="user-name" id="userName"></div>
+            </div>
+        </div>
+        <div class="navbar-right">
+            <button class="btn" onclick="goToMain()">INICIO</button>
+            <button class="btn" onclick="logout()">CERRAR SESIÓN</button>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="section">
+            <h2>Gestión de Pedidos</h2>
+            <div class="tabs">
+                <button class="tab-btn active" onclick="switchTab('nuevoPedido')">Nuevo Pedido</button>
+                <button class="tab-btn" onclick="switchTab('pedidosPendientes')">Pedidos Pendientes</button>
+                <button class="tab-btn" onclick="switchTab('pedidosEntregados')">Pedidos Entregados</button>
+                <button class="tab-btn" onclick="switchTab('clientes')">Clientes</button>
+            </div>
+            
+            <div class="alert-msg" id="alertMsg"></div>
+
+            <div id="nuevoPedido" class="tab-content">
+                <form id="pedidoForm">
+                    <div class="form-grid">
+                        <div class="input-group">
+                            <label>Cliente Existente</label>
+                            <select id="clienteExistente" class="input-field" onchange="cargarCliente()">
+                                <option value="">-- Nuevo Cliente --</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label>Nombre Cliente</label>
+                            <input type="text" id="nombreCliente" class="input-field" required>
+                        </div>
+                        <div class="input-group">
+                            <label>Teléfono</label>
+                            <input type="tel" id="telefono" class="input-field" required>
+                        </div>
+                        <div class="input-group">
+                            <label>Email</label>
+                            <input type="email" id="email" class="input-field">
+                        </div>
+                        <div class="input-group" style="grid-column: 1 / -1;">
+                            <label>Domicilio de Entrega</label>
+                            <input type="text" id="domicilio" class="input-field">
+                        </div>
+                        <div class="input-group">
+                            <label>Tamaño de Pastel</label>
+                            <select id="tamanioPastel" class="input-field" required>
+                                <option value="Chico">Chico</option>
+                                <option value="Mediano">Mediano</option>
+                                <option value="Grande">Grande</option>
+                                <option value="1/4 de plancha">1/4 de plancha</option>
+                                <option value="1/2 plancha">1/2 plancha</option>
+                                <option value="1 Plancha">1 Plancha</option>
+                                <option value="Repostería">Repostería</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label>Fecha Programada</label>
+                            <input type="date" id="fechaProgramada" class="input-field" required>
+                        </div>
+                        <div class="input-group">
+                            <label>Pagado</label>
+                            <select id="pagado" class="input-field">
+                                <option value="0">No Pagado</option>
+                                <option value="1">Pagado Completo</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label>Anticipo</label>
+                            <input type="number" step="0.01" id="anticipo" class="input-field" value="0">
+                        </div>
+                        <div class="input-group">
+                            <label>Total</label>
+                            <input type="number" step="0.01" id="total" class="input-field" required>
+                        </div>
+                        <div class="input-group" style="grid-column: 1 / -1;">
+                            <label>Descripción del Pedido</label>
+                            <textarea id="descripcion" class="input-field" placeholder="Colores, frutas, imagen específica, dedicatoria, etc."></textarea>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn">GUARDAR PEDIDO</button>
+                </form>
+            </div>
+
+            <div id="pedidosPendientes" class="tab-content" style="display:none;">
+                <div id="listaPedidosPendientes"></div>
+            </div>
+
+            <div id="pedidosEntregados" class="tab-content" style="display:none;">
+                <div id="listaPedidosEntregados"></div>
+            </div>
+
+            <div id="clientes" class="tab-content" style="display:none;">
+                <button class="btn" onclick="openClienteModal()" style="margin-bottom:20px;">+ NUEVO CLIENTE</button>
+                <div id="listaClientes"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="clienteModal">
+        <div class="modal-content">
+            <h3 style="color:#ff69b4;text-align:center;margin-bottom:20px;">Cliente</h3>
+            <form id="clienteForm">
+                <input type="hidden" id="clienteId">
+                <div class="input-group">
+                    <label>Nombre</label>
+                    <input type="text" id="clienteNombre" class="input-field" required>
+                </div>
+                <div class="input-group">
+                    <label>Teléfono</label>
+                    <input type="tel" id="clienteTelefono" class="input-field">
+                </div>
+                <div class="input-group">
+                    <label>Email</label>
+                    <input type="email" id="clienteEmail" class="input-field">
+                </div>
+                <div class="input-group">
+                    <label>Domicilio</label>
+                    <input type="text" id="clienteDomicilio" class="input-field">
+                </div>
+                <div style="display:flex;gap:10px;justify-content:center;margin-top:20px;">
+                    <button type="submit" class="btn">GUARDAR</button>
+                    <button type="button" class="btn btn-danger" onclick="closeModal('clienteModal')">CANCELAR</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal" id="pedidoModal">
+        <div class="modal-content">
+            <h3 style="color:#ff69b4;text-align:center;margin-bottom:20px;">Editar Pedido</h3>
+            <form id="pedidoEditForm">
+                <input type="hidden" id="editPedidoId">
+                <input type="hidden" id="editClienteId">
+                <div class="form-grid">
+                    <div class="input-group">
+                        <label>Nombre Cliente</label>
+                        <input type="text" id="editNombreCliente" class="input-field" required>
+                    </div>
+                    <div class="input-group">
+                        <label>Teléfono</label>
+                        <input type="tel" id="editTelefono" class="input-field" required>
+                    </div>
+                    <div class="input-group">
+                        <label>Email</label>
+                        <input type="email" id="editEmail" class="input-field">
+                    </div>
+                    <div class="input-group">
+                        <label>Tamaño de Pastel</label>
+                        <select id="editTamanioPastel" class="input-field" required>
+                            <option value="Chico">Chico</option>
+                            <option value="Mediano">Mediano</option>
+                            <option value="Grande">Grande</option>
+                            <option value="1/4 de plancha">1/4 de plancha</option>
+                            <option value="1/2 plancha">1/2 plancha</option>
+                            <option value="1 Plancha">1 Plancha</option>
+                            <option value="Repostería">Repostería</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>Fecha Programada</label>
+                        <input type="date" id="editFechaProgramada" class="input-field" required>
+                    </div>
+                    <div class="input-group">
+                        <label>Pagado</label>
+                        <select id="editPagado" class="input-field">
+                            <option value="0">No Pagado</option>
+                            <option value="1">Pagado Completo</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>Anticipo</label>
+                        <input type="number" step="0.01" id="editAnticipo" class="input-field" value="0">
+                    </div>
+                    <div class="input-group">
+                        <label>Total</label>
+                        <input type="number" step="0.01" id="editTotal" class="input-field" required>
+                    </div>
+                    <div class="input-group" style="grid-column: 1 / -1;">
+                        <label>Domicilio de Entrega</label>
+                        <input type="text" id="editDomicilio" class="input-field">
+                    </div>
+                    <div class="input-group" style="grid-column: 1 / -1;">
+                        <label>Descripción del Pedido</label>
+                        <textarea id="editDescripcion" class="input-field"></textarea>
+                    </div>
+                </div>
+                <div style="display:flex;gap:10px;justify-content:center;margin-top:20px;">
+                    <button type="submit" class="btn">GUARDAR CAMBIOS</button>
+                    <button type="button" class="btn btn-danger" onclick="closeModal('pedidoModal')">CANCELAR</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const currentUser = new URLSearchParams(window.location.search).get('user');
+        
+        if (currentUser!== 'Reyna_34142') {
+            window.location.href = '/index.html';
+        }
+        
+        async function loadUserInfo() {
+            const res = await fetch(`/api/user/${currentUser}?user=${currentUser}`);
+            const user = await res.json();
+            document.getElementById('userName').textContent = user.username;
+            document.getElementById('userPic').src = user.profile_pic || '/uploads/LogoMetal.png';
+        }
+        
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+            document.getElementById('nuevoPedido').style.display = tab === 'nuevoPedido'? 'block' : 'none';
+            document.getElementById('pedidosPendientes').style.display = tab === 'pedidosPendientes'? 'block' : 'none';
+            document.getElementById('pedidosEntregados').style.display = tab === 'pedidosEntregados'? 'block' : 'none';
+            document.getElementById('clientes').style.display = tab === 'clientes'? 'block' : 'none';
+            
+            if (tab === 'pedidosPendientes') loadPedidos(0);
+            if (tab === 'pedidosEntregados') loadPedidos(1);
+            if (tab === 'clientes') loadClientes();
+            if (tab === 'nuevoPedido') loadClientesSelect();
+        }
+        
+        async function loadClientesSelect() {
+            const res = await fetch(`/api/clientes?user=${currentUser}`);
+            const clientes = await res.json();
+            document.getElementById('clienteExistente').innerHTML = '<option value="">-- Nuevo Cliente --</option>' + 
+                clientes.map(c => `<option value="${c.id}">${c.nombre} - ${c.telefono}</option>`).join('');
+        }
+        
+        async function cargarCliente() {
+            const id = document.getElementById('clienteExistente').value;
+            if (!id) {
+                document.getElementById('nombreCliente').value = '';
+                document.getElementById('telefono').value = '';
+                document.getElementById('email').value = '';
+                document.getElementById('domicilio').value = '';
+                return;
+            }
+            const res = await fetch(`/api/clientes?user=${currentUser}`);
+            const clientes = await res.json();
+            const c = clientes.find(x => x.id == id);
+            if (c) {
+                document.getElementById('nombreCliente').value = c.nombre;
+                document.getElementById('telefono').value = c.telefono || '';
+                document.getElementById('email').value = c.email || '';
+                document.getElementById('domicilio').value = c.domicilio || '';
+            }
+        }
+        
+        document.getElementById('pedidoForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            let clienteId = document.getElementById('clienteExistente').value;
+            
+            if (!clienteId) {
+                const clienteData = {
+                    nombre: document.getElementById('nombreCliente').value,
+                    telefono: document.getElementById('telefono').value,
+                    email: document.getElementById('email').value,
+                    domicilio: document.getElementById('domicilio').value
+                };
+                
+                const resCliente = await fetch(`/api/clientes?user=${currentUser}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(clienteData)
+                });
+                const resultCliente = await resCliente.json();
+                if (!resultCliente.success) {
+                    showAlert('Error al crear cliente');
+                    return;
+                }
+                clienteId = resultCliente.id;
+            }
+            
+            const data = {
+                cliente_id: clienteId,
+                tamanio_pastel: document.getElementById('tamanioPastel').value,
+                fecha_programada: document.getElementById('fechaProgramada').value,
+                domicilio_entrega: document.getElementById('domicilio').value,
+                telefono: document.getElementById('telefono').value,
+                email: document.getElementById('email').value,
+                pagado: document.getElementById('pagado').value,
+                anticipo: document.getElementById('anticipo').value,
+                total: document.getElementById('total').value,
+                descripcion: document.getElementById('descripcion').value
+            };
+            
+            const res = await fetch(`/api/pedidos?user=${currentUser}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            const result = await res.json();
+            showAlert(result.success? 'Pedido guardado' : 'Error al guardar');
+            if (result.success) {
+                e.target.reset();
+                loadClientesSelect();
+            }
+        });
+        
+        async function loadPedidos(entregado) {
+            const res = await fetch(`/api/pedidos?user=${currentUser}&entregado=${entregado}`);
+            const pedidos = await res.json();
+            
+            const container = entregado? 'listaPedidosEntregados' : 'listaPedidosPendientes';
+            document.getElementById(container).innerHTML = pedidos.map(p => `
+                <div class="pedido-card">
+                    <div class="pedido-info">
+                        <h3>${p.cliente_nombre} - ${p.tamanio_pastel}</h3>
+                        <p><strong>Fecha:</strong> ${new Date(p.fecha_programada).toLocaleDateString('es-MX')}</p>
+                        <p><strong>Tel:</strong> ${p.telefono} | <strong>Email:</strong> ${p.email || 'N/A'}</p>
+                        <p><strong>Domicilio:</strong> ${p.domicilio_entrega || 'Recoge en tienda'}</p>
+                        <p><strong>Total:</strong> $${parseFloat(p.total).toFixed(2)} | <strong>Anticipo:</strong> $${parseFloat(p.anticipo).toFixed(2)}</p>
+                        <p><span class="badge ${p.pagado? 'badge-pagado' : 'badge-pendiente'}">${p.pagado? 'PAGADO' : 'PENDIENTE'}</span></p>
+                        <p><strong>Descripción:</strong> ${p.descripcion || 'Sin detalles'}</p>
+                    </div>
+                    <div class="pedido-actions">
+                        ${!p.entregado? `<button class="btn btn-small btn-success
