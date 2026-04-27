@@ -608,6 +608,158 @@ app.get('/api/admin/users', (req, res) => {
         res.json(results);
     });
 });
+// === SISTEMA JAGUAR - RUTAS ===
+
+// Servir página principal Jaguar
+app.get('/jaguar.html', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'jaguar.html'));
+});
+
+app.get('/jaguar-movimientos.html', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'jaguar-movimientos.html'));
+});
+
+app.get('/jaguar-cotizacion.html', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'jaguar-cotizacion.html'));
+});
+
+app.get('/jaguar-clientes.html', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'jaguar-clientes.html'));
+});
+
+// API CLIENTES JAGUAR
+app.get('/api/jaguar/clientes', (req, res) => {
+    const { user, search } = req.query;
+    let sql = 'SELECT * FROM jaguar_clientes WHERE owner_username =?';
+    let params = [user];
+    
+    if (search) {
+        sql += ' AND (nombre LIKE? OR rfc LIKE? OR email LIKE?)';
+        const s = `%${search}%`;
+        params.push(s, s, s);
+    }
+    sql += ' ORDER BY nombre';
+    
+    db.query(sql, params, (err, results) => {
+        if (err) return res.status(500).json({ error: 'Error en el servidor' });
+        res.json(results);
+    });
+});
+
+app.post('/api/jaguar/clientes', (req, res) => {
+    const { user } = req.query;
+    const { nombre, rfc, telefono, email, domicilio, ciudad, estado, cp, regimen_fiscal } = req.body;
+    
+    db.query(`INSERT INTO jaguar_clientes 
+        (nombre, rfc, telefono, email, domicilio, ciudad, estado, cp, regimen_fiscal, owner_username) 
+        VALUES (?,?,?,?,?,?,?,?,?,?)`, 
+        [nombre, rfc, telefono, email, domicilio, ciudad, estado, cp, regimen_fiscal, user], 
+        (err, result) => {
+            if (err) return res.json({ success: false, message: 'Error al crear cliente' });
+            res.json({ success: true, id: result.insertId });
+        });
+});
+
+// API PROVEEDORES JAGUAR
+app.get('/api/jaguar/proveedores', (req, res) => {
+    const { user } = req.query;
+    db.query('SELECT * FROM jaguar_proveedores WHERE owner_username =? ORDER BY nombre', [user], (err, results) => {
+        if (err) return res.status(500).json({ error: 'Error en el servidor' });
+        res.json(results);
+    });
+});
+
+app.post('/api/jaguar/proveedores', (req, res) => {
+    const { user } = req.query;
+    const { nombre, telefono, email, direccion } = req.body;
+    db.query('INSERT INTO jaguar_proveedores (nombre, telefono, email, direccion, owner_username) VALUES (?,?,?,?,?)', 
+        [nombre, telefono, email, direccion, user], 
+        (err, result) => {
+            if (err) return res.json({ success: false, message: 'Error al crear proveedor' });
+            res.json({ success: true, id: result.insertId });
+        });
+});
+
+// API PRODUCTOS JAGUAR
+app.get('/api/jaguar/productos', (req, res) => {
+    const { user, search } = req.query;
+    let sql = `SELECT p.*, prov.nombre as proveedor_nombre 
+               FROM jaguar_productos p 
+               JOIN jaguar_proveedores prov ON p.proveedor_id = prov.id 
+               WHERE p.owner_username =?`;
+    let params = [user];
+    
+    if (search) {
+        sql += ` AND (p.nombre LIKE? OR p.descripcion LIKE?)`;
+        const s = `%${search}%`;
+        params.push(s, s);
+    }
+    sql += ` ORDER BY p.nombre`;
+    
+    db.query(sql, params, (err, results) => {
+        if (err) return res.status(500).json({ error: 'Error en el servidor' });
+        res.json(results);
+    });
+});
+
+app.post('/api/jaguar/productos', (req, res) => {
+    const { user } = req.query;
+    const { proveedor_id, nombre, descripcion, precio_compra, precio_venta, unidad, stock_actual, stock_minimo } = req.body;
+    
+    db.query(`INSERT INTO jaguar_productos 
+        (proveedor_id, nombre, descripcion, precio_compra, precio_venta, unidad, stock_actual, stock_minimo, owner_username) 
+        VALUES (?,?,?,?,?,?,?,?,?)`, 
+        [proveedor_id, nombre, descripcion, precio_compra, precio_venta, unidad, stock_actual || 0, stock_minimo || 5, user], 
+        (err, result) => {
+            if (err) return res.json({ success: false, message: 'Error al crear producto' });
+            res.json({ success: true, id: result.insertId });
+        });
+});
+
+// API COTIZACIONES
+app.post('/api/jaguar/cotizacion', (req, res) => {
+    const { user } = req.query;
+    const { cliente_id, productos } = req.body; // productos = [{id, cantidad}]
+    
+    let subtotal = 0;
+    const productosDetalle = [];
+    
+    // Calcular totales
+    const promises = productos.map(p => {
+        return new Promise((resolve, reject) => {
+            db.query('SELECT precio_venta FROM jaguar_productos WHERE id =? AND owner_username =?', 
+                [p.id, user], (err, results) => {
+                    if (err || results.length === 0) return reject('Producto no encontrado');
+                    const precio = results[0].precio_venta;
+                    subtotal += precio * p.cantidad;
+                    productosDetalle.push({ producto_id: p.id, cantidad: p.cantidad, precio_unitario: precio });
+                    resolve();
+                });
+        });
+    });
+    
+    Promise.all(promises).then(() => {
+        const iva = subtotal * 0.16;
+        const total = subtotal + iva;
+        
+        db.query('INSERT INTO jaguar_cotizaciones (cliente_id, subtotal, iva, total, owner_username) VALUES (?,?,?,?,?)',
+            [cliente_id, subtotal, iva, total, user],
+            (err, result) => {
+                if (err) return res.json({ success: false, message: 'Error al crear cotización' });
+                
+                const cotizacion_id = result.insertId;
+                const values = productosDetalle.map(p => [cotizacion_id, p.producto_id, p.cantidad, p.precio_unitario]);
+                
+                db.query('INSERT INTO jaguar_cotizaciones_detalle (cotizacion_id, producto_id, cantidad, precio_unitario) VALUES?',
+                    [values], (err2) => {
+                        if (err2) return res.json({ success: false, message: 'Error al guardar detalle' });
+                        res.json({ success: true, id: cotizacion_id, subtotal, iva, total });
+                    });
+            });
+    }).catch(err => {
+        res.json({ success: false, message: err });
+    });
+});
 
 app.listen(PORT, () => {
     console.log(`Servidor corriendo en puerto ${PORT}`);
