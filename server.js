@@ -45,6 +45,7 @@ app.use((req, res, next) => {
     next();
 });
 
+// === LOGIN/REGISTER ===
 app.post('/register', upload.single('profile_pic'), async (req, res) => {
     try {
         const { username, password, name, last_name, birth_date, gender, phone, email, address, city, country } = req.body;
@@ -250,89 +251,15 @@ app.post('/api/productos', (req, res) => {
     const { user } = req.query;
     if (user!== 'Reyna_34142') return res.status(403).json({ error: 'Acceso denegado' });
     
-    const { proveedor_id, nombre, precio, unidad } = req.body;
-    db.query('INSERT INTO productos (proveedor_id, nombre, precio, unidad) VALUES (?,?,?,?)', 
-        [proveedor_id, nombre, precio, unidad], 
+    const { proveedor_id, nombre, precio, unidad, stock_actual, stock_minimo } = req.body;
+    db.query('INSERT INTO productos (proveedor_id, nombre, precio, unidad, stock_actual, stock_minimo) VALUES (?,?,?,?,?,?)', 
+        [proveedor_id, nombre, precio, unidad, stock_actual || 0, stock_minimo || 2], 
         (err, result) => {
             if (err) return res.json({ success: false, message: 'Error al crear producto' });
             res.json({ success: true, id: result.insertId });
         });
 });
 
-// === RUTAS LISTAS DE COMPRA - SOLO REYNA_34142 ===
-app.post('/api/listas_compra', (req, res) => {
-    const { user } = req.query;
-    if (user!== 'Reyna_34142') return res.status(403).json({ error: 'Acceso denegado' });
-    
-    const { nombre_lista, productos } = req.body;
-    const total = productos.reduce((sum, p) => sum + (p.precio * p.cantidad), 0);
-    
-    db.query('INSERT INTO listas_compra (nombre_lista, owner_username, total) VALUES (?,?,?)', 
-        [nombre_lista, user, total], 
-        (err, result) => {
-            if (err) return res.json({ success: false, message: 'Error al guardar lista' });
-            
-            const listaId = result.insertId;
-            const values = productos.map(p => [listaId, p.id, p.cantidad, p.precio]);
-            
-            db.query('INSERT INTO lista_compras_detalle (lista_id, producto_id, cantidad, precio_unitario) VALUES?', 
-                [values], 
-                (err2) => {
-                    if (err2) return res.json({ success: false, message: 'Error al guardar detalle' });
-                    res.json({ success: true, lista_id: listaId });
-                });
-        });
-});
-
-// === RUTA PEDIDOS REYNA ===
-app.get('/PedidosReyna', (req, res) => {
-    const { user } = req.query;
-    if (user!== 'Reyna_34142') {
-        return res.status(403).send('Acceso denegado');
-    }
-    res.sendFile(path.join(__dirname, 'public', 'PedidosReyna.html'));
-});
-
-// === RUTAS CLIENTES - SOLO REYNA_34142 ===
-app.get('/api/clientes', (req, res) => {
-    const { user } = req.query;
-    if (user!== 'Reyna_34142') return res.status(403).json({ error: 'Acceso denegado' });
-    
-    db.query('SELECT * FROM clientes_pasteleria WHERE owner_username =? ORDER BY nombre', [user], (err, results) => {
-        if (err) return res.status(500).json({ error: 'Error en el servidor' });
-        res.json(results);
-    });
-});
-
-app.post('/api/clientes', (req, res) => {
-    const { user } = req.query;
-    if (user!== 'Reyna_34142') return res.status(403).json({ error: 'Acceso denegado' });
-    
-    const { nombre, telefono, email, domicilio } = req.body;
-    db.query('INSERT INTO clientes_pasteleria (nombre, telefono, email, domicilio, owner_username) VALUES (?,?,?,?,?)', 
-        [nombre, telefono, email, domicilio, user], 
-        (err, result) => {
-            if (err) return res.json({ success: false, message: 'Error al crear cliente' });
-            res.json({ success: true, id: result.insertId });
-        });
-});
-
-// === RUTAS PEDIDOS - SOLO REYNA_34142 ===
-app.post('/api/pedidos', (req, res) => {
-    const { user } = req.query;
-    if (user!== 'Reyna_34142') return res.status(403).json({ error: 'Acceso denegado' });
-    
-    const { cliente_id, tamanio_pastel, fecha_programada, domicilio_entrega, telefono, email, pagado, anticipo, total, descripcion } = req.body;
-    
-    db.query(`INSERT INTO pedidos_pasteleria 
-        (cliente_id, tamanio_pastel, fecha_programada, domicilio_entrega, telefono, email, pagado, anticipo, total, descripcion, owner_username) 
-        VALUES (?,?,?,?,?,?,?,?,?,?,?)`, 
-        [cliente_id, tamanio_pastel, fecha_programada, domicilio_entrega, telefono, email, pagado, anticipo, total, descripcion, user], 
-        (err, result) => {
-            if (err) return res.json({ success: false, message: 'Error al crear pedido' });
-            res.json({ success: true, id: result.insertId });
-        });
-});
 // === RUTAS INVENTARIO - SOLO REYNA_34142 ===
 app.get('/api/inventario', (req, res) => {
     const { user } = req.query;
@@ -387,6 +314,31 @@ app.put('/api/inventario/config/:id', (req, res) => {
         (err) => {
             if (err) return res.json({ success: false, message: 'Error al actualizar' });
             res.json({ success: true });
+        });
+});
+
+// === RUTAS LISTAS DE COMPRA - SOLO REYNA_34142 ===
+app.post('/api/listas_compra', (req, res) => {
+    const { user } = req.query;
+    if (user!== 'Reyna_34142') return res.status(403).json({ error: 'Acceso denegado' });
+    
+    const { nombre_lista, productos } = req.body;
+    const total = productos.reduce((sum, p) => sum + (p.precio * p.cantidad), 0);
+    
+    db.query('INSERT INTO listas_compra (nombre_lista, owner_username, total) VALUES (?,?,?)', 
+        [nombre_lista, user, total], 
+        (err, result) => {
+            if (err) return res.json({ success: false, message: 'Error al guardar lista' });
+            
+            const listaId = result.insertId;
+            const values = productos.map(p => [listaId, p.id, p.cantidad, p.precio]);
+            
+            db.query('INSERT INTO lista_compras_detalle (lista_id, producto_id, cantidad, precio_unitario) VALUES?', 
+                [values], 
+                (err2) => {
+                    if (err2) return res.json({ success: false, message: 'Error al guardar detalle' });
+                    res.json({ success: true, lista_id: listaId });
+                });
         });
 });
 
@@ -455,6 +407,7 @@ app.post('/api/pedidos', (req, res) => {
             res.json({ success: true, id: result.insertId });
         });
 });
+
 app.listen(PORT, () => {
     console.log(`Servidor corriendo en puerto ${PORT}`);
 });
