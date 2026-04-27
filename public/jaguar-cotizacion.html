@@ -237,6 +237,7 @@
             justify-content: space-between;
             margin-bottom: 8px;
             font-size: 14px;
+            color: #e0e0e0; /* Agrega esto */
         }
         .total-line.final {
             font-size: 18px;
@@ -351,7 +352,7 @@
                         <span id="subtotal">$0.00</span>
                     </div>
                     <div class="total-line">
-                        <span>IVA 16%:</span>
+                        <span>IVA 8%:</span>
                         <span id="iva">$0.00</span>
                     </div>
                     <div class="total-line final">
@@ -537,7 +538,7 @@
             `).join('');
             
             const subtotal = carrito.reduce((sum, item) => sum + (item.precio * item.cantidad), 0);
-            const iva = subtotal * 0.16;
+            const iva = subtotal * 0.08;
             const total = subtotal + iva;
             
             document.getElementById('subtotal').textContent = `$${subtotal.toFixed(2)}`;
