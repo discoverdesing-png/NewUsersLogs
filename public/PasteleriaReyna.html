@@ -58,14 +58,9 @@
             gap: 12px;
        }
 .container { 
-            max-width: 1400px; 
+            max-width: 1200px; 
             margin: 40px auto; 
             padding: 0 20px;
-        }
-.main-grid {
-            display: grid;
-            grid-template-columns: 1fr 450px;
-            gap: 25px;
         }
 .section {
             background: #fff;
@@ -73,6 +68,7 @@
             border-radius: 20px;
             box-shadow: 0 10px 40px rgba(255, 182, 217, 0.3);
             border: 3px solid #ffadd6;
+            margin-bottom: 30px;
             display: none;
         }
 .section.active { display: block; }
@@ -82,41 +78,23 @@
             margin-bottom: 20px;
             text-align: center;
         }
-.menu-section {
-            background: #fff;
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 10px 40px rgba(255, 182, 217, 0.3);
-            border: 3px solid #ffadd6;
-        }
-.menu-section h2 {
-            color: #ff69b4;
-            font-size: 32px;
-            margin-bottom: 15px;
-            text-align: center;
-        }
-.menu-section p {
-            color: #a0526d;
-            font-size: 16px;
-            margin-bottom: 30px;
-            text-align: center;
-        }
 .card-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 25px;
             margin-top: 30px;
         }
-.card {
-            background: #fff9fc;
-            padding: 30px;
+.card-menu {
+            background: #fff;
+            padding: 40px 20px;
             border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(255, 182, 217, 0.3);
             border: 2px solid #ffe4f0;
             text-align: center;
             transition: all 0.3s ease;
             cursor: pointer;
         }
-.card:hover {
+.card-menu:hover {
             transform: translateY(-5px);
             box-shadow: 0 10px 30px rgba(255, 182, 217, 0.5);
             border-color: #ffadd6;
@@ -125,12 +103,12 @@
             font-size: 50px;
             margin-bottom: 15px;
         }
-.card h3 {
+.card-menu h3 {
             color: #ff69b4;
             font-size: 22px;
             margin-bottom: 10px;
         }
-.card p {
+.card-menu p {
             color: #8b6a8b;
             font-size: 14px;
             line-height: 1.6;
@@ -180,78 +158,33 @@
             border-color: #ff69b4;
             box-shadow: 0 0 15px rgba(255, 105, 180, 0.3);
         }
-.product-list, .cart-list {
+.product-list {
             display: grid;
-            gap: 12px;
-            max-height: 500px;
-            overflow-y: auto;
-            padding-right: 10px;
+            gap: 15px;
         }
 .product-card {
             background: #fff9fc;
-            padding: 15px;
+            padding: 18px;
             border-radius: 12px;
             border: 2px solid #ffe4f0;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-.product-card:hover {
-            border-color: #ff69b4;
-            box-shadow: 0 4px 15px rgba(255, 105, 180, 0.3);
-            transform: scale(1.02);
         }
 .product-info strong {
             color: #ff69b4;
-            font-size: 15px;
+            font-size: 16px;
         }
 .product-info span {
             color: #8b6a8b;
-            font-size: 12px;
+            font-size: 13px;
             display: block;
             margin-top: 4px;
         }
 .product-price {
             color: #ff69b4;
-            font-size: 17px;
+            font-size: 18px;
             font-weight: 700;
-        }
-.cart-item {
-            background: #fff9fc;
-            padding: 12px;
-            border-radius: 12px;
-            border: 2px solid #ffe4f0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-.cart-info strong {
-            color: #ff69b4;
-            font-size: 14px;
-        }
-.cart-info span {
-            color: #8b6a8b;
-            font-size: 11px;
-            display: block;
-        }
-.cart-actions {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-.cart-total {
-            margin-top: 20px;
-            padding-top: 20px;
-            border-top: 3px solid #ffadd6;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-.cart-total strong {
-            color: #ff1493;
-            font-size: 24px;
         }
         
 .btn { 
@@ -273,10 +206,7 @@
             box-shadow: 0 6px 20px rgba(255, 105, 180, 0.6);
             background: linear-gradient(135deg, #ff69b4 0%, #ffadd6 100%);
         }
-.btn-small { padding: 6px 14px; font-size: 11px; }
-.btn-danger { 
-            background: linear-gradient(135deg, #ff6b9d 0%, #ff1493 100%);
-        }
+.btn-small { padding: 8px 18px; font-size: 12px; }
 .alert-msg {
             background: rgba(255, 105, 180, 0.15);
             border: 2px solid #ff69b4;
@@ -328,22 +258,22 @@
     </div>
     
     <div class="container">
-        <div class="menu-section" id="menuSection">
+        <div class="section active" id="menuSection">
             <h2>Bienvenida a tu Pastelería Digital</h2>
-            <p>Gestiona tu negocio de postres desde aquí</p>
+            <p style="text-align:center;color:#a0526d;margin-bottom:30px;">Gestiona tu negocio de postres desde aquí</p>
             
             <div class="card-grid">
-                <div class="card" onclick="showSection('catalogoSection')">
+                <div class="card-menu" onclick="showSection('catalogoSection')">
                     <div class="card-icon">🎂</div>
-                    <h3>Catálogo</h3>
+                    <h3>CATÁLOGO</h3>
                     <p>Administra tus pasteles, cupcakes y postres disponibles</p>
                 </div>
-                <div class="card" onclick="showSection('proveedoresSection')">
+                <div class="card-menu" onclick="showSection('proveedoresSection')">
                     <div class="card-icon">📦</div>
                     <h3>PROVEEDORES</h3>
                     <p>Registra proveedores y crea tu lista de compras</p>
                 </div>
-                <div class="card" onclick="showSection('pedidosSection')">
+                <div class="card-menu" onclick="showSection('pedidosSection')">
                     <div class="card-icon">📋</div>
                     <h3>PEDIDOS</h3>
                     <p>Revisa y gestiona los pedidos de tus clientes</p>
@@ -352,10 +282,11 @@
         </div>
 
         <div class="section" id="proveedoresSection">
-            <h2>Gestión de Proveedores y Lista de Compras</h2>
+            <h2>Gestión de Proveedores</h2>
             <div class="tabs">
                 <button class="tab-btn active" onclick="switchTab('registroProveedor')">Registrar Proveedor</button>
                 <button class="tab-btn" onclick="switchTab('registroProducto')">Registrar Producto</button>
+                <button class="tab-btn" onclick="switchTab('listaCompras')">Lista de Compras</button>
             </div>
             
             <div class="alert-msg" id="alertMsg"></div>
@@ -407,46 +338,30 @@
                     <button type="submit" class="btn">GUARDAR PRODUCTO</button>
                 </form>
             </div>
-            
-            <button class="btn" onclick="showSection('menuSection')" style="margin-top:20px;">← VOLVER AL MENÚ</button>
-        </div>
 
-        <div class="section" id="listaComprasSection">
-            <h2>Lista de Compras</h2>
-            <div class="main-grid">
-                <div>
-                    <input type="text" id="searchInput" class="search-box" placeholder="Buscar por producto o proveedor...">
-                    <div class="product-list" id="productList"></div>
-                </div>
-                <div>
-                    <h3 style="color:#ff69b4;text-align:center;margin-bottom:15px;">Carrito</h3>
-                    <div class="cart-list" id="cartList"></div>
-                    <div class="cart-total">
-                        <span style="color:#8b6a8b;">Total:</span>
-                        <strong id="cartTotal">$0.00</strong>
-                    </div>
-                    <button class="btn" style="width:100%;margin-top:15px;" onclick="finalizarCompra()">FINALIZAR COMPRA</button>
-                </div>
+            <div id="listaCompras" class="tab-content" style="display:none;">
+                <input type="text" id="searchInput" class="search-box" placeholder="Buscar por producto o proveedor...">
+                <div class="product-list" id="productList"></div>
             </div>
-            <button class="btn" onclick="showSection('menuSection')" style="margin-top:20px;">← VOLVER AL MENÚ</button>
+            
+            <button class="btn" onclick="showSection('menuSection')" style="margin-top:20px;">← VOLVER</button>
         </div>
 
         <div class="section" id="catalogoSection">
             <h2>Catálogo</h2>
             <p style="text-align:center;color:#8b6a8b;">Próximamente...</p>
-            <button class="btn" onclick="showSection('menuSection')" style="margin-top:20px;">← VOLVER AL MENÚ</button>
+            <button class="btn" onclick="showSection('menuSection')" style="margin-top:20px;">← VOLVER</button>
         </div>
 
         <div class="section" id="pedidosSection">
             <h2>Pedidos</h2>
             <p style="text-align:center;color:#8b6a8b;">Próximamente...</p>
-            <button class="btn" onclick="showSection('menuSection')" style="margin-top:20px;">← VOLVER AL MENÚ</button>
+            <button class="btn" onclick="showSection('menuSection')" style="margin-top:20px;">← VOLVER</button>
         </div>
     </div>
 
     <script>
         const currentUser = new URLSearchParams(window.location.search).get('user');
-        let cart = [];
         
         if (currentUser!== 'Reyna_34142') {
             window.location.href = '/index.html';
@@ -460,10 +375,10 @@
         }
         
         function showSection(id) {
-            document.querySelectorAll('.section, .menu-section').forEach(s => s.style.display = 'none');
-            document.getElementById(id).style.display = 'block';
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
             if (id === 'proveedoresSection') loadProveedores();
-            if (id === 'listaComprasSection') loadProductos();
+            if (id === 'proveedoresSection' && document.getElementById('listaCompras').style.display!== 'none') loadProductos();
         }
         
         function switchTab(tab) {
@@ -471,7 +386,9 @@
             event.target.classList.add('active');
             document.getElementById('registroProveedor').style.display = tab === 'registroProveedor'? 'block' : 'none';
             document.getElementById('registroProducto').style.display = tab === 'registroProducto'? 'block' : 'none';
+            document.getElementById('listaCompras').style.display = tab === 'listaCompras'? 'block' : 'none';
             if (tab === 'registroProducto') loadProveedores();
+            if (tab === 'listaCompras') loadProductos();
         }
         
         async function loadProveedores() {
@@ -517,7 +434,7 @@
             const productos = await res.json();
             
             document.getElementById('productList').innerHTML = productos.map(p => `
-                <div class="product-card" onclick='addToCart(${JSON.stringify(p)})'>
+                <div class="product-card">
                     <div class="product-info">
                         <strong>${p.nombre}</strong>
                         <span>Proveedor: ${p.proveedor_nombre}</span>
@@ -528,64 +445,9 @@
             `).join('');
         }
         
-        function addToCart(product) {
-            const existing = cart.find(c => c.id === product.id);
-            if (existing) {
-                existing.cantidad++;
-            } else {
-                cart.push({...product, cantidad: 1});
-            }
-            renderCart();
-        }
-        
-        function removeFromCart(id) {
-            cart = cart.filter(c => c.id!== id);
-            renderCart();
-        }
-        
-        function updateQty(id, delta) {
-            const item = cart.find(c => c.id === id);
-            if (item) {
-                item.cantidad += delta;
-                if (item.cantidad <= 0) removeFromCart(id);
-                else renderCart();
-            }
-        }
-        
-        function renderCart() {
-            const cartList = document.getElementById('cartList');
-            cartList.innerHTML = cart.map(item => `
-                <div class="cart-item">
-                    <div class="cart-info">
-                        <strong>${item.nombre}</strong>
-                        <span>$${parseFloat(item.precio).toFixed(2)} x ${item.cantidad}</span>
-                    </div>
-                    <div class="cart-actions">
-                        <button class="btn btn-small" onclick="updateQty(${item.id}, -1)">-</button>
-                        <span style="min-width:20px;text-align:center;">${item.cantidad}</span>
-                        <button class="btn btn-small" onclick="updateQty(${item.id}, 1)">+</button>
-                        <button class="btn btn-small btn-danger" onclick="removeFromCart(${item.id})">X</button>
-                    </div>
-                </div>
-            `).join('');
-            
-            const total = cart.reduce((sum, item) => sum + (item.precio * item.cantidad), 0);
-            document.getElementById('cartTotal').textContent = `$${total.toFixed(2)}`;
-        }
-        
         document.getElementById('searchInput').addEventListener('input', (e) => {
             loadProductos(e.target.value);
         });
-        
-        function finalizarCompra() {
-            if (cart.length === 0) {
-                showAlert('El carrito está vacío');
-                return;
-            }
-            showAlert('Compra finalizada - Próximamente guardado en BD');
-            cart = [];
-            renderCart();
-        }
         
         function showAlert(msg) {
             const alert = document.getElementById('alertMsg');
