@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Movimientos - Sistema Jaguar</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Segoe UI', Arial, sans-serif; 
+            background: #0a1628; 
+            min-height: 100vh;
+            padding: 20px;
+            color: #e0e0e0;
+        }
+        .navbar {
+            background: #0f1f38;
+            padding: 20px 40px;
+            border-radius: 12px;
+            border: 1px solid #1a2f4a;
+            box-shadow: 0 0 40px rgba(0, 123, 255, 0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        .navbar h1 {
+            color: #007bff;
+            font-size: 24px;
+            text-shadow: 0 0 20px rgba(0, 123, 255, 0.8);
+            letter-spacing: 2px;
+            font-weight: 800;
+        }
+        .container { 
+            max-width: 1400px; 
+            margin: 0 auto; 
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        .card { 
+            background: #0f1f38; 
+            padding: 30px; 
+            border-radius: 12px; 
+            box-shadow: 0 0 60px rgba(0, 123, 255, 0.2);
+            border: 1px solid #1a2f4a;
+        }
+        .card h2 {
+            color: #007bff;
+            font-size: 20px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .tab {
+            padding: 10px 20px;
+            background: #1a2f4a;
+            border: 1px solid #2a4a6a;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 13px;
+            color: #a0c4e8;
+        }
+        .tab.active {
+            background: #007bff;
+            color: #fff;
+            box-shadow: 0 0 15px rgba(0, 123, 255, 0.6);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            color: #a0c4e8;
+            font-size: 13px;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #2a4a6a;
+            border-radius: 6px;
+            background: #1a2f4a;
+            color: #e0e0e0;
+            font-size: 14px;
+        }
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 15px rgba(0, 123, 255, 0.4);
+        }
+        .btn { 
+            padding: 12px 25px; 
+            border-radius: 6px; 
+            font-weight: 700; 
+            font-size: 13px;
+            cursor: pointer;
+            text-transform: uppercase;
+            background: #0a1628;
+            color: #fff;
+            border: 2px solid #007bff;
+            transition: all 0.3s;
+        }
+        .btn:hover {
+            background: #007bff;
+            box-shadow: 0 0 20px rgba(0, 123, 255, 0.8);
+        }
+        .btn-danger {
+            border-color: #dc3545;
+            color: #dc3545;
+        }
+        .btn-danger:hover {
+            background: #dc3545;
+            color: #fff;
+        }
+        .list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .list-item {
+            background: #1a2f4a;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            border: 1px solid #2a4a6a;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .list-item:hover {
+            border-color: #007bff;
+        }
+        .stock-badge {
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 800;
+        }
+        .stock-normal { background: #28a745; color: #fff; }
+        .stock-bajo { background: #ffc107; color: #000; }
+        .stock-agotado { background: #dc3545; color: #fff; }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-content {
+            background: #0f1f38;
+            padding: 30px;
+            border-radius: 12px;
+            border: 1px solid #007bff;
+            max-width: 500px;
+            width: 90%;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <h1>MOVIMIENTOS</h1>
+        <button class="btn" onclick="goBack()">VOLVER</button>
+    </div>
+    
+    <div class="container">
+        <div class="card">
+            <div class="tabs">
+                <div class="tab active" onclick="switchTab('proveedor')">PROVEEDORES</div>
+                <div class="tab" onclick="switchTab('producto')">PRODUCTOS</div>
+                <div class="tab" onclick="switchTab('inventario')">INVENTARIO</div>
+            </div>
+            
+            <div id="tab-proveedor">
+                <h2>Nuevo Proveedor</h2>
+                <div class="form-group">
+                    <label>Nombre</label>
+                    <input type="text" id="prov-nombre">
+                </div>
+                <div class="form-group">
+                    <label>Teléfono</label>
+                    <input type="text" id="prov-telefono">
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="prov-email">
+                </div>
+                <div class="form-group">
+                    <label>Dirección</label>
+                    <textarea id="prov-direccion" rows="3"></textarea>
+                </div>
+                <button class="btn" onclick="saveProveedor()">GUARDAR PROVEEDOR</button>
+            </div>
+
+            <div id="tab-producto" style="display:none;">
+                <h2>Nuevo Producto</h2>
+                <div class="form-group">
+                    <label>Proveedor</label>
+                    <select id="prod-proveedor"></select>
+                </div>
+                <div class="form-group">
+                    <label>Nombre del Producto</label>
+                    <input type="text" id="prod-nombre">
+                </div>
+                <div class="form-group">
+                    <label>Descripción</label>
+                    <textarea id="prod-descripcion" rows="2"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Precio Compra</label>
+                    <input type="number" step="0.01" id="prod-precio-compra">
+                </div>
+                <div class="form-group">
+                    <label>Precio Venta</label>
+                    <input type="number" step="0.01" id="prod-precio-venta">
+                </div>
+                <div class="form-group">
+                    <label>Unidad</label>
+                    <select id="prod-unidad">
+                        <option value="pieza">Pieza</option>
+                        <option value="caja">Caja</option>
+                        <option value="paquete">Paquete</option>
+                        <option value="kg">Kg</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Stock Inicial</label>
+                    <input type="number" id="prod-stock" value="0">
+                </div>
+                <button class="btn" onclick="saveProducto()">GUARDAR PRODUCTO</button>
+            </div>
+
+            <div id="tab-inventario" style="display:none;">
+                <h2>Movimiento de Inventario</h2>
+                <div class="form-group">
+                    <label>Producto</label>
+                    <select id="inv-producto"></select>
+                </div>
+                <div class="form-group">
+                    <label>Tipo</label>
+                    <select id="inv-tipo">
+                        <option value="entrada">Entrada</option>
+                        <option value="salida">Salida</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Cantidad</label>
+                    <input type="number" id="inv-cantidad" min="1">
+                </div>
+                <div class="form-group">
+                    <label>Motivo</label>
+                    <input type="text" id="inv-motivo" placeholder="Compra, venta, ajuste...">
+                </div>
+                <button class="btn" onclick="saveMovimiento()">REGISTRAR MOVIMIENTO</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2 id="list-title">Proveedores Registrados</h2>
+            <input type="text" id="search" placeholder="Buscar..." style="margin-bottom:15px;">
+            <div class="list" id="list"></div>
+        </div>
+    </div>
+
+    <script>
+        const currentUser = new URLSearchParams(window.location.search).get('user');
+        if (!currentUser || currentUser!== 'Cris') {
+            window.location.href = '/dashboard.html';
+        }
+        
+        let currentTab = 'proveedor';
+        
+        function switchTab(tab) {
+            currentTab = tab;
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('[id^="tab-"]').forEach(t => t.style.display = 'none');
+            event.target.classList.add('active');
+            document.getElementById(`tab-${tab}`).style.display = 'block';
+            loadList();
+        }
+        
+        async function loadProveedores() {
+            const res = await fetch(`/api/jaguar/proveedores?user=${currentUser}`);
+            const data = await res.json();
+            const select = document.getElementById('prod-proveedor');
+            select.innerHTML = data.map(p => `<option value="${p.id}">${p.nombre}</option>`).join('');
+        }
+        
+        async function loadProductos() {
+            const res = await fetch(`/api/jaguar/productos?user=${currentUser}`);
+            const data = await res.json();
+            const select = document.getElementById('inv-producto');
+            select.innerHTML = data.map(p => `<option value="${p.id}">${p.nombre} - Stock: ${p.stock_actual}</option>`).join('');
+        }
+        
+        async function loadList() {
+            const search = document.getElementById('search').value;
+            let html = '';
+            
+            if (currentTab === 'proveedor') {
+                document.getElementById('list-title').textContent = 'Proveedores Registrados';
+                const res = await fetch(`/api/jaguar/proveedores?user=${currentUser}&search=${search}`);
+                const data = await res.json();
+                html = data.map(p => `
+                    <div class="list-item">
+                        <div>
+                            <strong style="color:#007bff;">${p.nombre}</strong><br>
+                            <span style="font-size:13px;color:#a0c4e8;">${p.telefono} - ${p.email}</span>
+                        </div>
+                    </div>
+                `).join('');
+            } else if (currentTab === 'producto' || currentTab === 'inventario') {
+                document.getElementById('list-title').textContent = 'Productos en Inventario';
+                const res = await fetch(`/api/jaguar/productos?user=${currentUser}&search=${search}`);
+                const data = await res.json();
+                html = data.map(p => {
+                    let estado = 'normal';
+                    if (p.stock_actual === 0) estado = 'agotado';
+                    else if (p.stock_actual <= p.stock_minimo) estado = 'bajo';
+                    
+                    return `
+                        <div class="list-item">
+                            <div>
+                                <strong style="color:#007bff;">${p.nombre}</strong><br>
+                                <span style="font-size:13px;color:#a0c4e8;">${p.proveedor_nombre} - $${p.precio_venta}</span>
+                            </div>
+                            <div>
+                                <span class="stock-badge stock-${estado}">Stock: ${p.stock_actual}</span>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+            
+            document.getElementById('list').innerHTML = html || '<p style="text-align:center;color:#666;">Sin registros</p>';
+        }
+        
+        async function saveProveedor() {
+            const data = {
+                nombre: document.getElementById('prov-nombre').value,
+                telefono: document.getElementById('prov-telefono').value,
+                email: document.getElementById('prov-email').value,
+                direccion: document.getElementById('prov-direccion').value
+            };
+            
+            const res = await fetch(`/api/jaguar/proveedores?user=${currentUser}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            const result = await res.json();
+            if (result.success) {
+                alert('Proveedor guardado');
+                loadProveedores();
+                loadList();
+            }
+        }
+        
+        async function saveProducto() {
+            const data = {
+                proveedor_id: document.getElementById('prod-proveedor').value,
+                nombre: document.getElementById('prod-nombre').value,
+                descripcion: document.getElementById('prod-descripcion').value,
+                precio_compra: document.getElementById('prod-precio-compra').value,
+                precio_venta: document.getElementById('prod-precio-venta').value,
+                unidad: document.getElementById('prod-unidad').value,
+                stock_actual: document.getElementById('prod-stock').value,
+                stock_minimo: 5
+            };
+            
+            const res = await fetch(`/api/jaguar/productos?user=${currentUser}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            const result = await res.json();
+            if (result.success) {
+                alert('Producto guardado');
+                loadProductos();
+                loadList();
+            }
+        }
+        
+        async function saveMovimiento() {
+            const data = {
+                producto_id: document.getElementById('inv-producto').value,
+                tipo: document.getElementById('inv-tipo').value,
+                cantidad: document.getElementById('inv-cantidad').value,
+                motivo: document.getElementById('inv-motivo').value
+            };
+            
+            const res = await fetch(`/api/jaguar/inventario/movimiento?user=${currentUser}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            const result = await res.json();
+            if (result.success) {
+                alert('Movimiento registrado');
+                loadProductos();
+                loadList();
+            }
+        }
+        
+        function goBack() {
+            window.location.href = `/jaguar.html?user=${currentUser}`;
+        }
+        
+        document.getElementById('search').addEventListener('input', loadList);
+        
+        loadProveedores();
+        loadProductos();
+        loadList();
+    </script>
+</body>
+</html>
