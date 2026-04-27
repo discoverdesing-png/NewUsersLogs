@@ -12,7 +12,7 @@
             padding: 20px;
             color: #e0e0e0;
         }
-       .navbar {
+    .navbar {
             background: #0f0f0f;
             padding: 20px 40px;
             border-radius: 12px;
@@ -23,14 +23,14 @@
             align-items: center;
             margin-bottom: 30px;
         }
-       .navbar h1 {
+    .navbar h1 {
             color: #ff0000;
             font-size: 26px;
             text-shadow: 0 0 20px rgba(255, 0, 0, 0.8);
             letter-spacing: 3px;
             font-weight: 800;
         }
-       .container { 
+    .container { 
             max-width: 800px; 
             margin: 0 auto; 
             background: #0f0f0f; 
@@ -39,7 +39,7 @@
             box-shadow: 0 0 60px rgba(255, 0, 0, 0.15), 0 8px 32px rgba(0,0,0,0.9);
             border: 1px solid #1a1a1a;
         }
-       .title {
+    .title {
             text-align: center;
             font-size: 30px;
             font-weight: 800;
@@ -48,7 +48,7 @@
             text-shadow: 0 0 20px rgba(255, 0, 0, 0.8);
             letter-spacing: 3px;
         }
-       .alert-msg {
+    .alert-msg {
             background: rgba(255, 0, 0, 0.15);
             border: 1px solid #ff0000;
             color: #ff4d4d;
@@ -60,24 +60,19 @@
             font-weight: 600;
             display: none;
         }
-       .alert-msg.success {
-            background: rgba(0, 255, 0, 0.15);
-            border: 1px solid #00ff00;
-            color: #4dff4d;
-        }
-       .alert-msg.show { display: block; }
-       .form-grid {
+    .alert-msg.show { display: block; }
+    .form-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 20px;
         }
-       .input-group {
+    .input-group {
             margin-bottom: 18px;
         }
-       .input-group.full-width {
+    .input-group.full-width {
             grid-column: 1 / -1;
         }
-       .input-field { 
+    .input-field { 
             width: 100%; 
             padding: 16px; 
             border: 1px solid #2a2a2a; 
@@ -86,13 +81,13 @@
             color: #e0e0e0;
             font-size: 15px;
         }
-       .input-field:focus {
+    .input-field:focus {
             outline: none;
             border-color: #ff0000;
             box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
             background: #222;
         }
-       label {
+    label {
             display: block;
             color: #ff0000;
             font-size: 12px;
@@ -101,15 +96,34 @@
             margin-bottom: 8px;
             font-weight: 700;
         }
-       .btn-group {
+    .btn-group {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 14px;
             margin-top: 30px;
        }
+    .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+       }
+    .checkbox-group input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            accent-color: #ff0000;
+       }
+    .checkbox-group label {
+            margin: 0;
+            color: #e0e0e0;
+            font-size: 15px;
+            text-transform: none;
+            letter-spacing: normal;
+            font-weight: 500;
+       }
         
         /* BOTÓN CON LUZ QUE RECORRE EL MARCO */
-       .btn { 
+    .btn { 
             padding: 20px; 
             border-radius: 8px; 
             font-weight: 700; 
@@ -125,7 +139,7 @@
             overflow: hidden;
             z-index: 1;
         }
-       .btn::before {
+    .btn::before {
             content: '';
             position: absolute;
             inset: -2px;
@@ -136,7 +150,7 @@
             opacity: 0;
             transition: opacity 0.3s;
         }
-       .btn::after {
+    .btn::after {
             content: '';
             position: absolute;
             inset: 2px;
@@ -145,9 +159,9 @@
             z-index: -1;
             transition: background 0.3s ease;
         }
-       .btn:hover::before { opacity: 1; }
-       .btn:hover::after { background: #1a0000; }
-       .btn:hover {
+    .btn:hover::before { opacity: 1; }
+    .btn:hover::after { background: #1a0000; }
+    .btn:hover {
             transform: translateY(-3px);
             color: #ff4d4d;
         }
@@ -235,7 +249,15 @@
                 <div class="input-group full-width">
                     <label>Foto de Perfil</label>
                     <input type="file" name="profile_pic" id="profile_pic" class="input-field" accept="image/*">
-                    <img id="currentPic" src="" style="width:100px;height:100px;margin-top:10px;border-radius:8px;display:none;object-fit:cover;">
+                    <img id="currentPic" src="" style="width:100px;height:100px;margin-top:10px;border-radius:8px;display:none;object-fit:cover;border:2px solid #ff0000;">
+                </div>
+
+                <div class="input-group full-width">
+                    <label>Permisos de Administrador</label>
+                    <div class="checkbox-group">
+                        <input type="checkbox" name="is_admin" id="is_admin" value="1">
+                        <label for="is_admin">Conceder privilegios de Administrador</label>
+                    </div>
                 </div>
             </div>
             
@@ -251,14 +273,13 @@
         const userId = urlParams.get('id');
         const alertMsg = document.getElementById('alertMsg');
         
-        // CARGAR DATOS DEL USUARIO
         async function loadUser() {
             try {
                 const res = await fetch(`/api/admin/user/${userId}`);
                 const user = await res.json();
                 
                 if (user.error) {
-                    showAlert(user.error, false);
+                    showAlert(user.error);
                     return;
                 }
                 
@@ -266,13 +287,14 @@
                 document.getElementById('username').value = user.username;
                 document.getElementById('name').value = user.name;
                 document.getElementById('last_name').value = user.last_name;
-                document.getElementById('birth_date').value = user.birth_date ? user.birth_date.split('T')[0] : '';
+                document.getElementById('birth_date').value = user.birth_date? user.birth_date.split('T')[0] : '';
                 document.getElementById('gender').value = user.gender || '';
                 document.getElementById('phone').value = user.phone || '';
                 document.getElementById('email').value = user.email;
                 document.getElementById('address').value = user.address || '';
                 document.getElementById('city').value = user.city || '';
                 document.getElementById('country').value = user.country || '';
+                document.getElementById('is_admin').checked = user.is_admin == 1;
                 
                 if (user.profile_pic) {
                     const img = document.getElementById('currentPic');
@@ -280,14 +302,17 @@
                     img.style.display = 'block';
                 }
             } catch (error) {
-                showAlert('Error al cargar usuario', false);
+                showAlert('Error al cargar usuario');
             }
         }
         
-        // MODIFICAR USUARIO
         document.getElementById('editForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const formData = new FormData(e.target);
+            
+            if (!document.getElementById('is_admin').checked) {
+                formData.set('is_admin', '0');
+            }
             
             try {
                 const res = await fetch(`/api/admin/user/${userId}`, {
@@ -298,28 +323,28 @@
                 const result = await res.json();
                 
                 if (result.success) {
-                    showAlert('Usuario modificado correctamente', true);
+                    showAlert('Usuario modificado correctamente');
                     setTimeout(() => {
                         window.location.href = '/admin.html';
                     }, 3000);
                 } else {
-                    showAlert(result.message, false);
+                    showAlert(result.message);
                 }
             } catch (error) {
-                showAlert('Error al modificar usuario', false);
+                showAlert('Error al modificar usuario');
             }
         });
         
         function cancelar() {
-            showAlert('Operación cancelada', false);
+            showAlert('Operación cancelada');
             setTimeout(() => {
                 window.location.href = '/admin.html';
             }, 3000);
         }
         
-        function showAlert(message, isSuccess) {
+        function showAlert(message) {
             alertMsg.textContent = message;
-            alertMsg.className = isSuccess ? 'alert-msg success show' : 'alert-msg show';
+            alertMsg.classList.add('show');
             setTimeout(() => {
                 alertMsg.classList.remove('show');
             }, 3000);
