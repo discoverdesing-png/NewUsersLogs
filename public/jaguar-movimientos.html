@@ -31,22 +31,22 @@
             font-weight: 800;
         }
         .container { 
-            max-width: 1400px; 
+            max-width: 1600px; 
             margin: 0 auto; 
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: 500px 1fr;
             gap: 20px;
         }
         .card { 
             background: #0f1f38; 
-            padding: 30px; 
+            padding: 25px; 
             border-radius: 12px; 
             box-shadow: 0 0 60px rgba(0, 123, 255, 0.2);
             border: 1px solid #1a2f4a;
         }
         .card h2 {
             color: #007bff;
-            font-size: 20px;
+            font-size: 18px;
             margin-bottom: 20px;
             text-transform: uppercase;
         }
@@ -64,6 +64,7 @@
             font-weight: 700;
             font-size: 13px;
             color: #a0c4e8;
+            transition: all 0.3s;
         }
         .tab.active {
             background: #007bff;
@@ -71,18 +72,19 @@
             box-shadow: 0 0 15px rgba(0, 123, 255, 0.6);
         }
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 12px;
         }
         .form-group label {
             display: block;
             color: #a0c4e8;
-            font-size: 13px;
+            font-size: 12px;
             margin-bottom: 5px;
             font-weight: 600;
+            text-transform: uppercase;
         }
         input, select, textarea {
             width: 100%;
-            padding: 12px;
+            padding: 10px;
             border: 1px solid #2a4a6a;
             border-radius: 6px;
             background: #1a2f4a;
@@ -105,6 +107,8 @@
             color: #fff;
             border: 2px solid #007bff;
             transition: all 0.3s;
+            width: 100%;
+            margin-top: 10px;
         }
         .btn:hover {
             background: #007bff;
@@ -118,8 +122,23 @@
             background: #dc3545;
             color: #fff;
         }
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 11px;
+            width: auto;
+            margin: 0 5px 0 0;
+        }
+        .search-box {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #2a4a6a;
+            border-radius: 6px;
+            background: #1a2f4a;
+            color: #e0e0e0;
+        }
         .list {
-            max-height: 400px;
+            max-height: 600px;
             overflow-y: auto;
         }
         .list-item {
@@ -128,12 +147,28 @@
             border-radius: 6px;
             margin-bottom: 10px;
             border: 1px solid #2a4a6a;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            transition: all 0.2s;
         }
         .list-item:hover {
             border-color: #007bff;
+            background: #1f3a5a;
+        }
+        .list-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 8px;
+        }
+        .list-item strong {
+            color: #007bff;
+            font-size: 16px;
+            display: block;
+        }
+        .list-item span {
+            font-size: 12px;
+            color: #a0c4e8;
+            display: block;
+            margin-top: 3px;
         }
         .stock-badge {
             padding: 4px 10px;
@@ -144,32 +179,15 @@
         .stock-normal { background: #28a745; color: #fff; }
         .stock-bajo { background: #ffc107; color: #000; }
         .stock-agotado { background: #dc3545; color: #fff; }
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.8);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
-        }
-        .modal-content {
-            background: #0f1f38;
-            padding: 30px;
-            border-radius: 12px;
-            border: 1px solid #007bff;
-            max-width: 500px;
-            width: 90%;
+        .actions {
+            margin-top: 10px;
         }
     </style>
 </head>
 <body>
     <div class="navbar">
         <h1>MOVIMIENTOS</h1>
-        <button class="btn" onclick="goBack()">VOLVER</button>
+        <button class="btn btn-small" onclick="goBack()">VOLVER</button>
     </div>
     
     <div class="container">
@@ -180,10 +198,12 @@
                 <div class="tab" onclick="switchTab('inventario')">INVENTARIO</div>
             </div>
             
+            <!-- TAB PROVEEDORES -->
             <div id="tab-proveedor">
-                <h2>Nuevo Proveedor</h2>
+                <h2 id="prov-form-title">Nuevo Proveedor</h2>
+                <input type="hidden" id="prov-id">
                 <div class="form-group">
-                    <label>Nombre</label>
+                    <label>Nombre *</label>
                     <input type="text" id="prov-nombre">
                 </div>
                 <div class="form-group">
@@ -196,19 +216,22 @@
                 </div>
                 <div class="form-group">
                     <label>Dirección</label>
-                    <textarea id="prov-direccion" rows="3"></textarea>
+                    <textarea id="prov-direccion" rows="2"></textarea>
                 </div>
                 <button class="btn" onclick="saveProveedor()">GUARDAR PROVEEDOR</button>
+                <button class="btn btn-danger" onclick="clearProvForm()" style="margin-top:10px;">LIMPIAR</button>
             </div>
 
+            <!-- TAB PRODUCTOS -->
             <div id="tab-producto" style="display:none;">
-                <h2>Nuevo Producto</h2>
+                <h2 id="prod-form-title">Nuevo Producto</h2>
+                <input type="hidden" id="prod-id">
                 <div class="form-group">
-                    <label>Proveedor</label>
+                    <label>Proveedor *</label>
                     <select id="prod-proveedor"></select>
                 </div>
                 <div class="form-group">
-                    <label>Nombre del Producto</label>
+                    <label>Nombre del Producto *</label>
                     <input type="text" id="prod-nombre">
                 </div>
                 <div class="form-group">
@@ -220,7 +243,7 @@
                     <input type="number" step="0.01" id="prod-precio-compra">
                 </div>
                 <div class="form-group">
-                    <label>Precio Venta</label>
+                    <label>Precio Venta *</label>
                     <input type="number" step="0.01" id="prod-precio-venta">
                 </div>
                 <div class="form-group">
@@ -230,35 +253,42 @@
                         <option value="caja">Caja</option>
                         <option value="paquete">Paquete</option>
                         <option value="kg">Kg</option>
+                        <option value="metro">Metro</option>
                     </select>
                 </div>
                 <div class="form-group">
                     <label>Stock Inicial</label>
                     <input type="number" id="prod-stock" value="0">
                 </div>
+                <div class="form-group">
+                    <label>Stock Mínimo</label>
+                    <input type="number" id="prod-stock-min" value="5">
+                </div>
                 <button class="btn" onclick="saveProducto()">GUARDAR PRODUCTO</button>
+                <button class="btn btn-danger" onclick="clearProdForm()" style="margin-top:10px;">LIMPIAR</button>
             </div>
 
+            <!-- TAB INVENTARIO -->
             <div id="tab-inventario" style="display:none;">
                 <h2>Movimiento de Inventario</h2>
                 <div class="form-group">
-                    <label>Producto</label>
+                    <label>Producto *</label>
                     <select id="inv-producto"></select>
                 </div>
                 <div class="form-group">
-                    <label>Tipo</label>
+                    <label>Tipo *</label>
                     <select id="inv-tipo">
                         <option value="entrada">Entrada</option>
                         <option value="salida">Salida</option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label>Cantidad</label>
+                    <label>Cantidad *</label>
                     <input type="number" id="inv-cantidad" min="1">
                 </div>
                 <div class="form-group">
                     <label>Motivo</label>
-                    <input type="text" id="inv-motivo" placeholder="Compra, venta, ajuste...">
+                    <input type="text" id="inv-motivo" placeholder="Compra, venta, ajuste, merma...">
                 </div>
                 <button class="btn" onclick="saveMovimiento()">REGISTRAR MOVIMIENTO</button>
             </div>
@@ -266,14 +296,14 @@
 
         <div class="card">
             <h2 id="list-title">Proveedores Registrados</h2>
-            <input type="text" id="search" placeholder="Buscar..." style="margin-bottom:15px;">
+            <input type="text" class="search-box" id="search" placeholder="Buscar...">
             <div class="list" id="list"></div>
         </div>
     </div>
 
     <script>
         const currentUser = new URLSearchParams(window.location.search).get('user');
-        if (!currentUser || currentUser!== 'Cris') {
+        if (!currentUser || currentUser !== 'Cris') {
             window.location.href = '/dashboard.html';
         }
         
@@ -286,20 +316,26 @@
             event.target.classList.add('active');
             document.getElementById(`tab-${tab}`).style.display = 'block';
             loadList();
+            if (tab === 'producto' || tab === 'inventario') {
+                loadProveedoresSelect();
+                loadProductosSelect();
+            }
         }
         
-        async function loadProveedores() {
+        async function loadProveedoresSelect() {
             const res = await fetch(`/api/jaguar/proveedores?user=${currentUser}`);
             const data = await res.json();
             const select = document.getElementById('prod-proveedor');
-            select.innerHTML = data.map(p => `<option value="${p.id}">${p.nombre}</option>`).join('');
+            select.innerHTML = '<option value="">Seleccionar...</option>' + 
+                data.map(p => `<option value="${p.id}">${p.nombre}</option>`).join('');
         }
         
-        async function loadProductos() {
+        async function loadProductosSelect() {
             const res = await fetch(`/api/jaguar/productos?user=${currentUser}`);
             const data = await res.json();
             const select = document.getElementById('inv-producto');
-            select.innerHTML = data.map(p => `<option value="${p.id}">${p.nombre} - Stock: ${p.stock_actual}</option>`).join('');
+            select.innerHTML = '<option value="">Seleccionar...</option>' + 
+                data.map(p => `<option value="${p.id}">${p.nombre} - Stock: ${p.stock_actual} - $${p.precio_venta}</option>`).join('');
         }
         
         async function loadList() {
@@ -312,13 +348,49 @@
                 const data = await res.json();
                 html = data.map(p => `
                     <div class="list-item">
-                        <div>
-                            <strong style="color:#007bff;">${p.nombre}</strong><br>
-                            <span style="font-size:13px;color:#a0c4e8;">${p.telefono} - ${p.email}</span>
+                        <div class="list-item-header">
+                            <div>
+                                <strong>${p.nombre}</strong>
+                                <span>${p.telefono || 'Sin teléfono'} - ${p.email || 'Sin email'}</span>
+                                <span>${p.direccion || 'Sin dirección'}</span>
+                            </div>
+                        </div>
+                        <div class="actions">
+                            <button class="btn btn-small" onclick="editProveedor(${p.id})">EDITAR</button>
+                            <button class="btn btn-small btn-danger" onclick="deleteProveedor(${p.id})">ELIMINAR</button>
                         </div>
                     </div>
                 `).join('');
-            } else if (currentTab === 'producto' || currentTab === 'inventario') {
+            } else if (currentTab === 'producto') {
+                document.getElementById('list-title').textContent = 'Productos Registrados';
+                const res = await fetch(`/api/jaguar/productos?user=${currentUser}&search=${search}`);
+                const data = await res.json();
+                html = data.map(p => {
+                    let estado = 'normal';
+                    if (p.stock_actual === 0) estado = 'agotado';
+                    else if (p.stock_actual <= p.stock_minimo) estado = 'bajo';
+                    
+                    return `
+                        <div class="list-item">
+                            <div class="list-item-header">
+                                <div>
+                                    <strong>${p.nombre}</strong>
+                                    <span>Proveedor: ${p.proveedor_nombre}</span>
+                                    <span>Compra: $${p.precio_compra} | Venta: $${p.precio_venta} | Unidad: ${p.unidad}</span>
+                                    <span>${p.descripcion || 'Sin descripción'}</span>
+                                </div>
+                                <div>
+                                    <span class="stock-badge stock-${estado}">Stock: ${p.stock_actual}</span>
+                                </div>
+                            </div>
+                            <div class="actions">
+                                <button class="btn btn-small" onclick="editProducto(${p.id})">EDITAR</button>
+                                <button class="btn btn-small btn-danger" onclick="deleteProducto(${p.id})">ELIMINAR</button>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            } else if (currentTab === 'inventario') {
                 document.getElementById('list-title').textContent = 'Productos en Inventario';
                 const res = await fetch(`/api/jaguar/productos?user=${currentUser}&search=${search}`);
                 const data = await res.json();
@@ -329,12 +401,14 @@
                     
                     return `
                         <div class="list-item">
-                            <div>
-                                <strong style="color:#007bff;">${p.nombre}</strong><br>
-                                <span style="font-size:13px;color:#a0c4e8;">${p.proveedor_nombre} - $${p.precio_venta}</span>
-                            </div>
-                            <div>
-                                <span class="stock-badge stock-${estado}">Stock: ${p.stock_actual}</span>
+                            <div class="list-item-header">
+                                <div>
+                                    <strong>${p.nombre}</strong>
+                                    <span>${p.proveedor_nombre} - $${p.precio_venta}</span>
+                                </div>
+                                <div>
+                                    <span class="stock-badge stock-${estado}">Stock: ${p.stock_actual}</span>
+                                </div>
                             </div>
                         </div>
                     `;
@@ -344,7 +418,9 @@
             document.getElementById('list').innerHTML = html || '<p style="text-align:center;color:#666;">Sin registros</p>';
         }
         
+        // CRUD PROVEEDORES
         async function saveProveedor() {
+            const id = document.getElementById('prov-id').value;
             const data = {
                 nombre: document.getElementById('prov-nombre').value,
                 telefono: document.getElementById('prov-telefono').value,
@@ -352,51 +428,148 @@
                 direccion: document.getElementById('prov-direccion').value
             };
             
-            const res = await fetch(`/api/jaguar/proveedores?user=${currentUser}`, {
-                method: 'POST',
+            if (!data.nombre) return alert('El nombre es requerido');
+            
+            const url = id 
+                ? `/api/jaguar/proveedores/${id}?user=${currentUser}`
+                : `/api/jaguar/proveedores?user=${currentUser}`;
+            
+            const res = await fetch(url, {
+                method: id ? 'PUT' : 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)
             });
             const result = await res.json();
             if (result.success) {
                 alert('Proveedor guardado');
-                loadProveedores();
+                clearProvForm();
                 loadList();
+                loadProveedoresSelect();
             }
         }
         
+        async function editProveedor(id) {
+            const res = await fetch(`/api/jaguar/proveedores?user=${currentUser}`);
+            const data = await res.json();
+            const p = data.find(x => x.id === id);
+            document.getElementById('prov-form-title').textContent = 'Editar Proveedor';
+            document.getElementById('prov-id').value = p.id;
+            document.getElementById('prov-nombre').value = p.nombre;
+            document.getElementById('prov-telefono').value = p.telefono || '';
+            document.getElementById('prov-email').value = p.email || '';
+            document.getElementById('prov-direccion').value = p.direccion || '';
+        }
+        
+        async function deleteProveedor(id) {
+            if (!confirm('¿Eliminar este proveedor? Se eliminarán todos sus productos.')) return;
+            const res = await fetch(`/api/jaguar/proveedores/${id}?user=${currentUser}`, { method: 'DELETE' });
+            const result = await res.json();
+            if (result.success) {
+                alert('Proveedor eliminado');
+                loadList();
+                loadProveedoresSelect();
+            } else {
+                alert(result.message);
+            }
+        }
+        
+        function clearProvForm() {
+            document.getElementById('prov-form-title').textContent = 'Nuevo Proveedor';
+            document.getElementById('prov-id').value = '';
+            document.getElementById('prov-nombre').value = '';
+            document.getElementById('prov-telefono').value = '';
+            document.getElementById('prov-email').value = '';
+            document.getElementById('prov-direccion').value = '';
+        }
+        
+        // CRUD PRODUCTOS
         async function saveProducto() {
+            const id = document.getElementById('prod-id').value;
             const data = {
                 proveedor_id: document.getElementById('prod-proveedor').value,
                 nombre: document.getElementById('prod-nombre').value,
                 descripcion: document.getElementById('prod-descripcion').value,
-                precio_compra: document.getElementById('prod-precio-compra').value,
-                precio_venta: document.getElementById('prod-precio-venta').value,
+                precio_compra: parseFloat(document.getElementById('prod-precio-compra').value) || 0,
+                precio_venta: parseFloat(document.getElementById('prod-precio-venta').value),
                 unidad: document.getElementById('prod-unidad').value,
-                stock_actual: document.getElementById('prod-stock').value,
-                stock_minimo: 5
+                stock_actual: parseInt(document.getElementById('prod-stock').value) || 0,
+                stock_minimo: parseInt(document.getElementById('prod-stock-min').value) || 5
             };
             
-            const res = await fetch(`/api/jaguar/productos?user=${currentUser}`, {
-                method: 'POST',
+            if (!data.proveedor_id || !data.nombre || !data.precio_venta) {
+                return alert('Proveedor, nombre y precio de venta son requeridos');
+            }
+            
+            const url = id 
+                ? `/api/jaguar/productos/${id}?user=${currentUser}`
+                : `/api/jaguar/productos?user=${currentUser}`;
+            
+            const res = await fetch(url, {
+                method: id ? 'PUT' : 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)
             });
             const result = await res.json();
             if (result.success) {
                 alert('Producto guardado');
-                loadProductos();
+                clearProdForm();
                 loadList();
+                loadProductosSelect();
             }
         }
         
+        async function editProducto(id) {
+            const res = await fetch(`/api/jaguar/productos?user=${currentUser}`);
+            const data = await res.json();
+            const p = data.find(x => x.id === id);
+            document.getElementById('prod-form-title').textContent = 'Editar Producto';
+            document.getElementById('prod-id').value = p.id;
+            document.getElementById('prod-proveedor').value = p.proveedor_id;
+            document.getElementById('prod-nombre').value = p.nombre;
+            document.getElementById('prod-descripcion').value = p.descripcion || '';
+            document.getElementById('prod-precio-compra').value = p.precio_compra;
+            document.getElementById('prod-precio-venta').value = p.precio_venta;
+            document.getElementById('prod-unidad').value = p.unidad;
+            document.getElementById('prod-stock').value = p.stock_actual;
+            document.getElementById('prod-stock-min').value = p.stock_minimo;
+        }
+        
+        async function deleteProducto(id) {
+            if (!confirm('¿Eliminar este producto?')) return;
+            const res = await fetch(`/api/jaguar/productos/${id}?user=${currentUser}`, { method: 'DELETE' });
+            const result = await res.json();
+            if (result.success) {
+                alert('Producto eliminado');
+                loadList();
+                loadProductosSelect();
+            }
+        }
+        
+        function clearProdForm() {
+            document.getElementById('prod-form-title').textContent = 'Nuevo Producto';
+            document.getElementById('prod-id').value = '';
+            document.getElementById('prod-proveedor').value = '';
+            document.getElementById('prod-nombre').value = '';
+            document.getElementById('prod-descripcion').value = '';
+            document.getElementById('prod-precio-compra').value = '';
+            document.getElementById('prod-precio-venta').value = '';
+            document.getElementById('prod-unidad').value = 'pieza';
+            document.getElementById('prod-stock').value = '0';
+            document.getElementById('prod-stock-min').value = '5';
+        }
+        
+        // MOVIMIENTO INVENTARIO
         async function saveMovimiento() {
             const data = {
                 producto_id: document.getElementById('inv-producto').value,
                 tipo: document.getElementById('inv-tipo').value,
-                cantidad: document.getElementById('inv-cantidad').value,
+                cantidad: parseInt(document.getElementById('inv-cantidad').value),
                 motivo: document.getElementById('inv-motivo').value
             };
+            
+            if (!data.producto_id || !data.cantidad) {
+                return alert('Producto y cantidad son requeridos');
+            }
             
             const res = await fetch(`/api/jaguar/inventario/movimiento?user=${currentUser}`, {
                 method: 'POST',
@@ -406,8 +579,12 @@
             const result = await res.json();
             if (result.success) {
                 alert('Movimiento registrado');
-                loadProductos();
+                document.getElementById('inv-cantidad').value = '';
+                document.getElementById('inv-motivo').value = '';
                 loadList();
+                loadProductosSelect();
+            } else {
+                alert(result.message);
             }
         }
         
@@ -417,8 +594,8 @@
         
         document.getElementById('search').addEventListener('input', loadList);
         
-        loadProveedores();
-        loadProductos();
+        loadProveedoresSelect();
+        loadProductosSelect();
         loadList();
     </script>
 </body>
