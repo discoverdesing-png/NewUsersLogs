@@ -7,72 +7,104 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
             font-family: 'Segoe UI', Arial, sans-serif; 
-            background: #000; 
+            background: #0a1628; 
             min-height: 100vh;
             padding: 20px;
             color: #e0e0e0;
         }
-       .navbar {
-            background: #0f0f0f;
+        .navbar {
+            background: #0f1f38;
             padding: 20px 40px;
             border-radius: 12px;
-            border: 1px solid #1a1a1a;
-            box-shadow: 0 0 40px rgba(255, 0, 0, 0.2);
+            border: 1px solid #1a2f4a;
+            box-shadow: 0 0 40px rgba(0, 123, 255, 0.3);
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 30px;
         }
-       .navbar h1 {
-            color: #ff0000;
+        .navbar h1 {
+            color: #007bff;
             font-size: 26px;
-            text-shadow: 0 0 20px rgba(255, 0, 0, 0.8);
+            text-shadow: 0 0 20px rgba(0, 123, 255, 0.8);
             letter-spacing: 3px;
             font-weight: 800;
         }
-       .container { 
+        .navbar-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .user-pic {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            border: 2px solid #007bff;
+            object-fit: cover;
+            box-shadow: 0 0 15px rgba(0, 123, 255, 0.6);
+        }
+        .user-name {
+            color: #fff;
+            font-size: 16px;
+            font-weight: 700;
+        }
+        .badge {
+            background: #007bff;
+            color: #fff;
+            padding: 4px 10px;
+            border-radius: 5px;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+        .container { 
             max-width: 1200px; 
             margin: 0 auto; 
-            background: #0f0f0f; 
+            background: #0f1f38; 
             padding: 40px; 
             border-radius: 12px; 
-            box-shadow: 0 0 60px rgba(255, 0, 0, 0.15), 0 8px 32px rgba(0,0,0,0.9);
-            border: 1px solid #1a1a1a;
+            box-shadow: 0 0 60px rgba(0, 123, 255, 0.2), 0 8px 32px rgba(0,0,0,0.9);
+            border: 1px solid #1a2f4a;
         }
-       .menu-grid {
+        .menu-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 30px;
             margin-top: 20px;
         }
-       .menu-card {
-            background: #1a1a1a;
+        .menu-card {
+            background: #1a2f4a;
             padding: 60px 30px;
             border-radius: 12px;
-            border: 2px solid #2a2a2a;
+            border: 2px solid #2a4a6a;
             cursor: pointer;
             transition: all 0.3s ease;
             text-align: center;
         }
-       .menu-card:hover {
-            border-color: #ff0000;
-            box-shadow: 0 0 40px rgba(255, 0, 0, 0.6);
+        .menu-card:hover {
+            border-color: #007bff;
+            box-shadow: 0 0 40px rgba(0, 123, 255, 0.6);
             transform: translateY(-5px);
-            background: #1f1f1f;
+            background: #1f3a5a;
         }
-       .menu-card h2 {
-            color: #ff0000;
+        .menu-card h2 {
+            color: #007bff;
             font-size: 28px;
             margin-bottom: 15px;
             text-transform: uppercase;
             letter-spacing: 2px;
         }
-       .menu-card p {
-            color: #999;
+        .menu-card p {
+            color: #a0c4e8;
             font-size: 14px;
             line-height: 1.6;
         }
-       .btn { 
+        .btn { 
             padding: 15px 30px; 
             border-radius: 8px; 
             font-weight: 700; 
@@ -81,20 +113,33 @@
             transition: all 0.3s ease;
             text-transform: uppercase;
             letter-spacing: 1.5px;
-            background: #0a0a0a;
+            background: #0a1628;
             color: #fff;
-            border: 2px solid #ff0000;
+            border: 2px solid #007bff;
         }
-       .btn:hover {
-            background: #ff0000;
-            color: #000;
-            box-shadow: 0 0 25px rgba(255, 0, 0, 0.8);
+        .btn:hover {
+            background: #007bff;
+            color: #fff;
+            box-shadow: 0 0 25px rgba(0, 123, 255, 0.8);
+            transform: translateY(-3px);
+        }
+        @media (max-width: 900px) {
+            .menu-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
     <div class="navbar">
-        <h1>SISTEMA JAGUAR</h1>
+        <div class="navbar-left">
+            <h1>SISTEMA JAGUAR</h1>
+            <div class="user-info" id="userInfo">
+                <img id="userPic" class="user-pic" src="" alt="">
+                <div>
+                    <div class="user-name" id="userName"></div>
+                    <span class="badge">DISTRIBUIDOR</span>
+                </div>
+            </div>
+        </div>
         <div>
             <button class="btn" onclick="goToDashboard()">DASHBOARD</button>
         </div>
@@ -104,15 +149,15 @@
         <div class="menu-grid">
             <div class="menu-card" onclick="goTo('movimientos')">
                 <h2>MOVIMIENTOS</h2>
-                <p>Alta de proveedores y productos.<br>Gestión de inventario.<br>Entradas y salidas.</p>
+                <p>Alta de proveedores y productos.<br>Gestión de inventario.<br>Entradas y salidas de stock.</p>
             </div>
             <div class="menu-card" onclick="goTo('cotizacion')">
                 <h2>COTIZACIÓN</h2>
-                <p>Seleccionar cliente.<br>Buscar productos.<br>Generar cotizaciones.</p>
+                <p>Seleccionar cliente.<br>Buscar productos Jaguar.<br>Generar cotizaciones.</p>
             </div>
             <div class="menu-card" onclick="goTo('clientes')">
                 <h2>CLIENTES</h2>
-                <p>Alta de clientes.<br>Datos fiscales.<br>CRUD completo.</p>
+                <p>Alta de clientes.<br>Datos fiscales RFC.<br>CRUD completo.</p>
             </div>
         </div>
     </div>
@@ -121,8 +166,16 @@
         const urlParams = new URLSearchParams(window.location.search);
         const currentUser = urlParams.get('user') || localStorage.getItem('username');
         
-        if (!currentUser) {
-            window.location.href = '/index.html';
+        if (!currentUser || currentUser !== 'Cris') {
+            alert('Acceso denegado');
+            window.location.href = '/dashboard.html';
+        }
+        
+        async function loadUserInfo() {
+            const res = await fetch(`/api/user/${currentUser}`);
+            const user = await res.json();
+            document.getElementById('userName').textContent = user.username;
+            document.getElementById('userPic').src = user.profile_pic || '/uploads/LogoMetal.png';
         }
         
         function goTo(modulo) {
@@ -132,6 +185,8 @@
         function goToDashboard() {
             window.location.href = `/dashboard.html?user=${currentUser}`;
         }
+        
+        loadUserInfo();
     </script>
 </body>
 </html>
