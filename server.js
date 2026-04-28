@@ -1,3 +1,32 @@
+// === RUTA ADMIN: LISTAR USUARIOS ===
+app.get('/api/admin/users', (req, res) => {
+    const { search } = req.query;
+    
+    let sql = `SELECT id, username, name, last_name, email, profile_pic, is_admin, 
+               CASE 
+                   WHEN last_seen > DATE_SUB(NOW(), INTERVAL 5 MINUTE) THEN 1 
+                   ELSE 0 
+               END as is_online 
+               FROM users`;
+    let params = [];
+    
+    if (search) {
+        sql += ` WHERE username LIKE? OR name LIKE? OR last_name LIKE? OR email LIKE?`;
+        const s = `%${search}%`;
+        params.push(s, s, s, s);
+    }
+    
+    sql += ` ORDER BY username ASC`;
+    
+    db.query(sql, params, (err, results) => {
+        if (err) {
+            console.error('Error en /api/admin/users:', err);
+            return res.status(500).json({ error: 'Error al obtener usuarios' });
+        }
+        res.json(results);
+    });
+});
+
 // === SISTEMA JAGUAR - RUTAS CON VALIDACIÓN ===
 app.get('/jaguar.html', (req, res) => {
     if (req.query.user!== 'Cris') return res.status(403).send('Acceso denegado');
@@ -329,4 +358,8 @@ app.post('/api/jaguar/cotizacion', (req, res) => {
     }).catch(err => {
         res.json({ success: false, message: err });
     });
+});
+
+app.listen(PORT, () => {
+    console.log(`Servidor corriendo en puerto ${PORT}`);
 });
