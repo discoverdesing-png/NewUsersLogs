@@ -4,142 +4,289 @@
     <meta charset="UTF-8">
     <title>Cotización - Sistema Jaguar</title>
     <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { 
-        font-family: 'Segoe UI', Arial, sans-serif; 
-        background: #0a1628; 
-        min-height: 100vh;
-        padding: 20px;
-        color: #e0e0e0;
-    }
-   .navbar {
-        background: #0f1f38;
-        padding: 20px 40px;
-        border-radius: 12px;
-        border: 1px solid #1a2f4a;
-        box-shadow: 0 0 40px rgba(0, 123, 255, 0.3);
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 30px;
-    }
-   .navbar h1 {
-        color: #007bff;
-        font-size: 24px;
-        text-shadow: 0 0 20px rgba(0, 123, 255, 0.8);
-        letter-spacing: 2px;
-        font-weight: 800;
-    }
-   .navbar-left {
-        display: flex;
-        align-items: center;
-        gap: 20px;
-    }
-   .user-info {
-        display: flex;
-        align-items: center;
-        gap: 15px;
-    }
-   .user-pic {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        border: 2px solid #007bff;
-        object-fit: cover;
-        box-shadow: 0 0 15px rgba(0, 123, 255, 0.6);
-    }
-   .user-name {
-        color: #fff;
-        font-size: 15px;
-        font-weight: 700;
-    }
-   .badge {
-        background: #007bff;
-        color: #fff;
-        padding: 4px 10px;
-        border-radius: 5px;
-        font-size: 10px;
-        font-weight: 800;
-    }
-   .btn { 
-        padding: 12px 25px; 
-        border-radius: 6px; 
-        font-weight: 700; 
-        font-size: 13px;
-        cursor: pointer;
-        transition: all 0.3s;
-        text-transform: uppercase;
-        background: #0a1628;
-        color: #fff;
-        border: 2px solid #007bff;
-    }
-   .btn:hover {
-        background: #007bff;
-        box-shadow: 0 0 20px rgba(0, 123, 255, 0.8);
-        transform: translateY(-2px);
-    }
-   .btn-danger {
-        border-color: #dc3545;
-        color: #dc3545;
-    }
-   .btn-danger:hover {
-        background: #dc3545;
-        color: #fff;
-    }
-   .card { 
-        background: #0f1f38; 
-        padding: 25px; 
-        border-radius: 12px; 
-        box-shadow: 0 0 60px rgba(0, 123, 255, 0.2);
-        border: 1px solid #1a2f4a;
-    }
-    input, select, textarea {
-        width: 100%;
-        padding: 10px;
-        border: 1px solid #2a4a6a;
-        border-radius: 6px;
-        background: #1a2f4a;
-        color: #e0e0e0;
-        font-size: 14px;
-    }
-    input:focus, select:focus, textarea:focus {
-        outline: none;
-        border-color: #007bff;
-        box-shadow: 0 0 15px rgba(0, 123, 255, 0.4);
-    }
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        background: #1a2f4a;
-        border-radius: 6px;
-        overflow: hidden;
-    }
-    th {
-        background: #0f1f38;
-        padding: 12px;
-        text-align: left;
-        font-size: 11px;
-        color: #007bff;
-        text-transform: uppercase;
-        border-bottom: 1px solid #2a4a6a;
-    }
-    td {
-        padding: 10px 12px;
-        border-bottom: 1px solid #2a4a6a;
-        font-size: 13px;
-        color: #e0e0e0;
-    }
-    tr:hover {
-        background: #1f3a5a;
-    }
-   .cart-item-name {
-        color: #fff;
-        font-weight: 600;
-    }
-   .total-line {
-        color: #e0e0e0;
-    }
-</style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Segoe UI', Arial, sans-serif; 
+            background: #0a1628; 
+            min-height: 100vh;
+            padding: 20px;
+            color: #e0e0e0;
+        }
+        .navbar {
+            background: #0f1f38;
+            padding: 20px 40px;
+            border-radius: 12px;
+            border: 1px solid #1a2f4a;
+            box-shadow: 0 0 40px rgba(0, 123, 255, 0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        .navbar h1 {
+            color: #007bff;
+            font-size: 24px;
+            text-shadow: 0 0 20px rgba(0, 123, 255, 0.8);
+            letter-spacing: 2px;
+            font-weight: 800;
+        }
+        .navbar-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .user-pic {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid #007bff;
+            object-fit: cover;
+            box-shadow: 0 0 15px rgba(0, 123, 255, 0.6);
+        }
+        .user-name {
+            color: #fff;
+            font-size: 15px;
+            font-weight: 700;
+        }
+        .badge {
+            background: #007bff;
+            color: #fff;
+            padding: 4px 10px;
+            border-radius: 5px;
+            font-size: 10px;
+            font-weight: 800;
+        }
+        .container { 
+            max-width: 1600px; 
+            margin: 0 auto; 
+            display: grid;
+            grid-template-columns: 450px 1fr;
+            gap: 20px;
+        }
+        .card { 
+            background: #0f1f38; 
+            padding: 25px; 
+            border-radius: 12px; 
+            box-shadow: 0 0 60px rgba(0, 123, 255, 0.2);
+            border: 1px solid #1a2f4a;
+        }
+        .card h2 {
+            color: #007bff;
+            font-size: 16px;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            color: #a0c4e8;
+            font-size: 12px;
+            margin-bottom: 6px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #2a4a6a;
+            border-radius: 6px;
+            background: #1a2f4a;
+            color: #e0e0e0;
+            font-size: 14px;
+        }
+        input:focus, select:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 15px rgba(0, 123, 255, 0.4);
+        }
+        .search-results {
+            max-height: 200px;
+            overflow-y: auto;
+            margin-top: 8px;
+            border: 1px solid #2a4a6a;
+            border-radius: 6px;
+            background: #1a2f4a;
+        }
+        .result-item {
+            padding: 10px;
+            cursor: pointer;
+            border-bottom: 1px solid #2a4a6a;
+            transition: all 0.2s;
+        }
+        .result-item:hover {
+            background: #1f3a5a;
+            border-left: 3px solid #007bff;
+        }
+        .result-item strong {
+            color: #007bff;
+            display: block;
+        }
+        .result-item span {
+            font-size: 12px;
+            color: #a0c4e8;
+        }
+        .product-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            background: #1a2f4a;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        .product-table th {
+            background: #0f1f38;
+            padding: 10px;
+            text-align: left;
+            font-size: 11px;
+            color: #007bff;
+            text-transform: uppercase;
+        }
+        .product-table td {
+            padding: 10px;
+            border-bottom: 1px solid #2a4a6a;
+            font-size: 13px;
+        }
+        .product-table tr:hover {
+            background: #1f3a5a;
+            cursor: pointer;
+        }
+        .stock-badge {
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+        .stock-ok { background: #28a745; color: #fff; }
+        .stock-low { background: #ffc107; color: #000; }
+        .stock-out { background: #dc3545; color: #fff; }
+        .btn { 
+            padding: 12px 25px; 
+            border-radius: 6px; 
+            font-weight: 700; 
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            background: #0a1628;
+            color: #fff;
+            border: 2px solid #007bff;
+            width: 100%;
+        }
+        .btn:hover {
+            background: #007bff;
+            box-shadow: 0 0 20px rgba(0, 123, 255, 0.8);
+            transform: translateY(-2px);
+        }
+        .btn-danger {
+            border-color: #dc3545;
+            color: #dc3545;
+        }
+        .btn-danger:hover {
+            background: #dc3545;
+            color: #fff;
+        }
+        .btn-small {
+            padding: 8px 15px;
+            font-size: 12px;
+            width: auto;
+        }
+        .client-card {
+            background: #1a2f4a;
+            padding: 15px;
+            border-radius: 6px;
+            border: 1px solid #007bff;
+            margin-bottom: 15px;
+        }
+        .client-card strong {
+            color: #007bff;
+            display: block;
+            margin-bottom: 5px;
+        }
+        .client-card span {
+            font-size: 12px;
+            color: #a0c4e8;
+            display: block;
+        }
+        .cart-header {
+            display: grid;
+            grid-template-columns: 1fr 60px 80px 40px;
+            gap: 10px;
+            padding: 10px 0;
+            border-bottom: 1px solid #2a4a6a;
+            font-size: 11px;
+            color: #007bff;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .cart-item {
+            display: grid;
+            grid-template-columns: 1fr 60px 80px 40px;
+            gap: 10px;
+            padding: 10px 0;
+            border-bottom: 1px solid #2a4a6a;
+            align-items: center;
+        }
+        .cart-item-name {
+            font-size: 13px;
+            color: #e0e0e0;
+        }
+        .cart-item-qty {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .qty-btn {
+            width: 20px;
+            height: 20px;
+            border: 1px solid #007bff;
+            background: #0a1628;
+            color: #007bff;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .qty-btn:hover {
+            background: #007bff;
+            color: #fff;
+        }
+        .cart-totals {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 2px solid #2a4a6a;
+        }
+        .total-line {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        .total-line.final {
+            font-size: 18px;
+            color: #007bff;
+            font-weight: 800;
+            margin-top: 10px;
+        }
+        .hidden { display: none; }
+        .footer-text {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #2a4a6a;
+            font-size: 11px;
+            color: #666;
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
     <div class="navbar">
@@ -168,25 +315,23 @@
             </div>
 
             <div id="step2" class="hidden">
-                <h2>2. Buscar Producto</h2>
                 <div id="selected-cliente" class="client-card"></div>
                 
+                <h2>2. Buscar Producto</h2>
                 <div class="form-group">
                     <input type="text" id="producto-search" placeholder="Buscar producto..." oninput="searchProductos()">
                 </div>
                 
-                <div class="product-list">
-                    <table class="product-table">
-                        <thead>
-                            <tr>
-                                <th>Producto</th>
-                                <th>Stock</th>
-                                <th>Precio</th>
-                            </tr>
-                        </thead>
-                        <tbody id="productos-list"></tbody>
-                    </table>
-                </div>
+                <table class="product-table">
+                    <thead>
+                        <tr>
+                            <th>Producto</th>
+                            <th>Stock</th>
+                            <th>Precio</th>
+                        </tr>
+                    </thead>
+                    <tbody id="productos-list"></tbody>
+                </table>
                 
                 <button class="btn btn-danger" style="margin-top:15px;" onclick="cambiarCliente()">CAMBIAR CLIENTE</button>
             </div>
@@ -202,13 +347,11 @@
             <div id="cart-content" class="hidden">
                 <div id="cart-cliente-info" class="client-card"></div>
                 
-                <div style="margin: 15px 0; border-bottom: 1px solid #2a4a6a; padding-bottom: 10px;">
-                    <div style="display: grid; grid-template-columns: 1fr 60px 80px 40px; gap: 10px; font-size: 11px; color: #007bff; font-weight: 700;">
-                        <div>PRODUCTO</div>
-                        <div>CANT.</div>
-                        <div>PRECIO</div>
-                        <div></div>
-                    </div>
+                <div class="cart-header">
+                    <div>Producto</div>
+                    <div>Cant.</div>
+                    <div>Precio</div>
+                    <div></div>
                 </div>
                 
                 <div id="cart-items"></div>
@@ -219,7 +362,7 @@
                         <span id="subtotal">$0.00</span>
                     </div>
                     <div class="total-line">
-                        <span>IVA 8%:</span>
+                        <span>IVA 16%:</span>
                         <span id="iva">$0.00</span>
                     </div>
                     <div class="total-line final">
@@ -230,10 +373,10 @@
                 
                 <button class="btn" style="margin-top: 20px;" onclick="generarCotizacion()">GENERAR COTIZACIÓN</button>
                 
-                <div style="margin-top: 20px; padding-top: 15px; border-top: 1px solid #2a4a6a; font-size: 11px; color: #666;">
-                    <p>Datos del negocio y el distribuidor</p>
-                    <p>que se solicitará dar de alta por administrador</p>
-                    <p style="margin-top:10px; color: #a0c4e8;">MUCHAS GRACIAS POR SU COMPRA</p>
+                <div class="footer-text">
+                    Datos del negocio y el distribuidor<br>
+                    que se solicitara dar de alta por administrador<br><br>
+                    MUCHAS GRACIAS POR SU COMPRA
                 </div>
             </div>
         </div>
@@ -284,12 +427,12 @@
             document.getElementById('cart-empty').classList.add('hidden');
             document.getElementById('cart-content').classList.remove('hidden');
             
-            document.getElementById('selected-cliente').innerHTML = `
+            const info = `
                 <strong>${cliente.nombre}</strong>
                 <span>RFC: ${cliente.rfc || 'N/A'}</span>
                 <span>Tel: ${cliente.telefono || 'N/A'}</span>
             `;
-            
+            document.getElementById('selected-cliente').innerHTML = info;
             document.getElementById('cart-cliente-info').innerHTML = `
                 <strong>Nombre de Cliente</strong>
                 <span>${cliente.nombre}</span>
@@ -405,7 +548,7 @@
             `).join('');
             
             const subtotal = carrito.reduce((sum, item) => sum + (item.precio * item.cantidad), 0);
-            const iva = subtotal * 0.08;
+            const iva = subtotal * 0.16;
             const total = subtotal + iva;
             
             document.getElementById('subtotal').textContent = `$${subtotal.toFixed(2)}`;
@@ -433,6 +576,7 @@
                 alert(`Cotización #${result.id} generada\nTotal: $${result.total.toFixed(2)}`);
                 carrito = [];
                 renderCarrito();
+                searchProductos(); // Refrescar stock
             } else {
                 alert('Error: ' + result.message);
             }
