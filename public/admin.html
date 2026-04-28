@@ -12,7 +12,7 @@
             padding: 20px;
             color: #e0e0e0;
         }
-        .navbar {
+ .navbar {
             background: #0f0f0f;
             padding: 20px 40px;
             border-radius: 12px;
@@ -23,24 +23,24 @@
             align-items: center;
             margin-bottom: 30px;
         }
-        .navbar-left {
+ .navbar-left {
             display: flex;
             align-items: center;
             gap: 20px;
         }
-        .navbar h1 {
+ .navbar h1 {
             color: #ff0000;
             font-size: 26px;
             text-shadow: 0 0 20px rgba(255, 0, 0, 0.8);
             letter-spacing: 3px;
             font-weight: 800;
         }
-        .admin-info {
+ .admin-info {
             display: flex;
             align-items: center;
             gap: 15px;
         }
-        .admin-pic {
+ .admin-pic {
             width: 45px;
             height: 45px;
             border-radius: 50%;
@@ -48,12 +48,12 @@
             object-fit: cover;
             box-shadow: 0 0 15px rgba(255, 0, 0, 0.6);
         }
-        .admin-name {
+ .admin-name {
             color: #fff;
             font-size: 16px;
             font-weight: 700;
         }
-        .admin-badge {
+ .admin-badge {
             background: #ff0000;
             color: #000;
             padding: 4px 10px;
@@ -61,12 +61,12 @@
             font-size: 10px;
             font-weight: 800;
             letter-spacing: 1px;
-        }
-        .navbar-right {
+       }
+ .navbar-right {
             display: flex;
             gap: 15px;
-        }
-        .container { 
+       }
+ .container { 
             max-width: 1200px; 
             margin: 0 auto; 
             background: #0f0f0f; 
@@ -75,7 +75,7 @@
             box-shadow: 0 0 60px rgba(255, 0, 0, 0.15), 0 8px 32px rgba(0,0,0,0.9);
             border: 1px solid #1a1a1a;
         }
-        .search-box {
+ .search-box {
             width: 100%;
             padding: 16px;
             margin-bottom: 25px;
@@ -85,17 +85,17 @@
             color: #e0e0e0;
             font-size: 15px;
         }
-        .search-box:focus {
+ .search-box:focus {
             outline: none;
             border-color: #ff0000;
             box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
             background: #222;
         }
-        .user-list {
+ .user-list {
             display: grid;
             gap: 15px;
         }
-        .user-card {
+ .user-card {
             background: #1a1a1a;
             padding: 20px;
             border-radius: 8px;
@@ -106,25 +106,25 @@
             justify-content: space-between;
             align-items: center;
         }
-        .user-card:hover {
+ .user-card:hover {
             border-color: #ff0000;
             box-shadow: 0 0 25px rgba(255, 0, 0, 0.4);
             transform: translateY(-3px);
-            background: #1f1f1f;
+            background: #1f;
         }
-        .user-left {
+ .user-left {
             display: flex;
             align-items: center;
             gap: 15px;
         }
-        .user-pic {
+ .user-pic {
             width: 50px;
             height: 50px;
             border-radius: 50%;
             border: 2px solid #2a2a2a;
             object-fit: cover;
         }
-        .online-dot {
+ .online-dot {
             width: 12px;
             height: 12px;
             border-radius: 50%;
@@ -133,25 +133,26 @@
             bottom: 0;
             right: 0;
         }
-        .online-dot.online {
+ .online-dot.online {
             background: #00ff00;
             box-shadow: 0 0 10px #00ff00;
         }
-        .online-dot.offline {
-            background: #555;
+ .online-dot.offline {
+            background: #ff0000;
+            box-shadow: 0 0 10px #ff0000;
         }
-        .pic-wrapper {
+ .pic-wrapper {
             position: relative;
         }
-        .user-info strong {
+ .user-info strong {
             color: #ff0000;
             font-size: 18px;
-        }
-        .user-info span {
+       }
+ .user-info span {
             color: #999;
             font-size: 14px;
-        }
-        .user-badge {
+       }
+ .user-badge {
             background: #ff0000;
             color: #000;
             padding: 5px 12px;
@@ -159,8 +160,9 @@
             font-size: 11px;
             font-weight: 800;
             letter-spacing: 1px;
-        }
-        .btn { 
+       }
+        
+ .btn { 
             padding: 15px 30px; 
             border-radius: 8px; 
             font-weight: 700; 
@@ -176,7 +178,7 @@
             overflow: hidden;
             z-index: 1;
         }
-        .btn::before {
+ .btn::before {
             content: '';
             position: absolute;
             inset: -2px;
@@ -187,7 +189,7 @@
             opacity: 0;
             transition: opacity 0.3s;
         }
-        .btn::after {
+ .btn::after {
             content: '';
             position: absolute;
             inset: 2px;
@@ -196,24 +198,16 @@
             z-index: -1;
             transition: background 0.3s ease;
         }
-        .btn:hover::before { opacity: 1; }
-        .btn:hover::after { background: #1a0000; }
-        .btn:hover {
+ .btn:hover::before { opacity: 1; }
+ .btn:hover::after { background: #1a0000; }
+ .btn:hover {
             transform: translateY(-3px);
             color: #ff4d4d;
         }
+        
         @keyframes borderRotate {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
-        }
-        .message {
-            text-align: center;
-            padding: 40px;
-            color: #666;
-            font-size: 16px;
-        }
-        .error {
-            color: #ff0000;
         }
     </style>
 </head>
@@ -237,9 +231,7 @@
     
     <div class="container">
         <input type="text" id="searchInput" class="search-box" placeholder="Buscar por usuario, nombre, apellido o email...">
-        <div class="user-list" id="userList">
-            <div class="message">Cargando usuarios...</div>
-        </div>
+        <div class="user-list" id="userList"></div>
     </div>
 
     <script>
@@ -247,72 +239,35 @@
         const userList = document.getElementById('userList');
         const currentUser = localStorage.getItem('username');
         
-        if (!currentUser) {
-            window.location.href = '/index.html';
-        }
-        
         async function loadAdminInfo() {
-            try {
-                const res = await fetch(`/api/user/${currentUser}`);
-                if (!res.ok) throw new Error('Error al cargar admin');
-                
-                const user = await res.json();
-                if (!user.is_admin) {
-                    alert('Acceso denegado. No eres admin.');
-                    window.location.href = '/dashboard.html';
-                    return;
-                }
-                
-                document.getElementById('adminName').textContent = user.username;
-                document.getElementById('adminPic').src = user.profile_pic || '/uploads/LogoMetal.png';
-            } catch (error) {
-                console.error('Error:', error);
-                logout();
-            }
+            const res = await fetch(`/api/user/${currentUser}`);
+            const user = await res.json();
+            document.getElementById('adminName').textContent = user.username;
+            document.getElementById('adminPic').src = user.profile_pic || '/uploads/LogoMetal.png';
         }
         
         async function loadUsers(search = '') {
-            try {
-                const res = await fetch(`/api/admin/users?search=${encodeURIComponent(search)}`);
-                
-                if (!res.ok) {
-                    const text = await res.text();
-                    console.error('Error HTTP:', res.status, text);
-                    userList.innerHTML = `<div class="message error">Error ${res.status}: No se pudieron cargar usuarios. Revisa que el endpoint exista en server.js</div>`;
-                    return;
-                }
-                
-                const users = await res.json();
-                console.log('Usuarios recibidos:', users);
-                
-                if (!users || users.length === 0) {
-                    userList.innerHTML = `<div class="message">No hay usuarios registrados</div>`;
-                    return;
-                }
-                
-                userList.innerHTML = users.map(u => `
-                    <div class="user-card" onclick="editUser(${u.id})">
-                        <div class="user-left">
-                            <div class="pic-wrapper">
-                                <img src="${u.profile_pic || '/uploads/LogoMetal.png'}" class="user-pic">
-                                <div class="online-dot ${u.is_online ? 'online' : 'offline'}"></div>
-                            </div>
-                            <div class="user-info">
-                                <strong>${u.username}</strong><br>
-                                <span>${u.name || ''} ${u.last_name || ''} - ${u.email || 'Sin email'}</span>
-                            </div>
+            const res = await fetch(`/api/admin/users?search=${encodeURIComponent(search)}`);
+            const users = await res.json();
+            
+            userList.innerHTML = users.map(u => `
+                <div class="user-card" onclick="editUser(${u.id})">
+                    <div class="user-left">
+                        <div class="pic-wrapper">
+                            <img src="${u.profile_pic || '/uploads/LogoMetal.png'}" class="user-pic">
+                            <div class="online-dot ${u.is_online? 'online' : 'offline'}"></div>
                         </div>
-                        <div>
-                            ${u.is_admin ? '<span class="user-badge">ADMIN</span>' : ''}
-                            <span style="margin-left:15px;color:#ff0000;">EDITAR →</span>
+                        <div class="user-info">
+                            <strong>${u.username}</strong><br>
+                            <span>${u.name} ${u.last_name} - ${u.email}</span>
                         </div>
                     </div>
-                `).join('');
-                
-            } catch (error) {
-                console.error('Error al cargar usuarios:', error);
-                userList.innerHTML = `<div class="message error">Error de conexión con el servidor</div>`;
-            }
+                    <div>
+                        ${u.is_admin? '<span class="user-badge">ADMIN</span>' : ''}
+                        <span style="margin-left:15px;color:#ff0000;">EDITAR →</span>
+                    </div>
+                </div>
+            `).join('');
         }
         
         function editUser(id) {
@@ -328,12 +283,8 @@
             window.location.href = '/index.html';
         }
         
-        let searchTimeout;
         searchInput.addEventListener('input', (e) => {
-            clearTimeout(searchTimeout);
-            searchTimeout = setTimeout(() => {
-                loadUsers(e.target.value);
-            }, 300);
+            loadUsers(e.target.value);
         });
         
         loadAdminInfo();
